@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn Money — Investment Sandbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f3f4f3;--paper-2:#e9ebe9;--ink:#0a0f0c;--ink-soft:#6b746e;--green:#00d54b;--green-d:#009a39;--amber:#ff9f1c;--amber-l:#ffbf57;--red:#ff463c;--violet:#8a63ff;--line:#e6e8e6;--card:#ffffff;--display:"Space Grotesk",sans-serif;--body:"Outfit",sans-serif;--spring:cubic-bezier(.34,1.56,.64,1);}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:0 18px}
+  header{position:sticky;top:0;z-index:30;background:#f6f1e7e8;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .head-in{display:flex;align-items:center;gap:14px;max-width:940px;margin:0 auto;padding:13px 18px}
+  .brand{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #1f9d5f22}
+  .head-sp{flex:1}
+  .sim-badge{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);border:1px solid #e6c98a;background:#fbf3df;padding:5px 11px;border-radius:999px;font-weight:600}
+  .lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;font-weight:600;font-size:.85rem}
+  .lang button{border:none;background:transparent;padding:6px 13px;cursor:pointer;font-family:var(--body);color:var(--ink-soft)}
+  .lang button.on{background:var(--ink);color:var(--paper)}
+  .secnav{position:sticky;top:52px;z-index:20;background:#f6f1e7f2;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .secnav .wrapn{display:flex;gap:6px;max-width:940px;margin:0 auto;padding:8px 18px;overflow-x:auto}
+  .secnav button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 15px;cursor:pointer;font-weight:600;font-size:.88rem;color:var(--ink-soft);font-family:var(--body);white-space:nowrap}
+  .secnav button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .hero{padding:34px 0 8px}
+  .hero h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,5vw,3rem);line-height:1.02;letter-spacing:-.02em;max-width:18ch}
+  .hero h1 em{font-style:italic;color:var(--green)}
+  .hero p{color:var(--ink-soft);margin-top:12px;max-width:60ch;font-size:1.05rem}
+  .sec{display:none}
+  .sec.on{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 1px 0 #00000005}
+  .card h2{font-family:var(--display);font-weight:600;font-size:1.35rem;letter-spacing:-.01em;margin-bottom:4px}
+  .card .hint{color:var(--ink-soft);font-size:.9rem;margin-bottom:16px}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col{flex:1;min-width:200px}
+  label.l{display:block;font-size:.82rem;color:var(--ink-soft);font-weight:600;margin-bottom:6px}
+  .val{font-family:var(--display);font-weight:700;color:var(--ink)}
+  input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:99px;background:var(--paper-2);border:1px solid var(--line);outline:none;margin-top:4px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--green);cursor:pointer;box-shadow:0 0 0 4px #1f9d5f22;border:2px solid #fff}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border:2px solid #fff;border-radius:50%;background:var(--green);cursor:pointer}
+  input[type=number]{font-family:var(--body);font-size:1rem;font-weight:600;border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%;background:var(--paper);color:var(--ink)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .chip{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 15px;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink-soft);font-family:var(--body)}
+  .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .marg{margin-top:12px;background:var(--paper);border:1px dashed var(--line);border-radius:11px;padding:11px 14px;font-size:.9rem;color:var(--ink-soft)}
+  .marg b{color:var(--ink);font-family:var(--display)}
+  .amtgrp{display:none}.amtgrp.on{display:block}
+  .nextbtn{margin-top:8px;background:var(--green);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-weight:700;font-size:1rem;cursor:pointer;font-family:var(--body)}
+  .nextbtn:hover{background:var(--green-d)}
+  .cattabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .cattab{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 13px;cursor:pointer;font-weight:600;font-size:.82rem;color:var(--ink-soft);font-family:var(--body)}
+  .cattab.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .prow{border-top:1px solid var(--line);padding:12px 0}
+  .prow.hidecat{display:none}
+  .prow .main{display:flex;align-items:center;gap:11px}
+  .tgl{position:relative;width:42px;height:24px;flex-shrink:0;border-radius:999px;background:var(--paper-2);border:1px solid var(--line);cursor:pointer;transition:.2s}
+  .tgl::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px #0002;transition:.2s}
+  .tgl.on{background:var(--green);border-color:var(--green)}.tgl.on::after{transform:translateX(18px)}
+  .prow .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:1.2rem;background:var(--paper);flex-shrink:0}
+  .prow .nm{font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:1}
+  .bucket{font-size:.62rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:6px}
+  .b-slab{background:#fbe3dd;color:#b23a24}.b-flat{background:#dcecfb;color:#2563a8}.b-exempt{background:#dcf3e4;color:#16713f}.b-mixed{background:#f4e7d0;color:#9a6a17}.b-crypto{background:#ece1fa;color:#6a3fb0}
+  .prow .pcwrap{display:flex;align-items:center;gap:9px}
+  .prow .pcwrap input[type=range]{width:92px}
+  .prow .pc{width:40px;text-align:right;font-family:var(--display);font-weight:700}
+  .sub{margin:11px 0 0 49px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  .sub.off{display:none}
+  .mini{width:88px}.mini label{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:600;margin-bottom:3px}.mini input{padding:6px 8px;font-size:.9rem}
+  .elitog{font-size:.78rem;color:var(--ink-soft);cursor:pointer;text-decoration:underline dotted;padding-bottom:8px}
+  .eli5{margin-top:8px;display:none}.eli5.show{display:block}
+  .behav{margin:0 0 10px 49px;background:#eef3f0;border:1px solid var(--line);border-left:3px solid var(--ink-soft);border-radius:11px;padding:11px 14px;font-size:.92rem;color:var(--ink);line-height:1.5;display:flex;gap:9px;align-items:flex-start}
+  .behav .bi{font-size:1.1rem;line-height:1.3;flex-shrink:0}
+  .behav .bcap{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:700;display:block;margin-bottom:2px}
+  .etext{font-size:.92rem;color:var(--ink-soft);line-height:1.55;margin-left:49px}
+  .ex{font-size:.9rem;color:var(--ink);background:#f3efe7;border:1px solid var(--line);border-left:3px solid var(--green);border-radius:8px;padding:10px 12px;margin:8px 0 0 49px;line-height:1.55}
+  .ex b{color:var(--green-d)}
+  @media(max-width:560px){.behav,.etext,.ex{margin-left:0}.prow .pcwrap input[type=range]{width:64px}}
+  .headline{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+  .hl-box{flex:1;min-width:140px}
+  .hl-cap{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600}
+  .hl-num{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,4.2vw,2.3rem);line-height:1.05;letter-spacing:-.02em}
+  .green{color:var(--green-d)}.red{color:var(--red)}.amber{color:var(--amber)}
+  .flow{margin:20px 0 6px}
+  .flow-track{display:flex;height:52px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .seg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;transition:width .6s cubic-bezier(.2,.8,.2,1);min-width:0;white-space:nowrap;overflow:hidden}
+  .seg.net{background:linear-gradient(135deg,var(--green),var(--green-d))}.seg.chg{background:linear-gradient(135deg,var(--amber-l),var(--amber))}.seg.tax{background:linear-gradient(135deg,#e8715c,var(--red))}
+  .flow-key{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.82rem;color:var(--ink-soft)}
+  .flow-key span{display:flex;align-items:center;gap:6px}.sw{width:11px;height:11px;border-radius:3px}
+  canvas{width:100%;display:block;margin-top:8px;height:200px}
+  #infChart{height:190px}
+  .pcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+  @media(max-width:560px){.pcards{grid-template-columns:1fr}}
+  .pcard{border:1px solid var(--line);border-radius:13px;padding:14px;background:var(--paper)}
+  .pcard .top{display:flex;align-items:center;gap:8px;font-weight:600;margin-bottom:8px}
+  .pcard .g{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:.85rem}
+  .pcard .k{color:var(--ink-soft)}.pcard .v{text-align:right;font-weight:600}
+  .total-bar{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-weight:600}
+  .total-bar .t{font-family:var(--display);font-size:1.1rem}.warn{color:var(--red)}
+  footer{color:var(--ink-soft);font-size:.78rem;padding:26px 0 60px}.disc{max-width:70ch;line-height:1.5}
+  .pathgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.pathgrid{grid-template-columns:1fr}}
+  .pathcard{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:18px;cursor:pointer;transition:.18s;display:flex;gap:14px;align-items:flex-start}
+  .pathcard:hover{transform:translateY(-2px);box-shadow:0 8px 22px #0000000f;border-color:var(--green)}
+  .pathcard .pic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:1.5rem;background:var(--paper);flex-shrink:0}
+  .pathcard h3{font-family:var(--display);font-weight:600;font-size:1.08rem;margin-bottom:3px}
+  .pathcard p{font-size:.86rem;color:var(--ink-soft);line-height:1.45}
+  .pathcard .arr{margin-left:auto;color:var(--green);font-weight:700;align-self:center;font-size:1.2rem}
+  /* ===== Cash App-style language ===== */
+  header{background:#f3f4f3e6}
+  .secnav{background:#f3f4f3f2}
+  .brand{font-weight:700;letter-spacing:-.02em}
+  .brand .dot{background:var(--green);box-shadow:0 0 0 4px #00d54b22}
+  .sim-badge{background:#eafced;border-color:#bff0cd;color:var(--green-d)}
+  .card{border:none;border-radius:26px;box-shadow:0 2px 14px #0a0f0c0a;padding:24px}
+  .card h2{font-weight:700;letter-spacing:-.025em}
+  .hero h1{font-weight:700;letter-spacing:-.04em}
+  .hero h1 em{font-style:normal;color:var(--green-d)}
+  button,.chip,.cattab,.tgl,.pathcard,.nextbtn,.lang button{transition:transform .16s var(--spring),background .15s,color .15s,border-color .15s,filter .15s}
+  button:active,.chip:active,.cattab:active,.pathcard:active{transform:scale(.96)}
+  .chip{border-radius:999px;font-weight:600}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .secnav button.on,.cattab.on{background:var(--green);color:#06120b;border-color:var(--green)}
+  .nextbtn{border-radius:999px;background:var(--green);color:#06120b;font-weight:700;padding:15px 26px;box-shadow:0 4px 0 #00a93b}
+  .nextbtn:hover{filter:brightness(1.04)}
+  .nextbtn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none;filter:none}
+  .nextbtn:active{box-shadow:0 1px 0 #00a93b;transform:translateY(3px) scale(.99)}
+  .lang button.on{background:var(--ink)}
+  input[type=range]::-webkit-slider-thumb{background:var(--green);box-shadow:0 0 0 4px #00d54b33}
+  input[type=range]::-moz-range-thumb{background:var(--green)}
+  .tgl.on{background:var(--green);border-color:var(--green)}
+  .hl-num{font-weight:700;letter-spacing:-.045em;font-size:clamp(1.7rem,5.4vw,2.8rem)}
+  .green{color:var(--green-d)}
+  .seg.net{background:var(--green)}
+  .sec.on{animation:secin .4s var(--spring)}
+  @keyframes secin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .pathcard{border-radius:22px;border:none;box-shadow:0 2px 12px #0a0f0c0a}
+  .pathcard:hover{box-shadow:0 12px 28px #0a0f0c16}
+  .pathcard .pic{background:#eafced}
+  .pathcard h3{font-weight:700;letter-spacing:-.02em}
+  .pathcard .arr{background:none;color:var(--ink-soft);width:auto;height:auto;align-self:center;font-size:1.5rem;font-weight:500;transition:transform .18s var(--spring),color .15s}
+  .pathcard:hover .arr{color:var(--green-d);transform:translateX(4px)}
+  .pcard{border-radius:18px;border:none;background:var(--paper)}
+  /* ===== Unique "Try it" simulator CTA (interactive, vs the reading pillars) ===== */
+  .simcta{margin-top:16px;background:linear-gradient(135deg,#00e052,var(--green-d));border-radius:26px;padding:26px;color:#06120b;cursor:pointer;display:flex;align-items:center;gap:18px;box-shadow:0 12px 34px #00d54b3a;position:relative;overflow:hidden;transition:transform .18s var(--spring),box-shadow .18s}
+  .simcta:before{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:#ffffff22}
+  .simcta:after{content:"";position:absolute;right:30px;bottom:-50px;width:120px;height:120px;border-radius:50%;background:#ffffff14}
+  .simcta:hover{transform:translateY(-3px);box-shadow:0 18px 44px #00d54b4d}
+  .simcta:active{transform:scale(.99)}
+  .simcta .sim-ic{font-size:2.7rem;flex-shrink:0;filter:drop-shadow(0 2px 4px #0003);z-index:1}
+  .simcta .sim-body{flex:1;z-index:1}
+  .simcta h3{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.025em;margin-bottom:4px;color:#06120b}
+  .simcta p{font-size:.93rem;color:#06351b;line-height:1.45}
+  .simcta .sim-badge2{position:absolute;top:16px;right:18px;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;background:#06120b;color:#00e052;padding:5px 11px;border-radius:999px;z-index:1}
+  .simcta .sim-arr{font-size:1.7rem;font-weight:700;color:#06120b;z-index:1}
+  .sim-cta-btn{display:inline-flex;align-items:center;gap:9px;margin-top:14px;background:#fff;color:#06120b;font-family:var(--display);font-weight:800;font-size:.95rem;padding:10px 20px 10px 12px;border-radius:999px;z-index:1;position:relative;box-shadow:0 4px 14px #0003;animation:ctaBreathe 2.6s ease-in-out infinite}
+  .sim-cta-btn .pbadge{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#06120b;color:#00e052;font-size:.72rem;padding-left:2px;animation:ctaPulse 2.2s infinite}
+  .simcta:hover .sim-cta-btn{filter:brightness(1.04);transform:translateY(-1px)}
+  .simcta:active .sim-cta-btn{transform:scale(.97)}
+  @keyframes ctaPulse{0%{box-shadow:0 0 0 0 #06120b66}70%{box-shadow:0 0 0 13px #06120b00}100%{box-shadow:0 0 0 0 #06120b00}}
+  @keyframes ctaBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+  @media(prefers-reduced-motion:reduce){.sim-cta-btn,.sim-cta-btn .pbadge{animation:none}}
+  @media(max-width:560px){.simcta{padding:20px;gap:14px}.simcta .sim-ic{font-size:2.2rem}.simcta h3{font-size:1.2rem}}
+  .sim-sheen{position:absolute;top:0;left:-60%;width:45%;height:100%;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:skewX(-18deg);z-index:0;animation:simSheen 4.5s ease-in-out infinite}
+  @keyframes simSheen{0%{left:-60%}55%,100%{left:130%}}
+  .simcta .sim-arr{animation:simBob 1.6s ease-in-out infinite}
+  @keyframes simBob{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
+  .simcta .sim-badge2{animation:simPulse 2.4s ease-in-out infinite}
+  @keyframes simPulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .simcta .sim-ic{animation:simFloatIc 3.4s ease-in-out infinite}
+  @keyframes simFloatIc{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .simcta:after{animation:simFloat 6s ease-in-out infinite}
+  @keyframes simFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  @media(prefers-reduced-motion:reduce){.sim-sheen,.simcta .sim-arr,.simcta .sim-badge2,.simcta .sim-ic,.simcta:after{animation:none}}
+  .ex{border-left-color:var(--green);border-radius:12px}
+  .total-bar .t{font-weight:700}
+  .resetbtn{border:none;background:var(--paper-2);color:var(--ink);border-radius:999px;padding:15px 22px;font-weight:700;font-size:1rem;cursor:pointer;font-family:var(--body)}
+  .resetbtn:hover{filter:brightness(.97)}
+  .resetbtn:active{transform:scale(.97)}
+  .presetrow{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px}
+  .preset{border:none;background:var(--card);box-shadow:0 2px 12px #0a0f0c0a;border-radius:999px;padding:11px 17px;cursor:pointer;font-weight:600;font-family:var(--body);font-size:.92rem;display:flex;gap:8px;align-items:center;color:var(--ink)}
+  .preset:hover{box-shadow:0 6px 18px #0a0f0c14;transform:translateY(-1px)}
+  .preset:active{transform:scale(.96)}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  /* live "play" readout on Choose (terminal-style) */
+  .liveres{margin-top:16px;background:var(--ink);color:#eef2ef;border-radius:18px;padding:16px 18px;position:sticky;bottom:12px;z-index:5;box-shadow:0 8px 24px #0a0f0c2e}
+  .liveres .lr-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:5px 0}
+  .liveres .lr-cap{font-size:.85rem;color:#aeb6b0}
+  .liveres .lr-val{font-family:var(--display);font-weight:700;font-size:1.4rem;letter-spacing:-.02em}
+  .liveres .lr-val.green{color:#4ade80}
+  .liveres .lr-val.red{color:#ff8a7a}
+  .liveres .lr-verdict{font-size:.86rem;margin-top:8px;color:#dfe4e1;line-height:1.45;border-top:1px solid #ffffff1f;padding-top:8px}
+  .liveres .lr-verdict b{color:#fff}
+  .brk{font-size:.74rem;border:1px solid #f0b9b2;color:var(--red);background:#fdeeec;border-radius:999px;padding:5px 11px;cursor:pointer;font-weight:600;font-family:var(--body);align-self:center;transition:transform .16s var(--spring)}
+  .brk.on{background:var(--red);color:#fff;border-color:var(--red)}
+  input[type=range]:disabled{opacity:.35;cursor:not-allowed}
+  .prow .pcwrap input[type=range]:disabled ~ .pc{opacity:.35}
+  :focus-visible{outline:2px solid var(--green-d);outline-offset:2px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .amt-txt{font-size:.8rem;color:var(--ink-soft);font-weight:600;margin-top:5px;min-height:1em}
+  .brk:active{transform:scale(.95)}
+  .pcard.broke{outline:2px solid #ffb3a8;outline-offset:-1px}
+  .lens{background:var(--paper);border:1px dashed var(--line);border-radius:14px;padding:14px 16px;margin:14px 0}
+  .lens-h{font-family:var(--display);font-weight:700;font-size:.95rem;margin-bottom:10px}
+  .backbar{padding:14px 0 0}
+  /* ===== Journey stepper (Try-it flow) ===== */
+  .simsteps{display:none;gap:6px;margin:14px 0 2px;align-items:center;overflow-x:auto}
+  .simsteps button{flex:1;min-width:0;border:none;background:var(--card);box-shadow:0 1px 6px #0a0f0c0a;border-radius:999px;padding:8px 10px;font-family:var(--body);font-weight:600;font-size:.8rem;color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center;white-space:nowrap;transition:background .2s,color .2s,transform .16s var(--spring)}
+  .simsteps button:active{transform:scale(.96)}
+  .simsteps .sn{width:18px;height:18px;border-radius:50%;background:var(--paper-2);color:var(--ink-soft);display:grid;place-items:center;font-size:.7rem;font-weight:700;flex-shrink:0;transition:background .2s,color .2s}
+  .simsteps button.done{color:var(--green-d)}
+  .simsteps button.done .sn{background:var(--green);color:#fff}
+  .simsteps button.active{background:var(--green);color:#06120b}
+  .simsteps button.active .sn{background:#06120b;color:var(--green);animation:stepPop .3s var(--spring)}
+  @keyframes stepPop{0%{transform:scale(.5)}100%{transform:scale(1)}}
+  .simsteps button:disabled{opacity:.4;cursor:not-allowed}
+  /* ===== Site-wide engagement motion ===== */
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .sec.on .card{animation:rise .45s var(--spring) both}
+  .sec.on .card:nth-of-type(2){animation-delay:.05s}
+  .sec.on .card:nth-of-type(3){animation-delay:.10s}
+  .sec.on .card:nth-of-type(4){animation-delay:.15s}
+  .sec.on .card:nth-of-type(n+5){animation-delay:.2s}
+  .pathcard .pic{transition:transform .2s var(--spring)}
+  .pathcard:hover .pic{transform:scale(1.12) rotate(-4deg)}
+  .lrow .lic{transition:transform .2s var(--spring)}
+  .lrow:hover .lic{transform:scale(1.1)}
+  @media(prefers-reduced-motion:reduce){.sec.on .card{animation:none}.simsteps button.active .sn{animation:none}.pathcard:hover .pic,.lrow:hover .lic{transform:none}}
+  .backbtn{border:none;background:var(--paper-2);color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:600;font-family:var(--body);font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .16s var(--spring),filter .15s}
+  .backbtn:hover{filter:brightness(.97)}
+  .backbtn:active{transform:scale(.96)}
+  .soon{display:inline-block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#9a6a17;background:#fdf6e8;border:1px solid #f0c98a;border-radius:999px;padding:5px 12px}
+  .soonlist{margin:10px 0 0 20px;color:var(--ink);line-height:1.7;font-size:.95rem}
+  .soonlist li{margin:3px 0}
+  /* ===== Tax section ===== */
+  .taxdisc{background:#fdf6e8;border:1px solid #f0c98a;color:#7a5a12;border-radius:14px;padding:12px 16px;font-size:.84rem;margin:14px 0;line-height:1.5}
+  .slabwrap{display:flex;gap:18px;flex-wrap:wrap}
+  .slabcol{flex:1;min-width:240px}
+  .slabcol h3{font-family:var(--display);font-size:1rem;margin-bottom:6px}
+  table.slab{width:100%;border-collapse:collapse;font-size:.9rem}
+  table.slab th{text-align:left;font-family:var(--display);font-size:.74rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;border-bottom:2px solid var(--line)}
+  table.slab td{padding:7px 8px;border-bottom:1px solid var(--line)}
+  table.slab td:last-child{text-align:right;font-family:var(--display);font-weight:700}
+  .taxbucket{display:flex;gap:11px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--line)}
+  .taxbucket .br{flex:1}
+  .taxrule{font-size:.92rem;color:var(--ink);margin-top:2px}
+  .taxeg{font-size:.84rem;color:var(--ink-soft);margin-top:3px}
+  .dedlist{list-style:none}
+  .dedlist li{padding:10px 0;border-top:1px solid var(--line);font-size:.92rem;line-height:1.5}
+  .dedlist b{font-family:var(--display)}
+  .ltax{margin-top:10px;font-size:.86rem;color:var(--ink-soft)}
+  .taxlink{color:var(--green-d);font-weight:600;cursor:pointer;text-decoration:underline dotted}
+  .ltip{margin-top:10px;font-size:.88rem;color:var(--ink);background:#f0f4f1;border-radius:10px;padding:9px 12px;line-height:1.5}
+  .lsec{margin-top:11px}
+  .lsech{font-family:var(--display);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:3px}
+  .lsecb{font-size:.92rem;line-height:1.55;color:var(--ink)}
+  .lsecb b{color:var(--green-d)}
+  .pcwrap2{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+  .pccol{flex:1;min-width:200px}
+  .proscons{list-style:none;margin-top:4px}
+  .proscons li{font-size:.9rem;line-height:1.5;padding:3px 0 3px 16px;position:relative}
+  .proscons li:before{content:"•";position:absolute;left:2px;color:var(--ink-soft)}
+  .gloss{border-bottom:1px dotted var(--green-d);color:var(--green-d);cursor:help;font-weight:500}
+  .gloss.on{background:#eafced;border-radius:4px;padding:0 2px}
+  .glossdef{color:var(--ink-soft);font-style:italic;font-size:.9em}
+  /* ===== Investing library (read-only lessons) ===== */
+  .invcat{font-family:var(--display);font-weight:700;font-size:1rem;margin:22px 0 8px;color:var(--ink-soft)}
+  .lrow{background:var(--card);border-radius:16px;box-shadow:0 2px 12px #0a0f0c0a;margin:10px 0;overflow:hidden}
+  .lrow .lhead{display:flex;align-items:center;gap:12px;padding:15px 16px;cursor:pointer}
+  .lrow .lic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;background:var(--paper);flex-shrink:0}
+  .lrow .lnm{font-weight:700;font-family:var(--display);flex:1;letter-spacing:-.01em}
+  .lrow .lchev{color:var(--ink-soft);font-size:1.3rem;transition:transform .2s var(--spring);flex-shrink:0}
+  .lrow.open .lchev{transform:rotate(90deg)}
+  .lrow .lbody{display:none;padding:2px 16px 16px}
+  .lrow.open .lbody{display:block;animation:fade .25s ease}
+  .lbody .behav,.lbody .etext,.lbody .ex{margin-left:0}
+  .foodie{background:#fff7e8;border:1px solid #f0d49a;border-radius:12px;padding:11px 13px;font-size:.95rem;line-height:1.5;color:#5a4612;margin:2px 0 4px}
+  .foodie b{color:#9a6a17}
+  .kidtgl{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-family:var(--body);font-weight:600;font-size:.8rem;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:transform .16s var(--spring),background .15s,color .15s}
+  .kidtgl:active{transform:scale(.96)}
+  .kidtgl.on{background:var(--green);color:#06120b;border-color:var(--green)}
+  @media(max-width:560px){ .sim-badge{display:none} .head-in{gap:7px;padding:11px 12px} .kidtgl{padding:6px 9px;font-size:.72rem} .brand{font-size:1.1rem} }
+  /* ===== Ad slots (POC placeholders) ===== */
+  body{padding-bottom:92px}
+  .adbox{border:1px dashed #c7ccc8;border-radius:12px;background:#fafbfa;color:#9aa39d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:.78rem;font-weight:600;text-align:center;position:relative;line-height:1.4}
+  .adbox .adtag{position:absolute;top:6px;left:9px;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#bcc2bd}
+  .adbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;padding:8px 10px;background:#f3f4f3f0;backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+  .adbar .adbox{width:100%;max-width:728px;height:64px}
+  .adrail{display:none}
+  .liveres{bottom:104px}
+  @media(min-width:1300px){
+    .adrail{display:block;position:fixed;top:118px;width:160px;z-index:35}
+    .adrail .adbox{width:160px;height:600px}
+    .adleft{left:calc((100vw - 940px)/2 - 178px)}
+    .adright{right:calc((100vw - 940px)/2 - 178px)}
+  }
+  @media(max-width:560px){ body{padding-bottom:66px} .adbar .adbox{height:46px;font-size:.7rem} .liveres{bottom:78px} }
+  body.kid .kidhide{display:none}
+  body.kid .foodie{font-size:1.05rem}
+  .kidonly{display:none}
+  body.kid .kidonly{display:block}
+  .kidcard{background:#eafced;border:1px solid #bff0cd;border-radius:18px;padding:18px 20px;margin:14px 0;font-size:1rem;line-height:1.6;color:#0a3a1c}
+  .kidcard h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin-bottom:6px}
+  .coach{position:fixed;inset:0;background:#0a0f0cb0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;animation:fade .25s ease}
+  .coach-card{background:var(--card);border-radius:22px;padding:24px;max-width:430px;box-shadow:0 24px 64px #0007;animation:secin .35s var(--spring)}
+  .coach-card h3{font-family:var(--display);font-weight:700;font-size:1.3rem;margin-bottom:10px}
+  .coach-card ul{list-style:none;margin:0 0 16px}
+  .coach-card li{padding:10px 0;line-height:1.5;font-size:.96rem;border-top:1px solid var(--line)}
+  .coach-card li:first-child{border-top:none}
+  .coach-card .nextbtn,.coach-card .resetbtn{flex:1;min-width:140px}
+  .tour-spot{position:relative;z-index:10001;box-shadow:0 0 0 4px var(--green),0 0 0 9999px rgba(10,15,12,.78)!important;border-radius:14px}
+  .tourtip{position:fixed;z-index:10002;max-width:300px;background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:0 16px 50px #0008;font-size:.94rem;line-height:1.5;animation:secin .3s var(--spring)}
+  .tourtip h4{font-family:var(--display);font-weight:700;font-size:1.05rem;margin-bottom:5px}
+  .tourtip .trow{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:13px}
+  .tourtip .tnext{border:none;background:var(--green);color:#06120b;font-weight:700;border-radius:999px;padding:8px 16px;cursor:pointer;font-family:var(--body)}
+  .tourtip .tskip{border:none;background:none;color:var(--ink-soft);cursor:pointer;font-size:.85rem}
+  .tourtip .tdot{font-size:.8rem;color:var(--ink-soft);font-weight:600}
+  .lbody .etext{margin-top:8px}
+  .lrow:active{transform:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-in">
+    <div class="brand" onclick="showSec('home')" style="cursor:pointer"><span class="dot"></span><span data-i="brand">Learn Money</span></div>
+    <div class="head-sp"></div>
+    <button id="resetBtn" class="kidtgl" onclick="confirmReset()" title="Clear everything and start fresh">↺ Reset</button>
+    <button id="kidBtn" class="kidtgl" onclick="toggleKid()" title="Show the simple, kid-friendly version of each lesson">🧒 Kid mode</button>
+    <span class="sim-badge" data-i="sim">Simulation</span>
+    <div class="lang" style="display:none"><button id="enBtn" class="on" onclick="setLang('en')">EN</button><button id="hiBtn" onclick="setLang('hi')">हिं</button></div>
+  </div>
+</header>
+<div class="secnav" role="navigation" aria-label="Sections"><div class="wrapn">
+  <button class="on" data-sec="home" data-i="navHome"></button>
+  <button data-sec="tryit" data-i="navTry"></button>
+  <button data-sec="invest" data-i="navInvest"></button>
+  <button data-sec="tax" data-i="navTax"></button>
+  <button data-sec="takehome" data-i="navTake"></button>
+  <button data-sec="credit" data-i="navCredit"></button>
+</div></div>
+
+<div class="wrap" role="main">
+  <div class="backbar" id="backbar" style="display:none"><button class="backbtn" onclick="goBack()">← <span data-i="backHome"></span></button></div>
+  <div class="simsteps" id="simsteps" style="display:none">
+    <button data-step="inflation"><span class="sn">1</span>Inflation</button>
+    <button data-step="how"><span class="sn">2</span>Setup</button>
+    <button data-step="choose"><span class="sn">3</span>Choose</button>
+    <button data-step="results"><span class="sn">4</span>Results</button>
+  </div>
+  <section id="sec-home" class="sec on">
+    <div class="hero"><h1 data-i="heroH"></h1><p data-i="heroP"></p></div>
+    <div id="simcard"></div>
+    <div style="font-family:var(--display);font-weight:600;font-size:1.15rem;margin:24px 0 12px" data-i="homeKick"></div>
+    <div class="pathgrid" id="pillargrid"></div>
+  </section>
+
+  <section id="sec-invest" class="sec">
+    <div class="hero"><h1 data-i="invH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="invP"></p></div>
+    <div class="cattabs" id="invtabs" style="margin-top:18px"></div>
+    <div id="invlist"></div>
+  </section>
+
+  <section id="sec-tax" class="sec">
+    <div class="hero"><h1 data-i="taxH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="taxP"></p></div>
+    <div class="taxdisc kidhide">⚠️ Educational and simplified. Figures reflect <b>FY2026-27</b> and are <b>pending CA review</b> — not tax advice. Consult a qualified CA for real decisions.</div>
+
+    <div class="kidcard kidonly">
+      <h3>🧒 Tax, simply</h3>
+      When you earn a lot — or your money grows a lot — the government takes a small <b>bite</b> called tax. Some piggy-bank types like <b>PPF</b> have <b>no bite at all</b>. Shares have a small bite. <b>Crypto</b> has a big bite. Tax is why "what you keep" is less than "what it grew to."
+    </div>
+
+    <div class="card kidhide">
+      <h2>Income tax slabs</h2>
+      <div class="hint">A "slab" means different parts of your income are taxed at different rates — only the income inside each band pays that band's rate. You pick one of two regimes each year.</div>
+      <div class="slabwrap">
+        <div class="slabcol"><h3>New regime <span class="bucket b-exempt">default</span></h3>
+          <table class="slab"><caption class="sr-only">New regime income tax slabs</caption><thead><tr><th>Income band</th><th>Rate</th></tr></thead><tbody id="slabNewBody"></tbody></table>
+          <div class="hint" style="margin-top:8px">+ ₹75,000 standard deduction. The <b>87A rebate</b> means income up to <b>₹12L</b> effectively pays <b>zero</b> tax. No deductions like 80C allowed.</div>
+        </div>
+        <div class="slabcol"><h3>Old regime</h3>
+          <table class="slab"><caption class="sr-only">Old regime income tax slabs</caption><thead><tr><th>Income band</th><th>Rate</th></tr></thead><tbody id="slabOldBody"></tbody></table>
+          <div class="hint" style="margin-top:8px">+ ₹50,000 standard deduction. Higher rates, lower exemption — but you <b>can</b> claim deductions (below).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card kidhide">
+      <h2>Surcharge &amp; cess</h2>
+      <div class="hint">On top of the slab tax, very high incomes pay an extra <b>surcharge</b>, and everyone pays a <b>4% health &amp; education cess</b> on the tax amount.</div>
+      <ul class="dedlist">
+        <li>Income up to ₹50L — <b>no surcharge</b></li>
+        <li>₹50L–₹1Cr — <b>10%</b> surcharge</li>
+        <li>₹1Cr–₹2Cr — <b>15%</b> surcharge</li>
+        <li>Above ₹2Cr — <b>25%</b> surcharge</li>
+        <li>Then <b>4% cess</b> on the total tax (surcharge for capital gains is capped at 15%).</li>
+      </ul>
+    </div>
+
+    <div class="card kidhide">
+      <h2>Deductions <span style="font-weight:400;color:var(--ink-soft);font-size:.9rem">(old regime only)</span></h2>
+      <div class="hint">Deductions lower the income you're taxed on. The old regime trades higher rates for these:</div>
+      <ul class="dedlist">
+        <li><b>80C — up to ₹1.5L:</b> PPF, ELSS, EPF, SSY, SCSS, ULIP, life insurance, home-loan principal. <span style="color:var(--green-d)">(products marked 80C in Investing earn this)</span></li>
+        <li><b>80CCD(1B) — up to ₹50k:</b> extra NPS contribution, on top of 80C.</li>
+        <li><b>80D:</b> health insurance premiums (self + family + parents).</li>
+        <li><b>80TTA / 80TTB:</b> savings-account / senior-citizen interest.</li>
+        <li><b>Section 24(b) — up to ₹2L:</b> interest paid on a home loan.</li>
+      </ul>
+    </div>
+
+    <div class="card kidhide">
+      <h2>How your investments are taxed</h2>
+      <div class="hint">Every product in Investing falls into one of five tax "buckets". This is why two products with the same return can leave you very different amounts.</div>
+      <div class="taxbucket"><span class="bucket b-slab">Slab</span><div class="br"><div class="taxrule"><b>Taxed at your income slab rate.</b> FDs, RDs, most bonds, debt funds.</div><div class="taxeg">A 30%-slab person loses ~30% of FD interest to tax.</div></div></div>
+      <div class="taxbucket"><span class="bucket b-flat">LTCG 12.5%</span><div class="br"><div class="taxrule"><b>Listed equity: 12.5% on long-term gains</b>, with the first <b>₹1.25L of gains each year tax-free</b> (pooled across all your equity). Stocks, equity funds, index/ELSS.</div><div class="taxeg">₹2L equity gain → only ₹75k is taxed at 12.5%.</div></div></div>
+      <div class="taxbucket"><span class="bucket b-exempt">Tax-free</span><div class="br"><div class="taxrule"><b>No tax at all.</b> PPF, EPF, SSY, tax-free bonds.</div><div class="taxeg">₹0 tax however much it grows — the quiet winner over long horizons.</div></div></div>
+      <div class="taxbucket"><span class="bucket b-mixed">Mixed</span><div class="br"><div class="taxrule"><b>12.5% if held long enough, otherwise your slab rate.</b> Gold, REITs, foreign stocks/funds.</div><div class="taxeg">Holding period decides which rate applies.</div></div></div>
+      <div class="taxbucket"><span class="bucket b-crypto">Crypto 30%</span><div class="br"><div class="taxrule"><b>Flat 30% on every gain</b> — no exemption, and losses can't offset other income.</div><div class="taxeg">₹1L crypto profit → ₹30k tax, even at a low income.</div></div></div>
+    </div>
+  </section>
+
+  <section id="sec-credit" class="sec">
+    <div class="hero"><h1 data-i="credH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="credP"></p></div>
+    <div class="taxdisc kidhide">⚠️ Educational and simplified — illustrative card terms (Indian cards typically charge 36–48% a year on unpaid balances). Not financial advice.</div>
+
+    <div class="kidcard kidonly">
+      <h3>🧒 Credit cards, simply</h3>
+      A credit card lets you spend the bank's money for a few weeks <b>free</b>. If you pay it <b>all back on time</b> → it stays free. If you pay <b>late</b> or only the tiny "minimum", the bank charges a <b>LOT</b> extra every month (interest) and the debt grows. Rule: only spend what you can pay back fully. Try the calculator below to see the trap.
+    </div>
+
+    <div class="card kidhide">
+      <h2>1. How the billing cycle works</h2>
+      <div class="hint">A credit card is a short-term loan you take every time you swipe. The bank groups it into a monthly cycle:</div>
+      <ul class="dedlist">
+        <li><b>Statement / billing date:</b> the bank totals everything you spent that cycle into one bill.</li>
+        <li><b>Due date:</b> usually ~15–20 days after the statement. This gap is the <b>grace period</b>.</li>
+        <li><b>Grace period (interest-free):</b> pay the <b>full</b> statement amount by the due date and you pay <b>₹0 interest</b> — you used the bank's money free for up to ~45–50 days.</li>
+        <li><b>Total due vs. minimum due:</b> the bill shows both. "Minimum due" (~5% of the balance) is the smallest payment to avoid a late fee — it is <b>not</b> the smart amount to pay.</li>
+      </ul>
+    </div>
+
+    <div class="card kidhide">
+      <h2>2. Paying on time vs. late — this is everything</h2>
+      <div class="slabwrap">
+        <div class="slabcol">
+          <h3 style="color:var(--green-d)">✅ Pay full amount, on time</h3>
+          <ul class="dedlist">
+            <li><b>₹0 interest</b> — grace period stays intact.</li>
+            <li>You keep your rewards/cashback for free.</li>
+            <li><b>Credit score rises</b> — on-time payment is the biggest score factor.</li>
+            <li>The card works <i>for</i> you: convenience + a free short loan.</li>
+          </ul>
+        </div>
+        <div class="slabcol">
+          <h3 style="color:var(--red)">⚠️ Pay late, partial, or only the minimum</h3>
+          <ul class="dedlist">
+            <li><b>Grace period is lost</b> — interest (36–48%/yr) is charged from the <b>purchase date</b>, not the due date.</li>
+            <li>Interest applies to the <b>old balance AND every new spend</b> until you clear it fully.</li>
+            <li><b>Late-payment fee</b> (tiered, ~₹500–₹1,300) <b>+ 18% GST</b> on fees and interest.</li>
+            <li><b>Credit score drops;</b> 30+ days late is reported and can hurt for years.</li>
+            <li>Repeated defaults → card blocked, higher rates, collection calls.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="taxdisc" style="margin-top:14px">The golden rule: <b>always pay the full statement amount by the due date.</b> If you ever can't, pay as much above the minimum as possible — the minimum is a debt trap, not a target.</div>
+    </div>
+
+    <div class="card kidhide">
+      <h2>3. How interest is actually charged</h2>
+      <div class="hint">Once you miss a full payment and start "revolving" a balance:</div>
+      <ul class="dedlist">
+        <li>Interest is quoted monthly (e.g. <b>3.5%/month</b>) which is about <b>42%/year</b> — far higher than any loan.</li>
+        <li>It's charged <b>daily</b> on your running balance from each purchase date, so it compounds fast.</li>
+        <li>New purchases get <b>no grace period</b> either, until the full balance is cleared.</li>
+      </ul>
+      <div class="taxeg" style="margin-top:6px">Example: ₹50,000 unpaid at 42%/yr is about <b>₹1,750 of interest in the very first month</b> — before you buy anything new.</div>
+    </div>
+
+    <div class="card kidhide">
+      <h2>4. Other costly traps</h2>
+      <div class="taxbucket"><span style="font-size:1.2rem">🏧</span><div class="br"><div class="taxrule"><b>Cash withdrawal.</b> Taking cash on a card charges interest from <b>day one</b> (no grace) plus a 2.5–3% fee. Avoid unless an emergency.</div></div></div>
+      <div class="taxbucket"><span style="font-size:1.2rem">📉</span><div class="br"><div class="taxrule"><b>Over-limit fee.</b> Spending past your limit triggers a fee and a score hit.</div></div></div>
+      <div class="taxbucket"><span style="font-size:1.2rem">🧾</span><div class="br"><div class="taxrule"><b>EMI conversion.</b> "No-cost EMI" usually isn't — interest is often hidden in the price or a processing fee. Read the rate.</div></div></div>
+      <div class="taxbucket"><span style="font-size:1.2rem">🌐</span><div class="br"><div class="taxrule"><b>Forex markup.</b> Overseas/foreign-currency spends add a ~1.5–3.5% markup.</div></div></div>
+    </div>
+
+    <div class="card kidhide">
+      <h2>5. Rewards vs. real cost</h2>
+      <div class="hint">Cashback, points and miles are genuinely valuable — but only on one condition.</div>
+      <ul class="dedlist">
+        <li>Rewards are typically worth ~<b>1–2%</b> of what you spend.</li>
+        <li>Card interest is ~<b>42%/year</b>. <b>One month of interest wipes out a whole year of rewards.</b></li>
+        <li>So rewards are free money <b>only if you pay in full every month.</b> Otherwise the card is winning, not you.</li>
+      </ul>
+    </div>
+
+    <div class="card kidhide">
+      <h2>6. Your credit score (CIBIL)</h2>
+      <div class="hint">A 300–900 score lenders use to decide your loans and rates. A card is the easiest way to build it — or wreck it.</div>
+      <ul class="dedlist">
+        <li><b>On-time payments (~35%)</b> — the single biggest factor. Never miss a due date.</li>
+        <li><b>Credit utilisation (~30%)</b> — keep spends under ~30% of your limit; high usage looks risky.</li>
+        <li><b>Age of credit, credit mix, new enquiries</b> make up the rest — don't churn many cards/loans at once.</li>
+        <li>A good score (750+) later gets you <b>cheaper home/car loans</b> — that's the real long-term payoff.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Cost of carrying a balance</h2>
+      <div class="hint">See what an unpaid balance really costs if you don't clear it in full.</div>
+      <div class="row">
+        <div class="col"><label class="l" for="ccBal">Unpaid balance (₹)</label><input type="number" id="ccBal" value="50000" min="1000" max="10000000" step="5000" aria-label="Unpaid card balance in rupees" oninput="renderCredit()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="ccBal"></div></div>
+        <div class="col"><label class="l" for="ccApr">Interest rate (APR) <span class="val"><span id="ccAprV">42</span>%</span></label><input type="range" id="ccApr" min="12" max="48" step="1" value="42" aria-label="Interest rate APR percent" oninput="renderCredit()"></div>
+      </div>
+      <div style="margin-top:14px"><label class="l">How you pay it back</label>
+        <div class="chips" id="ccModeChips"><div class="chip on" data-cm="min">Only the minimum (5%)</div><div class="chip" data-cm="fixed">A fixed amount/month</div></div>
+      </div>
+      <div class="col amtgrp" id="ccPayGrp" style="margin-top:12px"><label class="l" for="ccPay">Fixed payment per month (₹)</label><input type="number" id="ccPay" value="5000" min="100" max="10000000" step="500" aria-label="Fixed monthly payment in rupees" oninput="renderCredit()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="ccPay"></div></div>
+      <div class="flow" style="margin-top:16px"><div class="flow-track"><div class="seg net" id="ccSegP"></div><div class="seg tax" id="ccSegI"></div></div>
+        <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span>What you borrowed</span><span><span class="sw" style="background:var(--red)"></span>Pure interest</span></div>
+      </div>
+      <div class="marg" id="ccResult" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section id="sec-takehome" class="sec">
+    <div class="hero"><h1 data-i="thH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="thP"></p></div>
+    <div class="taxdisc">⚠️ Illustrative, FY2026-27, pending CA review — not tax advice. Everything is pre-filled; adjust any field.</div>
+    <div class="card">
+      <div class="lsech" style="margin-bottom:8px">Your salary</div>
+      <div class="row">
+        <div class="col"><label class="l" for="thCtc">Annual salary / CTC (₹)</label><input type="number" id="thCtc" value="1200000" min="100000" max="1000000000" step="50000" aria-label="Annual CTC in rupees" oninput="renderTakehome()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="thCtc"></div></div>
+        <div class="col"><label class="l" for="thBasic">Basic pay <span class="val"><span id="thBasicV">40</span>% of CTC</span></label><input type="range" id="thBasic" min="30" max="60" step="5" value="40" aria-label="Basic percent of CTC" oninput="renderTakehome()"></div>
+      </div>
+      <div style="margin-top:14px"><label class="l">Tax regime</label><div class="chips" id="thRegChips"><div class="chip on" data-thr="compare">Compare both</div><div class="chip" data-thr="new">New</div><div class="chip" data-thr="old">Old</div></div></div>
+      <div class="row" style="margin-top:12px">
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thEpfRate">EPF (% of basic)</label><input type="number" id="thEpfRate" value="12" min="0" max="100" step="1" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thHraPct">HRA (% of basic)</label><input type="number" id="thHraPct" value="50" min="0" max="100" step="5" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thGrat">Gratuity (% of basic)</label><input type="number" id="thGrat" value="4.81" min="0" max="20" step="0.1" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thEmpNps">Employer NPS (% of basic)</label><input type="number" id="thEmpNps" value="0" min="0" max="14" step="1" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thPt">Professional tax (₹/yr)</label><input type="number" id="thPt" value="2400" min="0" max="50000" step="200" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+      </div>
+      <div id="thOldGrp" style="margin-top:14px">
+        <label class="l">Your age <span style="font-weight:400;color:var(--ink-soft)">(affects old-regime exemption)</span></label>
+        <div class="chips" id="thAgeChips"><div class="chip on" data-age="lt60">Under 60</div><div class="chip" data-age="60">60–80</div><div class="chip" data-age="80">80+</div></div>
+        <label class="l" style="margin-top:12px">Old-regime deductions &amp; HRA <span style="font-weight:400;color:var(--ink-soft)">(used only for the old regime)</span></label>
+        <div class="row" style="margin-top:6px">
+          <div class="col"><label class="l" for="thRent">Yearly rent paid (₹)</label><input type="number" id="thRent" value="240000" min="0" max="10000000" step="10000" oninput="renderTakehome()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="thRent"></div></div>
+          <div class="col"><label class="l">City</label><div class="chips" id="thMetroChips"><div class="chip on" data-metro="1">Metro</div><div class="chip" data-metro="0">Non-metro</div></div></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="col mini" style="width:auto;flex:1"><label class="l" for="thC">80C (₹)</label><input type="number" id="thC" value="150000" min="0" max="150000" step="10000" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+          <div class="col mini" style="width:auto;flex:1"><label class="l" for="thD">80D health (₹)</label><input type="number" id="thD" value="25000" min="0" max="100000" step="5000" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+          <div class="col mini" style="width:auto;flex:1"><label class="l" for="thNps">NPS 80CCD(1B) (₹)</label><input type="number" id="thNps" value="50000" min="0" max="50000" step="10000" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+          <div class="col mini" style="width:auto;flex:1"><label class="l" for="thHome">Home-loan interest (₹)</label><input type="number" id="thHome" value="0" min="0" max="200000" step="10000" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        </div>
+      </div>
+      <div class="liveres" style="position:static;margin-top:18px">
+        <div class="lr-row"><span class="lr-cap">Monthly in-hand</span><span class="lr-val green" id="thNet">₹0</span></div>
+        <div class="lr-row"><span class="lr-cap">Per year</span><span class="lr-val" id="thNetYr" style="font-size:1.05rem">₹0</span></div>
+        <div class="lr-verdict" id="thVerdict"></div>
+      </div>
+      <div class="pcards" id="thCompare" style="margin-top:14px"></div>
+      <div class="marg" id="thBreak" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section id="sec-tryit" class="sec">
+    <div class="hero"><h1 data-i="tryH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="tryP"></p></div>
+    <div style="font-family:var(--display);font-weight:600;font-size:1.15rem;margin:24px 0 12px" data-i="tryKick"></div>
+    <div class="pathgrid" id="pathgrid"></div>
+    <div style="font-family:var(--display);font-weight:600;font-size:1rem;margin:22px 0 10px;color:var(--ink-soft)" data-i="presetKick"></div>
+    <div class="presetrow" id="presetrow"></div>
+  </section>
+
+  <section id="sec-inflation" class="sec">
+    <div class="card">
+      <h2 data-i="infH"></h2><div class="hint" data-i="infHint"></div>
+      <div class="row">
+        <div class="col"><label class="l" for="infAmt" data-i="infAmtL"></label><input type="number" id="infAmt" value="500000" min="1000" max="1000000000" step="10000" aria-label="Money kept as cash in rupees" oninput="renderInflation()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="infAmt"></div></div>
+        <div class="col"><label class="l" for="infRate"><span data-i="infRateL"></span> <span class="val"><span id="infRateV">5.0</span>%</span></label><input type="range" id="infRate" min="2" max="10" step="0.5" value="5" aria-label="Inflation rate percent" oninput="renderInflation()"><div data-i="infRbi" style="font-size:.78rem;color:var(--ink-soft);margin-top:6px"></div></div>
+      </div>
+      <div style="margin-top:14px"><label class="l" data-i="infHorizonL"></label><div class="chips" id="infChips"><div class="chip" data-h="5">5</div><div class="chip on" data-h="10">10</div><div class="chip" data-h="20">20</div><div class="chip" data-h="30">30</div></div></div>
+      <canvas id="infChart" height="190"></canvas>
+      <div class="flow-key"><span><span class="sw" style="background:#efe7d6;border:1px dashed #b9ad95"></span><span data-i="infKeyHave"></span></span><span><span class="sw" style="background:var(--red)"></span><span data-i="infKeyWorth"></span></span></div>
+      <div class="marg" id="infResult" style="margin-top:14px"></div>
+      <button class="nextbtn" onclick="showSec('how')" data-i="next"></button>
+    </div>
+  </section>
+
+  <section id="sec-how" class="sec">
+    <div class="card">
+      <h2 data-i="s1h"></h2><div class="hint" data-i="s1hint"></div>
+      <label class="l" data-i="modeL"></label>
+      <div class="chips" id="modeChips"><div class="chip on" data-m="lumpsum" data-i="mLump"></div><div class="chip" data-m="sip" data-i="mSip"></div><div class="chip" data-m="swp" data-i="mSwp"></div></div>
+      <div class="marg" id="modeBox"></div>
+      <div class="row" style="margin-top:14px">
+        <div class="col amtgrp on" id="grpLump"><label class="l" for="lumpAmt" data-i="lumpL"></label><input type="number" id="lumpAmt" value="500000" min="1000" max="1000000000" step="10000" aria-label="One-time amount in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="lumpAmt"></div></div>
+        <div class="col amtgrp" id="grpSip"><label class="l" for="sipAmt" data-i="sipL"></label><input type="number" id="sipAmt" value="10000" min="500" max="10000000" step="500" aria-label="Monthly investment in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="sipAmt"></div></div>
+        <div class="col amtgrp" id="grpSwpC"><label class="l" for="swpCorpus" data-i="swpCL"></label><input type="number" id="swpCorpus" value="2000000" min="10000" max="10000000000" step="50000" aria-label="Starting corpus in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpCorpus"></div></div>
+        <div class="col amtgrp" id="grpSwpW"><label class="l" for="swpWd" data-i="swpWL"></label><input type="number" id="swpWd" value="15000" min="500" max="100000000" step="500" aria-label="Monthly withdrawal in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpWd"></div></div>
+        <div class="col kidhide"><label class="l" for="inc"><span data-i="incL"></span> <span class="val"><span id="incV"></span></span></label><input type="range" id="inc" min="0" max="1000" step="1" value="0" aria-label="Your annual income" oninput="render()"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <div class="col"><label class="l" for="planYears">Invest for (years)</label><input type="number" id="planYears" value="10" min="1" max="40" step="1" aria-label="Years to invest" oninput="setPlanYears()" onblur="clampNum(this)"></div>
+        <div class="col amtgrp" id="grpStepup"><label class="l" for="sipStepup">Yearly SIP increase (%)</label><input type="number" id="sipStepup" value="10" min="0" max="50" step="1" aria-label="Yearly SIP step-up percent" oninput="render()" onblur="clampNum(this)"></div>
+      </div>
+      <div class="kidhide" style="margin-top:16px"><label class="l" data-i="regL"></label><div class="chips" id="regChips"><div class="chip on" data-r="new" data-i="regNew"></div><div class="chip" data-r="old" data-i="regOld"></div></div></div>
+      <div class="marg kidhide" id="regBox" style="margin-top:10px"></div>
+      <div class="marg kidhide" id="margBox"></div>
+      <div class="kidcard kidonly">🧒 Income and tax are set to a sensible default. A grown-up can switch off Kid mode to change them — for now, just pick how you'll invest and how much.</div>
+      <button class="nextbtn" style="margin-top:18px" onclick="showSec('choose')" data-i="next"></button>
+    </div>
+  </section>
+
+  <section id="sec-choose" class="sec">
+    <div class="card">
+      <h2 data-i="s2h"></h2><div class="hint" data-i="s2hint"></div>
+      <div class="cattabs" id="cattabs"></div>
+      <div id="plist"></div>
+      <div class="total-bar"><span class="t" data-i="totalL"></span><span class="t" id="totalPct">100%</span></div>
+      <div class="marg" id="allocWarn" style="display:none;margin-top:12px;border-color:#f0b9b2;background:#fdeeec;color:var(--red)"></div>
+      <div class="liveres" id="liveRes">
+        <div class="lr-row"><span class="lr-cap" data-i="liveKeepL"></span><span class="lr-val green" id="liveKeep">₹0</span></div>
+        <div class="lr-row"><span class="lr-cap" data-i="liveLostL"></span><span class="lr-val red" id="liveLost">₹0</span></div>
+        <div class="lr-verdict" id="liveVerdict"></div>
+      </div>
+      <div class="btnrow">
+        <button class="nextbtn" id="toResults" onclick="proceedToResults()" data-i="seeResults"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="sec-results" class="sec">
+    <div class="card">
+      <h2 data-i="s3h"></h2><div class="hint" id="resSummary"></div>
+      <div class="lens">
+        <div class="lens-h" data-i="lensH"></div>
+        <label class="l" data-i="exitL"></label>
+        <div class="chips" id="exitChips"><div class="chip on" data-exit="0" data-i="exitHold"></div><div class="chip" data-exit="1" data-i="exitEarly"></div></div>
+        <div class="marg" id="exitBox" style="margin-top:8px"></div>
+        <div class="marg" id="exitCalc" style="display:none;margin-top:8px;border-color:#f0b9b2;background:#fdeeec"></div>
+        <label class="l" data-i="adjL" style="margin-top:14px"></label>
+        <div class="chips" id="adjChips"><div class="chip on" data-adj="0" data-i="adjFuture"></div><div class="chip" data-adj="1" data-i="adjToday"></div></div>
+        <label class="l" data-i="adjYrsL" style="margin-top:12px"></label>
+        <div class="chips" id="adjYrsChips"><div class="chip on" data-iy="0" data-i="adjYrsAuto"></div><div class="chip" data-iy="5">5 yrs</div><div class="chip" data-iy="10">10 yrs</div><div class="chip" data-iy="20">20 yrs</div><div class="chip" data-iy="30">30 yrs</div></div>
+        <div class="marg" id="adjBox" style="margin-top:8px"></div>
+      </div>
+      <div class="marg" id="dedBox" style="display:none;border-color:#9bcfae;background:#eef8f1"></div>
+      <div class="marg" id="swpDryBox" style="display:none;border-color:#f0c98a;background:#fdf6e8;color:#9a6a17"></div>
+      <div class="headline">
+        <div class="hl-box"><div class="hl-cap" id="cap1"></div><div class="hl-num green" id="num1">₹0</div></div>
+        <div class="hl-box"><div class="hl-cap" id="cap2"></div><div class="hl-num red" id="num2">₹0</div></div>
+        <div class="hl-box"><div class="hl-cap" id="cap3"></div><div class="hl-num amber" id="num3">0</div></div>
+      </div>
+      <div class="flow"><div class="flow-track"><div class="seg net" id="segNet"></div><div class="seg chg" id="segChg"></div><div class="seg tax" id="segTax"></div></div>
+        <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span><span data-i="keyNet"></span></span><span><span class="sw" style="background:var(--amber)"></span><span data-i="keyChg"></span></span><span><span class="sw" style="background:var(--red)"></span><span data-i="keyTax"></span></span></div>
+      </div>
+      <canvas id="growth" height="200"></canvas>
+      <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
+      <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
+      <div class="pcards" id="pcards"></div>
+    </div>
+  </section>
+
+  <footer><div class="disc" data-i="disc"></div></footer>
+</div>
+
+<div id="coach" class="coach" style="display:none" onclick="if(event.target===this)dismissCoach()">
+  <div class="coach-card">
+    <h3>👋 Welcome to Learn Money</h3>
+    <ul>
+      <li>📈 <b>Tap a topic</b> to learn how each money product really works.</li>
+      <li>🧪 <b>Start the simulator</b> to build a pretend portfolio and see what you keep after tax, charges &amp; inflation.</li>
+      <li>🧒 New to money? Turn on <b>Kid mode</b> (top-right) for simple, food-style explanations.</li>
+    </ul>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+      <button class="nextbtn" onclick="startTour()">🚀 Show me around</button>
+      <button class="resetbtn" onclick="toggleKid();dismissCoach()">🧒 Start simple</button>
+    </div>
+    <button class="tskip" style="margin-top:10px;border:none;background:none;color:var(--ink-soft);cursor:pointer;font-size:.85rem" onclick="dismissCoach()">Skip — I'll explore on my own</button>
+  </div>
+</div>
+<div id="tourtip" class="tourtip" style="display:none"></div>
+
+<aside class="adrail adleft" id="adLeft"><div class="adbox"><span class="adtag">Ad</span>Advertisement<br>160 × 600</div></aside>
+<aside class="adrail adright" id="adRight"><div class="adbox"><span class="adtag">Ad</span>Advertisement<br>160 × 600</div></aside>
+<div class="adbar" id="adBar"><div class="adbox"><span class="adtag">Ad</span>Advertisement — 728 × 90</div></div>
+
+<script>
+/* ===== ENGINE ===== */
+const REGIME_NEW=[[0,400000,0],[400000,800000,0.05],[800000,1200000,0.10],[1200000,1600000,0.15],[1600000,2000000,0.20],[2000000,2400000,0.25],[2400000,Infinity,0.30]];
+const REGIME_OLD=[[0,250000,0],[250000,500000,0.05],[500000,1000000,0.20],[1000000,Infinity,0.30]];
+const CESS=0.04, EQ_EXEMPT=125000, LIMIT_80C=150000;
+const PRODUCTS=/*PRODUCTS*/;
+const PS=/*PS*/;
+const PS_DEFAULTS=JSON.parse(JSON.stringify(PS));
+const PRESETS={
+ safe:{mode:'lumpsum',alloc:{fd:30,ppf:30,gsec:20,index:20}},
+ aggressive:{mode:'sip',alloc:{index:40,equity_mf:25,stocks:20,crypto:15}},
+ balanced:{mode:'lumpsum',alloc:{index:35,ppf:20,fd:15,gold_etf:15,equity_mf:15}}
+};
+const BCLS={slab:'b-slab',flat:'b-flat',exempt:'b-exempt',mixed:'b-mixed',crypto:'b-crypto'};
+// plain-language icon per behaviour type (paired with the written caption in STR.behav)
+const BEHAV_IC={steady:'📈',bumpy:'🎢',wild:'⚡',locked:'🔒',floaty:'🥇'};
+const GLOSS=/*GLOSS_EN*/;
+let LANG='en', REGIME='new', MODE='lumpsum', INCOME=1500000, CURRENT_CAT=null, EXIT_EARLY=false, INFL_ADJ=false, INFL_YRS=0, PLAN_YEARS=10;
+function sipStep(){ const e=document.getElementById('sipStepup'); return e?Math.max(0,+e.value||0)/100:0; } // yearly SIP increase
+function setPlanYears(){ const e=document.getElementById('planYears'); PLAN_YEARS=Math.max(1,Math.min(40,Math.round(+e.value||10))); render(); }
+
+/* ===== I18N ===== */
+const STR={
+ en:{
+  brand:"Learn Money", sim:"Simulation",
+  heroH:["Learn how money ","actually"," works"],
+  heroP:"Investing, tax and credit — explained simply. Understand what each product really earns you after tax, charges and inflation, then try it yourself.",
+  navInf:"Inflation", navHow:"Setup", navChoose:"Choose", navResults:"Results", next:"Next →", seeResults:"See full breakdown →",
+  navHome:"Home", navInvest:"Investing", navTax:"Tax", navTake:"Salary", navCredit:"Credit", navTry:"Try it",
+  thH:"Salary calculator", thP:"Enter your salary — everything's pre-filled, adjust anything. See your real monthly in-hand after tax, PF and professional tax, and which regime pays you more.",
+  homeKick:"What would you like to learn?",
+  pillars:[
+   {key:'invest',ic:'📈',t:'Investing',d:'How every product works — stocks, FDs, gold, bonds, PPF and more. 32 explained simply.'},
+   {key:'tax',ic:'🧾',t:'Tax & take-home',d:'Income tax slabs, deductions like 80C, and how each investment is taxed — what you actually keep.'},
+   {key:'takehome',ic:'💼',t:'Salary calculator',d:'Enter your salary (CTC) and see your real monthly in-hand after tax, PF and more — old vs new regime.'},
+   {key:'credit',ic:'💳',t:'Credit & borrowing',d:'How credit cards really work — interest, the minimum-due trap, and your credit score.'},
+   {key:'tryit',ic:'🧪',t:'Try it (Simulator)',d:'Want to see investing play out? Build a mock portfolio and watch it grow after tax and charges.'}
+  ],
+  invH:"How each investment works", invP:"Tap any product to learn what it is, how it behaves, and a real example. Browse all 32 — nothing is hidden behind a paywall or jargon.",
+  taxH:"Tax & take-home", taxP:"The part most tools hide: how much of your returns you actually keep.",
+  credH:"Credit & borrowing", credP:"Borrowed money has a cost too — here's how to see it.",
+  tryH:"Try the simulator", tryP:"Pick how you'd invest, choose products, and see what you keep after tax, charges and inflation.", tryKick:"Where would you like to start?", libAll:"All", backHome:"Back",
+  paths:[
+   {ic:'🌧️',t:'What doing nothing costs',d:'See how inflation quietly shrinks money left lying around as cash.',sec:'inflation'},
+   {ic:'💰',t:'Invest a lump sum',d:'Put a one-time amount to work and watch it compound over the years.',sec:'how',mode:'lumpsum'},
+   {ic:'📅',t:'Start a monthly SIP',d:'Build wealth with small, steady investments every month.',sec:'how',mode:'sip'},
+   {ic:'🏧',t:'Make your money pay you',d:'Turn a corpus into a steady monthly income with an SWP.',sec:'how',mode:'swp'},
+  ],
+  infH:"Doing nothing has a cost", infHint:"Cash lying around doesn't grow — but prices keep rising, so every year your money quietly buys less. That's inflation, and it's why 'not investing' is also a choice.",
+  infAmtL:"Money kept as cash (₹)", infRateL:"Inflation rate", infHorizonL:"Over how many years", infRbi:"The RBI tries to keep inflation near 4%, but everyday prices often rise faster.",
+  infKeyHave:"What you still have (on paper)", infKeyWorth:"What it can actually buy",
+  infResult:(amt,real,loss,pct,n)=>`Keep ₹${amt} as cash and in ${n} years it still reads ₹${amt} — but it'll only buy about <b>₹${real}</b> worth of things. A quiet loss of <b>₹${loss}</b> (${pct}% of its value).`,
+  infSamosa:(f)=>` A ₹100 plate of food today would cost about ₹${fmtIN(f)} by then.`,
+  s1h:"How you invest", s1hint:"Pick how you'll invest — once, monthly, or drawing an income. Set your income (it drives your tax) and your tax regime. Every number is editable.",
+  modeL:"Investing style", mLump:"Invest once", mSip:"Invest monthly", mSwp:"Take money out",
+  modeBox:{lumpsum:"<b>Invest once (lump sum):</b> put the whole amount in once and let it compound.",sip:"<b>Invest monthly (SIP):</b> a fixed amount every month — smaller commitment, automatic discipline, and you buy at many price points.",swp:"<b>Take money out (SWP):</b> start with a pot and withdraw a fixed sum every month — a self-made income. Only the <i>growth</i> part of each withdrawal is taxed, not your principal."},
+  lumpL:"One-time amount (₹)", sipL:"Monthly investment (₹)", swpCL:"Starting pot / corpus (₹)", swpWL:"Monthly withdrawal (₹)",
+  incL:"Your annual income", regL:"Tax regime", regNew:"New regime", regOld:"Old regime",
+  lensH:"🎛️ Play with it", exitL:"All your picks", exitHold:"Hold to term", exitEarly:"Exit all early", brkL:"💔 Exit this early?",
+  adjL:"Show money as", adjFuture:"Future ₹", adjToday:"Today's ₹ (after inflation)",
+  adjYrsL:"Inflation over how many years", adjYrsAuto:"Auto (your horizon)",
+  adjBox:(rate,real,yrs)=>`💸 Inflation check: at <b>${rate}%</b> a year, what you keep is worth about <b>₹${real}</b> in <b>today's</b> money after ${yrs} year${yrs===1?'':'s'} — that's its real spending power.`,
+  exitCalc:(pen,tax,keep,held,cost)=>`<b>💔 What exiting early costs you</b><br>• Early-exit penalties: <b>${pen}</b><br>• Tax now (tax-free / LTCG breaks forfeited, gains taxed at slab): <b>${tax}</b><br>• You keep <b>${keep}</b> — vs <b>${held}</b> if you held to term, i.e. about <b>${cost}</b> less. Per-product hits are on the cards below.`,
+  exitBox:{
+   hold:"<b>Hold to term</b> — you stay invested for each product's full period, so there are no early-exit penalties. The normal, intended way.",
+   exit:"<b>Exit early</b> — you pull out before the lock-ins/terms finish. Locked products (PPF, ELSS, FDs…) charge a penalty <i>and</i> you lose their tax breaks — gains get taxed at your slab. See the hit on each card below."
+  },
+  regDetailNew:"<b>New regime (default):</b> ₹4L tax-free, ₹75k standard deduction, income up to ₹12L pays zero tax. The catch — deductions like 80C and 80TTA are NOT allowed.",
+  regDetailOld:"<b>Old regime:</b> only ₹2.5L tax-free and higher rates — but you CAN claim deductions: 80C up to ₹1.5L, 80TTA, 80D, home-loan interest and more.",
+  marg:(r)=>{const su=surcharge(INCOME);return `At ₹${fmtIN(INCOME)} income, your top tax slab is <b>${(r*100).toFixed(0)}%</b> (${REGIME==='old'?'old regime':'new regime'})`+(su>0?` plus a <b>${(su*100).toFixed(0)}% surcharge</b> on very high incomes`:'')+`. That rate hits the "slab-taxed" investments — but not the flat-taxed or tax-free ones.`;},
+  ded80c:(s)=>`💡 Old-regime bonus: your 80C investments (PPF, ELSS, SSY, SCSS, ULIP) save about <b>₹${fmtIN(s)}</b> in tax upfront (within the ₹1.5L cap) — on top of the figures below.`,
+  s2h:"Choose your investments", s2hint:"Switch tabs to browse all 32 products. Toggle the ones you want, then set each one's share and return. Tap 'what is this?' to learn it. Your picks stay as you move around.",
+  totalL:"Total allocated", resetBtn:"Reset to defaults",
+  presetKick:"Or start from a ready-made mix:",
+  presets:[
+   {key:'safe',ic:'🛡️',t:'Safe & steady'},
+   {key:'aggressive',ic:'🚀',t:'Young & aggressive'},
+   {key:'balanced',ic:'⚖️',t:'Balanced'}
+  ],
+  allocWarn:(t)=>`⚠️ Your allocations add up to <b>${t}%</b>, not 100% — <b>${t>100?(t-100)+'% over':(100-t)+'% to go'}</b>. Results assume you actually invest these shares; drag the sliders so they total 100%.`,
+  swpDry:(n)=>`⚠️ In this scenario, <b>${n}</b> of your picks run out of money before the end — the monthly withdrawal outpaces growth. Lower the withdrawal, raise the corpus, or shorten the horizon.`,
+  growthYou:"Your money", growthInf:"If it only kept pace with inflation",
+  s3h:"What you'd keep", keyNet:"You keep", keyChg:"Charges & penalties", keyTax:"Tax",
+  caps:{keep:"You keep",keepReal:"You keep (today's ₹)",leak:"Lost to tax, charges & penalties",cagr:"Post-tax return %/yr",invested:"Total you put in",corpus:"Corpus left at end"},
+  resSummary:{lumpsum:(inv,fv)=>`Your mock ${fmtShort(inv)} grows to about ${fmtShort(fv)} before money leaks out.`,sip:(inv,fv)=>`Investing monthly, you put in ${fmtShort(inv)} total, which grows to about ${fmtShort(fv)}.`,swp:(inv,fv,d)=>`From a ${fmtShort(inv)} corpus you draw ${fmtShort(d)} as income, leaving about ${fmtShort(fv)} at the end.`},
+  fdPen:"FD broken early — 1% penalty", ppfLock:"PPF locked 15 yrs",
+  bnames:{slab:"Taxed at your slab",flat:"Flat 12.5% (LTCG)",exempt:"Tax-free",mixed:"Mixed",crypto:"Flat 30%"},
+  yrsL:"Years", retL:"Return %", whatis:"what is this?",
+  pcInv:"Put in", pcNet:"You keep", pcTax:"Tax", pcChg:"Charges", pcPen:"Early-exit penalty",
+  liveKeepL:"You keep", liveLostL:"Lost to tax, charges & penalties",
+  names:/*NAMES_EN*/, eli5:/*ELI5_EN*/, examples:/*EX_EN*/, cats:/*CATS_EN*/, behav:/*BEHAV_EN*/, behavCap:"How it behaves", tips:/*TIPS_EN*/, lessons:/*LESSONS_EN*/, food:/*FOOD_EN*/,
+  disc:"Educational simulation only — not investment or tax advice, and not a guarantee. Returns are illustrative defaults you can edit; real returns vary and carry risk. Tax buckets, SIP/SWP, the ₹1.25L equity exemption, 4% cess and 80C are applied in a simplified way (e.g. NPS gains shown tax-deferred; SWP taxes total growth). Tax reflects FY2026-27. Consult a qualified CA for real decisions."
+ },
+ hi:{
+  brand:"Learn Money", sim:"सिम्युलेशन",
+  heroH:["देखिए आपका पैसा ","असल में"," कहाँ जाता है"],
+  heroP:"खेल-खेल में निवेश सीखिए — चुनिए किसमें लगाना है, साल तय कीजिए, और पैसा बढ़ते देखिए — उस tax और charges के बाद जो tools छिपाते हैं।",
+  navInf:"Inflation", navHow:"सेटअप", navChoose:"चुनें", navResults:"नतीजे", next:"आगे →", seeResults:"नतीजे देखें →",
+  navHome:"होम", homeKick:"कहाँ से शुरू करना चाहेंगे?",
+  paths:[
+   {ic:'🌧️',t:'कुछ न करने की कीमत',d:'देखिए inflation कैसे cash में पड़े पैसे को चुपचाप घटाता है।',sec:'inflation'},
+   {ic:'💰',t:'एकमुश्त निवेश',d:'एक बार रकम लगाइए और सालों में compound होते देखिए।',sec:'how',mode:'lumpsum'},
+   {ic:'📅',t:'मासिक SIP शुरू करें',d:'हर महीने छोटे, स्थिर निवेश से दौलत बनाइए।',sec:'how',mode:'sip'},
+   {ic:'🏧',t:'पैसे से income पाइए',d:'SWP से corpus को स्थिर मासिक income में बदलिए।',sec:'how',mode:'swp'},
+   {ic:'🧭',t:'सभी 32 products देखें',d:'हर विकल्प — stocks, FD, सोना, bonds और भी — सरलता से समझाया।',sec:'choose'},
+   {ic:'📊',t:'अपने नतीजे देखें',d:'tax व charges के बाद असल में क्या बचता है, live growth chart के साथ।',sec:'results'}
+  ],
+  infH:"कुछ न करने की भी कीमत है", infHint:"पड़ा हुआ cash बढ़ता नहीं — पर दाम बढ़ते रहते हैं, तो हर साल आपका पैसा चुपचाप कम खरीदता है। यही inflation है, इसीलिए 'निवेश न करना' भी एक चुनाव है।",
+  infAmtL:"Cash में रखा पैसा (₹)", infRateL:"Inflation दर", infHorizonL:"कितने साल में", infRbi:"RBI inflation को ~4% रखने की कोशिश करता है, पर रोज़मर्रा के दाम अक्सर तेज़ बढ़ते हैं।",
+  infKeyHave:"कागज़ पर जो आपके पास है", infKeyWorth:"जो असल में खरीद सकता है",
+  infResult:(amt,real,loss,pct,n)=>`₹${amt} cash में रखिए, ${n} साल बाद दिखेगा तो ₹${amt} ही — पर खरीद पाएगा सिर्फ़ लगभग <b>₹${real}</b> का सामान। चुपचाप <b>₹${loss}</b> का नुकसान (इसकी ${pct}% कीमत)।`,
+  infSamosa:(f)=>` आज ₹100 की खाने की थाली तब लगभग ₹${fmtIN(f)} की होगी।`,
+  s1h:"आप कैसे निवेश करते हैं", s1hint:"Lump sum, SIP या SWP चुनिए। अपनी income (इससे tax तय), regime और परिस्थिति तय कीजिए। हर चीज़ का default है जिसे बदला जा सकता है।",
+  modeL:"निवेश का तरीका", mLump:"एकमुश्त", mSip:"मासिक SIP", mSwp:"मासिक SWP",
+  modeBox:{lumpsum:"<b>एकमुश्त:</b> पूरी रकम एक बार लगाइए और compound होने दीजिए।",sip:"<b>SIP:</b> हर महीने तय रकम। कम प्रतिबद्धता, अपने-आप अनुशासन, कई दामों पर खरीद।",swp:"<b>SWP:</b> एक corpus से शुरू कर हर महीने तय रकम निकालिए — खुद की income। हर withdrawal का सिर्फ़ <i>growth</i> हिस्सा tax होता है, मूल नहीं।"},
+  lumpL:"एकमुश्त रकम (₹)", sipL:"मासिक निवेश (₹)", swpCL:"शुरुआती corpus (₹)", swpWL:"मासिक निकासी (₹)",
+  incL:"आपकी सालाना income", regL:"Tax regime", regNew:"New regime", regOld:"Old regime", scnL:"परिस्थिति", scnWorst:"सबसे बुरा", scnBase:"अपेक्षित", scnBest:"सबसे अच्छा",
+  regDetailNew:"<b>New regime (default):</b> ₹4L tax-free, ₹75k standard deduction, ₹12L तक zero tax. पेच — 80C और 80TTA जैसी deductions allowed नहीं।",
+  regDetailOld:"<b>Old regime:</b> सिर्फ़ ₹2.5L tax-free और ऊँची दरें — पर deductions ले सकते हैं: 80C तक ₹1.5L, 80TTA, 80D, home-loan ब्याज़ वगैरह।",
+  marg:(r)=>{const su=surcharge(INCOME);return `₹${fmtIN(INCOME)} income पर top tax slab <b>${(r*100).toFixed(0)}%</b> है (${REGIME==='old'?'old regime':'new regime'})`+(su>0?` साथ में बहुत ऊँची income पर <b>${(su*100).toFixed(0)}% surcharge</b>`:'')+`। यह rate "slab-taxed" investments पर लगता है — flat या tax-free पर नहीं।`;},
+  ded80c:(s)=>`💡 Old-regime बोनस: आपके 80C निवेश (PPF, ELSS, SSY, SCSS, ULIP) लगभग <b>₹${fmtIN(s)}</b> tax upfront बचाते हैं (₹1.5L सीमा में) — नीचे के अतिरिक्त।`,
+  s2h:"अपने investments चुनिए", s2hint:"tabs बदलकर सभी 32 products देखिए। जो चाहिए toggle कीजिए, फिर हर एक का हिस्सा, साल और return तय कीजिए। 'यह क्या है?' पर tap कीजिए। घूमने पर आपके चुनाव बने रहते हैं।",
+  totalL:"कुल आवंटित", resetBtn:"डिफ़ॉल्ट पर रीसेट",
+  presetKick:"या तैयार मिश्रण से शुरू कीजिए:",
+  presets:[
+   {key:'safe',ic:'🛡️',t:'सुरक्षित व स्थिर'},
+   {key:'aggressive',ic:'🚀',t:'युवा व आक्रामक'},
+   {key:'balanced',ic:'⚖️',t:'संतुलित'}
+  ],
+  allocWarn:(t)=>`⚠️ आपके आवंटन का योग <b>${t}%</b> है, 100% नहीं। नतीजे मानते हैं कि आप वाकई ये हिस्से लगाते हैं — sliders खींचकर योग 100% कीजिए ताकि तस्वीर सही हो।`,
+  swpDry:(n)=>`⚠️ इस परिस्थिति में आपके <b>${n}</b> चुनाव अंत से पहले खत्म हो जाते हैं — मासिक निकासी growth से तेज़ है। निकासी घटाइए, corpus बढ़ाइए, या अवधि छोटी कीजिए।`,
+  growthYou:"आपका पैसा", growthInf:"अगर सिर्फ़ inflation बराबर बढ़ता",
+  s3h:"आपके पास कितना बचेगा", keyNet:"आपके पास", keyChg:"Charges", keyTax:"Tax",
+  caps:{keep:"आपके पास",leak:"Tax+charges में गया",cagr:"असली post-tax return",invested:"कुल लगाया",corpus:"अंत में बचा corpus"},
+  resSummary:{lumpsum:(inv,fv)=>`आपकी mock ${fmtShort(inv)} रकम लगभग ${fmtShort(fv)} बनती है, पैसा निकलने से पहले।`,sip:(inv,fv)=>`हर महीने लगाकर कुल ${fmtShort(inv)} डाला, जो लगभग ${fmtShort(fv)} बनता है।`,swp:(inv,fv,d)=>`${fmtShort(inv)} corpus से ${fmtShort(d)} income निकाली, अंत में लगभग ${fmtShort(fv)} बचा।`},
+  fdPen:"FD जल्दी तोड़ी — 1% penalty", ppfLock:"PPF 15 साल lock",
+  bnames:{slab:"आपके slab पर",flat:"Flat 12.5% (LTCG)",exempt:"Tax-free",mixed:"मिश्रित",crypto:"Flat 30%"},
+  yrsL:"साल", retL:"Return %", whatis:"यह क्या है?",
+  pcInv:"लगाया", pcNet:"बचा", pcTax:"Tax", pcChg:"Charges",
+  names:/*NAMES_HI*/, eli5:/*ELI5_HI*/, examples:/*EX_HI*/, cats:/*CATS_HI*/, behav:/*BEHAV_HI*/, behavCap:"यह कैसा चलता है",
+  disc:"सिर्फ़ शैक्षिक सिम्युलेशन — निवेश/tax सलाह नहीं, गारंटी नहीं। Returns editable default हैं; असली returns बदलते व जोखिम रखते हैं। Tax buckets, SIP/SWP, ₹1.25L छूट, 4% cess व 80C सरल रूप में (NPS gains tax-deferred; SWP कुल growth पर tax)। Tax FY2026-27 अनुसार। असली फैसलों हेतु CA से सलाह लें।"
+ }
+};
+
+/* ===== HELPERS ===== */
+function S(){return STR[LANG];}
+function noAnim(){try{return !!(window.__noAnim||(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches));}catch(e){return false;}}
+const INC_MIN=300000, INC_MAX=500000000, INC_LMIN=Math.log(INC_MIN), INC_LMAX=Math.log(INC_MAX);
+function sliderToIncome(v){return Math.round(Math.exp(INC_LMIN+(v/1000)*(INC_LMAX-INC_LMIN))/10000)*10000;}
+function incomeToSlider(inc){return Math.round(1000*(Math.log(inc)-INC_LMIN)/(INC_LMAX-INC_LMIN));}
+function surcharge(income){if(income<=5000000)return 0;if(income<=10000000)return 0.10;if(income<=20000000)return 0.15;return 0.25;}
+function animateNum(el,target,fmt){
+  if(!el)return; const start=(typeof el._cv==='number')?el._cv:target; el._cv=target;
+  el.textContent=fmt(target);                 // synchronous truth (final value)
+  if(noAnim())return;
+  if(start===target)return;
+  const dur=550, t0=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+  function step(now){const p=Math.min(1,((now||Date.now())-t0)/dur);const e=1-Math.pow(1-p,3);el.textContent=fmt(start+(target-start)*e);if(p<1)requestAnimationFrame(step);}
+  requestAnimationFrame(step);
+}
+function fmtIN(n){n=Math.round(+n);return n.toLocaleString('en-IN');}
+function amountWords(n){n=Math.abs(Math.round(+n||0)); const t=v=>(Number.isInteger(v)?v:v.toFixed(2)).toString();
+  if(n>=1e7) return t(n/1e7)+' crore'; if(n>=1e5) return t(n/1e5)+' lakh'; if(n>=1e3) return t(n/1e3)+' thousand'; return String(n);}
+function updateAmtTexts(){ document.querySelectorAll('[data-amt-for]').forEach(el=>{
+  const inp=document.getElementById(el.dataset.amtFor); if(!inp) return;
+  const v=+inp.value; el.textContent=(inp.value===''||isNaN(v)||v<=0)?'' : '₹'+fmtIN(v)+' · '+amountWords(v); });}
+function fmtShort(n){n=+n;const neg=n<0;n=Math.abs(n);let o;if(n>=1e7)o=(n/1e7).toFixed(2)+' Cr';else if(n>=1e5)o=(n/1e5).toFixed(2)+' L';else if(n>=1e3)o=(n/1e3).toFixed(0)+'k';else o=Math.round(n);return (neg?'-₹':'₹')+o;}
+function rupee(n){return (n<0?'-₹':'₹')+fmtIN(Math.abs(n));}
+function marginalRate(income){const sl=REGIME==='old'?REGIME_OLD:REGIME_NEW;for(const[a,b,r]of sl){if(income>a&&income<=b)return r;}return 0.30;}
+function scenReturn(p,exp){return exp;} // market-scenario feature removed; use the expected return
+function amts(){return{lump:+document.getElementById('lumpAmt').value||0,sipM:+document.getElementById('sipAmt').value||0,swpC:+document.getElementById('swpCorpus').value||0,swpW:+document.getElementById('swpWd').value||0};}
+
+function pValueAt(p,st,A,y){
+  const r=scenReturn(p,st.ret/100), yy=Math.min(y,PLAN_YEARS), i=r/12;
+  if(MODE==='lumpsum')return (A.lump*st.pct/100)*Math.pow(1+r,yy);
+  if(MODE==='sip'){ const s=sipStep(); let m=A.sipM*st.pct/100, bal=0, M=Math.round(yy*12); for(let k=0;k<M;k++){ bal=bal*(1+i)+m; if((k+1)%12===0) m*=(1+s); } return bal; }
+  let c=A.swpC*st.pct/100, w=A.swpW*st.pct/100, M=Math.round(yy*12);
+  for(let k=0;k<M;k++){c=c*(1+i);c-=Math.min(w,Math.max(c,0));if(c<0)c=0;} return c;
+}
+function feeCharges(p,st,A){
+  // expense ratio accrues monthly on the actual balance, not on principal*years.
+  if(!p.charge) return 0;
+  const r=scenReturn(p,st.ret/100), i=r/12, months=Math.round(PLAN_YEARS*12), c=p.charge/12, s=sipStep();
+  let bal=0, fee=0, m=A.sipM*st.pct/100; const w=A.swpW*st.pct/100;
+  if(MODE==='lumpsum') bal=A.lump*st.pct/100;
+  else if(MODE==='swp') bal=A.swpC*st.pct/100;
+  for(let k=0;k<months;k++){
+    bal=bal*(1+i);
+    if(MODE==='sip'){ bal+=m; if((k+1)%12===0) m*=(1+s); }
+    else if(MODE==='swp'){bal-=Math.min(w,Math.max(bal,0)); if(bal<0)bal=0;}
+    fee+=Math.max(bal,0)*c;
+  }
+  return fee;
+}
+function outcome(p,st,A,exempt=EQ_EXEMPT,breakOn=(st.broke||EXIT_EARLY)){
+  const r=scenReturn(p,st.ret/100), years=PLAN_YEARS, i=r/12, months=years*12;
+  let invested=0,endVal=0,withdrawn=0,gain=0,ranDry=false;
+  if(MODE==='lumpsum'){invested=A.lump*st.pct/100; endVal=invested*Math.pow(1+r,years); gain=endVal-invested;}
+  else if(MODE==='sip'){ const s=sipStep(); let m=A.sipM*st.pct/100, bal=0, inv=0; for(let k=0;k<months;k++){ bal=bal*(1+i)+m; inv+=m; if((k+1)%12===0) m*=(1+s); } endVal=bal; invested=inv; gain=endVal-invested; }
+  else{let c=A.swpC*st.pct/100; const w=A.swpW*st.pct/100; invested=c; for(let k=0;k<months;k++){c=c*(1+i); const d=Math.min(w,Math.max(c,0)); c-=d; withdrawn+=d; if(c<=0){c=0; if(k<months-1)ranDry=true;}} endVal=c; gain=(withdrawn+endVal)-invested;}
+  let charges=feeCharges(p,st,A);
+  const taxable=Math.max(0,gain); let tax=0; const sur=surcharge(INCOME), surCG=Math.min(sur,0.15);
+  if(p.bucket==='slab') tax=taxable*marginalRate(INCOME)*(1+sur);
+  else if(p.bucket==='flat') tax=Math.max(0,taxable-exempt)*0.125*(1+surCG);
+  else if(p.bucket==='mixed') tax=(years>=1? taxable*0.125*(1+surCG) : taxable*marginalRate(INCOME)*(1+sur));
+  else if(p.bucket==='crypto') tax=taxable*0.30*(1+sur);
+  tax*=(1+CESS);
+  const grossValue=(MODE==='swp')?(withdrawn+endVal):(invested+gain);
+  let earlyPenalty=0;
+  if(breakOn){                                       // exit before the term (per-product or master toggle)
+    const rate=(p.bucket==='exempt'||p.early==='ppfLock')?0.05:0.01;  // illustrative exit cost
+    earlyPenalty=Math.max(0,grossValue)*rate;
+    if(p.bucket==='exempt'||p.bucket==='flat'||p.bucket==='mixed')     // breaking forfeits the tax perk
+      tax=taxable*marginalRate(INCOME)*(1+sur)*(1+CESS);
+  }
+  const net=grossValue-charges-tax-earlyPenalty;
+  return {invested,endVal,withdrawn,gain,charges,tax,net,grossValue,r,years,ranDry,earlyPenalty};
+}
+
+function heldNetTotal(A){   // total "you keep" if NO product is exited early (for the exit-cost comparison)
+  let rows=[],flatTaxable=0; const surCG=Math.min(surcharge(INCOME),0.15);
+  for(const p of PRODUCTS){const st=PS[p.id]; if(!st.active) continue; const o=outcome(p,st,A,0,false); rows.push({p,o}); if(p.bucket==='flat') flatTaxable+=Math.max(0,o.gain);}
+  const poolEx=Math.min(flatTaxable,EQ_EXEMPT); let net=0;
+  for(const {p,o} of rows){ let tax=o.tax; if(p.bucket==='flat'&&flatTaxable>0){const cut=poolEx*(Math.max(0,o.gain)/flatTaxable)*0.125*(1+surCG)*(1+CESS); tax=Math.max(0,tax-cut);} net+=o.grossValue-o.charges-tax; }
+  return net;
+}
+/* ===== RENDER RESULTS ===== */
+function render(){
+  updateAmtTexts();
+  INCOME=sliderToIncome(+document.getElementById('inc').value);
+  document.getElementById('incV').textContent=fmtShort(INCOME);
+  const A=amts(), mRate=marginalRate(INCOME);
+  document.getElementById('regBox').innerHTML=REGIME==='old'?S().regDetailOld:S().regDetailNew;
+  document.getElementById('margBox').innerHTML=S().marg(mRate);
+  document.getElementById('modeBox').innerHTML=S().modeBox[MODE];
+  { const eb=document.getElementById('exitBox'); if(eb) eb.innerHTML=S().exitBox[EXIT_EARLY?'exit':'hold']; }
+  let rows=[],tInv=0,tGross=0,tChg=0,tTax=0,tNet=0,tEnd=0,tWd=0,tPen=0,total=0,ded80cBase=0,maxY=1;
+  // Pass 1: outcomes with NO per-product LTCG exemption; tally total equity (flat) gain.
+  let flatTaxable=0; const surCG=Math.min(surcharge(INCOME),0.15);
+  for(const p of PRODUCTS){
+    const st=PS[p.id]; if(!st.active) continue;
+    const o=outcome(p,st,A,0); rows.push({p,st,o});
+    if(p.bucket==='flat' && !(st.broke||EXIT_EARLY)) flatTaxable+=Math.max(0,o.gain);  // exiting early forfeits the exemption
+  }
+  // The ₹1.25L LTCG exemption is per-taxpayer, not per-fund — pool it once across all equity,
+  // split proportionally by each fund's share of the total equity gain.
+  const poolEx=Math.min(flatTaxable,EQ_EXEMPT);
+  // Pass 2: apply the pooled exemption, then accumulate totals.
+  for(const {p,st,o} of rows){
+    if(p.bucket==='flat' && !(st.broke||EXIT_EARLY) && flatTaxable>0){
+      const cut=poolEx*(Math.max(0,o.gain)/flatTaxable)*0.125*(1+surCG)*(1+CESS);
+      o.tax=Math.max(0,o.tax-cut); o.net=o.grossValue-o.charges-o.tax-o.earlyPenalty;
+    }
+    total+=st.pct; maxY=PLAN_YEARS;
+    tInv+=o.invested;tGross+=o.gain;tChg+=o.charges;tTax+=o.tax;tNet+=o.net;tEnd+=o.endVal;tWd+=o.withdrawn;tPen+=o.earlyPenalty;
+    if(p.is80c) ded80cBase+=o.invested;
+  }
+  const tp=document.getElementById('totalPct'); tp.textContent=total+'%'; tp.className='t '+(total===100?'':'warn');
+  const aw=document.getElementById('allocWarn');
+  if(rows.length&&total!==100){aw.style.display='block';aw.innerHTML=S().allocWarn(total);}else{aw.style.display='none';}
+  { const okR=(rows.length>0&&total===100);   // gate: must have products totalling 100%
+    const tr=document.getElementById('toResults'); if(tr) tr.disabled=!okR;
+    const sr=document.querySelector('#simsteps [data-step="results"]'); if(sr) sr.disabled=!okR; }
+  const dryBox=document.getElementById('swpDryBox');
+  const dryN=(MODE==='swp')?rows.filter(r=>r.o.ranDry).length:0;
+  if(dryN>0){dryBox.style.display='block';dryBox.innerHTML=S().swpDry(dryN);}else{dryBox.style.display='none';}
+  const ded=REGIME==='old'? Math.min(ded80cBase,LIMIT_80C)*mRate : 0;
+  const dedBox=document.getElementById('dedBox');
+  if(ded>0){dedBox.style.display='block';dedBox.innerHTML=S().ded80c(Math.round(ded));}else{dedBox.style.display='none';}
+  const grossTotal=(MODE==='swp')?(tWd+tEnd):(tInv+tGross);
+  const inflEl2=document.getElementById('infRate'), inflR2=(inflEl2?(+inflEl2.value||0):5)/100;
+  const iyrs=INFL_YRS||maxY;   // inflation horizon: chosen years, or the portfolio's own horizon
+  const realKeep=(MODE==='swp'?Math.max(tEnd,0):Math.max(tNet,0))/Math.pow(1+inflR2,iyrs);
+  animateNum(document.getElementById('num1'),Math.round(INFL_ADJ?realKeep:tNet),rupee); document.getElementById('cap1').textContent=INFL_ADJ?S().caps.keepReal:S().caps.keep;
+  { const ab=document.getElementById('adjBox'); if(ab) ab.innerHTML = rows.length? S().adjBox(Math.round(inflR2*100), fmtIN(Math.round(realKeep)), iyrs) : ''; }
+  animateNum(document.getElementById('num2'),Math.round(tChg+tTax+tPen),rupee); document.getElementById('cap2').textContent=S().caps.leak;
+  if(MODE==='lumpsum'){const cagr=tInv>0?(Math.pow(Math.max(tNet,0)/tInv,1/maxY)-1)*100:0; animateNum(document.getElementById('num3'),cagr,v=>v.toFixed(1)+'%'); document.getElementById('cap3').textContent=S().caps.cagr;}
+  else if(MODE==='sip'){animateNum(document.getElementById('num3'),Math.round(tInv),rupee); document.getElementById('cap3').textContent=S().caps.invested;}
+  else{animateNum(document.getElementById('num3'),Math.round(tEnd),rupee); document.getElementById('cap3').textContent=S().caps.corpus;}
+  document.getElementById('resSummary').textContent=S().resSummary[MODE]((tInv||A.swpC),(MODE==='swp'?tEnd:grossTotal),tWd);
+  const base=Math.max(grossTotal,1);
+  const nW=Math.max(0,tNet)/base*100,cW=(tChg+tPen)/base*100,tW=tTax/base*100;
+  const sN=document.getElementById('segNet'),sC=document.getElementById('segChg'),sT=document.getElementById('segTax');
+  sN.style.width=nW+'%';sC.style.width=cW+'%';sT.style.width=tW+'%';
+  sN.textContent=nW>16?rupee(Math.round(tNet)):'';sC.textContent=cW>11?rupee(Math.round(tChg+tPen)):'';sT.textContent=tW>11?rupee(Math.round(tTax)):'';
+  const pc=document.getElementById('pcards');pc.innerHTML='';
+  for(const{p,st,o} of rows){
+    const broke = (st.broke||EXIT_EARLY) && o.earlyPenalty>0;
+    const penRow = broke ? `<div class="k">${S().pcPen}</div><div class="v red">${rupee(Math.round(o.earlyPenalty))}</div>` : '';
+    const exitTgl = `<span class="brk ${st.broke?'on':''}" data-rbrk="${p.id}" role="button" tabindex="0" title="Exit just this one early — penalty + lost tax break">💔 ${st.broke?'exited early':'exit early'}</span>`;
+    pc.insertAdjacentHTML('beforeend',`<div class="pcard${broke?' broke':''}"><div class="top">${p.icon} ${S().names[p.id]}<span class="bucket ${BCLS[p.bucket]}" style="margin-left:auto">${S().bnames[p.bucket]}</span></div><div class="g"><div class="k">${S().pcInv}</div><div class="v">${rupee(Math.round(o.invested))}</div><div class="k">${S().pcChg}</div><div class="v amber">${rupee(Math.round(o.charges))}</div>${penRow}<div class="k">${S().pcTax}</div><div class="v red">${rupee(Math.round(o.tax))}</div><div class="k">${S().pcNet}</div><div class="v green">${rupee(Math.round(o.net))}</div></div><div style="margin-top:10px">${exitTgl}</div></div>`);
+  }
+  pc.querySelectorAll('[data-rbrk]').forEach(el=>el.onclick=()=>{const id=el.dataset.rbrk;PS[id].broke=!PS[id].broke;render();});
+  document.getElementById('growthKey').style.display=(MODE!=='swp'&&rows.length)?'flex':'none';
+  const iv=document.getElementById('inflVerdict');
+  if(MODE!=='swp' && rows.length && tInv>0){
+    const inflEl=document.getElementById('infRate'), inflR=(inflEl?(+inflEl.value||0):5)/100;
+    const target=tInv*Math.pow(1+inflR,maxY), beat=Math.max(tNet,0)>target;
+    const realCagr=(Math.pow(Math.max(tNet,1)/tInv,1/maxY)-1)*100, gap=realCagr-inflR*100;
+    iv.style.display='block';
+    iv.style.borderColor=beat?'#9bcfae':'#f0b9b2'; iv.style.background=beat?'#eef8f1':'#fdeeec'; iv.style.color=beat?'var(--green-d)':'var(--red)';
+    iv.innerHTML=beat
+      ? `✅ <b>You beat inflation</b> — after tax &amp; charges your money grows about <b>${gap.toFixed(1)}%/yr</b> faster than prices. That's real wealth.`
+      : `⚠️ <b>This loses to inflation</b> — after tax &amp; charges, what you keep buys <b>less</b> than you started with. Try lower-tax or higher-return picks.`;
+  } else { iv.style.display='none'; }
+  // live "play" readout on the Choose screen
+  const lk=document.getElementById('liveKeep'), ll=document.getElementById('liveLost'), lv=document.getElementById('liveVerdict');
+  if(lk) lk.textContent=rupee(Math.round(tNet));
+  if(ll) ll.textContent=rupee(Math.round(tChg+tTax+tPen));
+  if(lv){
+    if(!rows.length) lv.innerHTML='Turn on a product above to see what you keep.';
+    else if(MODE==='swp') lv.innerHTML='Corpus left at the end: <b>'+rupee(Math.round(tEnd))+'</b>'+(dryN>0?' — ⚠️ some picks run dry':'');
+    else lv.innerHTML=iv.innerHTML;
+  }
+  { const ec=document.getElementById('exitCalc');
+    if(ec){ if(EXIT_EARLY && rows.length){ const held=heldNetTotal(A), cost=Math.max(0,held-tNet);
+        ec.style.display='block';
+        ec.innerHTML=S().exitCalc(rupee(Math.round(tPen)), rupee(Math.round(tTax)), rupee(Math.round(tNet)), rupee(Math.round(held)), rupee(Math.round(cost)));
+      } else ec.style.display='none'; } }
+  drawChart(rows,A,maxY,tInv);
+  saveState();
+}
+let gAnim;
+function drawChart(rows,A,maxY,investedTotal){
+  const cv=document.getElementById('growth');const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
+  cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const pad=8;
+  const series=[];let maxv=1;
+  for(let y=0;y<=maxY;y++){let v=0;for(const{p,st} of rows){v+=pValueAt(p,st,A,y);}series.push(v);maxv=Math.max(maxv,v);}
+  const inflEl=document.getElementById('infRate'), inflR=(inflEl?(+inflEl.value||0):5)/100;
+  const showInf=(MODE!=='swp')&&investedTotal>0;
+  let infSeries=null;
+  if(showInf){infSeries=[];for(let y=0;y<=maxY;y++){const v=investedTotal*Math.pow(1+inflR,y);infSeries.push(v);maxv=Math.max(maxv,v);}}
+  cancelAnimationFrame(gAnim);let t=noAnim()?1:0;
+  function frame(){
+    t=Math.min(1,t+0.05);ctx.clearRect(0,0,w,h);
+    const baseRef=(MODE==='swp')?A.swpC:investedTotal, baseY=h-pad-(baseRef/maxv)*(h-2*pad);
+    if(baseRef>0&&baseRef<=maxv){ctx.strokeStyle='#ddd2bd';ctx.setLineDash([5,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,baseY);ctx.lineTo(w-pad,baseY);ctx.stroke();ctx.setLineDash([]);}
+    const N=maxY*t, col=(MODE==='swp')?'#d98a1f':'#1f9d5f';
+    ctx.beginPath();ctx.moveTo(pad,h-pad);
+    for(let y=0;y<=N;y+=0.2){const v=interp(series,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);ctx.lineTo(x,yy);}
+    ctx.lineTo(pad+(N/maxY)*(w-2*pad),h-pad);ctx.closePath();
+    const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,col+'55');g.addColorStop(1,col+'08');ctx.fillStyle=g;ctx.fill();
+    ctx.beginPath();
+    for(let y=0;y<=N;y+=0.2){const v=interp(series,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
+    if(showInf){ctx.beginPath();ctx.setLineDash([6,5]);
+      for(let y=0;y<=N;y+=0.2){const v=interp(infSeries,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+      ctx.strokeStyle='#c98a1f';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);}
+    if(t<1)gAnim=requestAnimationFrame(frame);
+  }
+  frame();
+}
+function interp(a,x){const i=Math.floor(x);if(i>=a.length-1)return a[a.length-1];return a[i]+(a[i+1]-a[i])*(x-i);}
+
+/* ===== INFLATION ===== */
+let INF_H=10, infAnim=null;
+function renderInflation(){
+  updateAmtTexts();
+  const amt=+document.getElementById('infAmt').value||0, i=(+document.getElementById('infRate').value||0)/100;
+  document.getElementById('infRateV').textContent=(i*100).toFixed(1);
+  const real=amt/Math.pow(1+i,INF_H), loss=amt-real, pct=amt>0?(loss/amt*100):0, fut=100*Math.pow(1+i,INF_H);
+  document.getElementById('infResult').innerHTML=S().infResult(fmtIN(amt),fmtIN(Math.round(real)),fmtIN(Math.round(loss)),pct.toFixed(0),INF_H)+S().infSamosa(Math.round(fut));
+  const cv=document.getElementById('infChart');const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
+  cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pad=10, maxv=Math.max(amt,1)*1.06, topY=h-pad-(amt/maxv)*(h-2*pad);
+  cancelAnimationFrame(infAnim);let t=noAnim()?1:0;
+  function frame(){
+    t=Math.min(1,t+0.05);ctx.clearRect(0,0,w,h);const N=INF_H*t,lastX=pad+(N/INF_H)*(w-2*pad);
+    ctx.beginPath();ctx.moveTo(pad,topY);
+    for(let y=0;y<=N;y+=0.2){const v=amt/Math.pow(1+i,y);const x=pad+(y/INF_H)*(w-2*pad);const yy=h-pad-(v/maxv)*(h-2*pad);ctx.lineTo(x,yy);}
+    ctx.lineTo(lastX,topY);ctx.closePath();ctx.fillStyle='#d6513a22';ctx.fill();
+    ctx.strokeStyle='#b9ad95';ctx.setLineDash([6,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,topY);ctx.lineTo(w-pad,topY);ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();
+    for(let y=0;y<=N;y+=0.2){const v=amt/Math.pow(1+i,y);const x=pad+(y/INF_H)*(w-2*pad);const yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+    ctx.strokeStyle='#d6513a';ctx.lineWidth=2.5;ctx.stroke();
+    if(t<1)infAnim=requestAnimationFrame(frame);
+  }
+  frame();
+  saveState();
+}
+
+/* ===== PRODUCT LIST ===== */
+function rowHTML(p,st){
+  return `<div class="prow" data-row="${p.id}" data-pcat="${p.cat}">
+    <div class="main"><div class="tgl ${st.active?'on':''}" data-tgl="${p.id}"></div><div class="ic">${p.icon}</div>
+    <div class="nm"><span data-nm="${p.id}"></span><span class="bucket ${BCLS[p.bucket]}" data-bn="${p.bucket}"></span></div>
+    <div class="pcwrap"><input type="range" min="0" max="100" value="${st.pct}" data-pct="${p.id}" aria-label="Allocation percent" ${st.active?'':'disabled'}><span class="pc" data-pcv="${p.id}">${st.pct}%</span></div></div>
+    <div class="sub ${st.active?'':'off'}" data-sub="${p.id}"><div class="mini"><label data-rl></label><input type="number" min="0" max="40" step="0.1" value="${st.ret}" data-rt="${p.id}" aria-label="Return percent" onblur="clampNum(this)"></div>
+    <div class="elitog" data-elitog="${p.id}"></div></div>
+    <div class="eli5" data-eli-wrap="${p.id}"><div class="behav"><span class="bi" data-bi="${p.anim}"></span><span><span class="bcap" data-behavcap></span><span data-behav="${p.anim}"></span></span></div><div class="etext" data-eli="${p.id}"></div><div class="ex" data-ex="${p.id}"></div></div></div>`;
+}
+function distributeEqually(){
+  const act=PRODUCTS.filter(p=>PS[p.id].active); const n=act.length; if(!n) return;
+  const base=Math.floor(100/n), rem=100-base*n;
+  act.forEach((p,i)=>{PS[p.id].pct=base+(i<rem?1:0);});  // remainder spread to first few so sum=100
+}
+function syncRows(){
+  for(const p of PRODUCTS){const st=PS[p.id];
+    const tg=document.querySelector(`[data-tgl="${p.id}"]`); if(tg) tg.classList.toggle('on',st.active);
+    const sub=document.querySelector(`[data-sub="${p.id}"]`); if(sub) sub.classList.toggle('off',!st.active);
+    const sl=document.querySelector(`[data-pct="${p.id}"]`); if(sl){sl.value=st.pct;sl.disabled=!st.active;}
+    const pv=document.querySelector(`[data-pcv="${p.id}"]`); if(pv) pv.textContent=st.pct+'%';
+  }
+}
+function buildList(){
+  const cat=document.getElementById('cattabs');cat.innerHTML='';
+  S().cats.forEach((c,idx)=>{const btn=document.createElement('div');btn.className='cattab'+(idx===0?' on':'');btn.textContent=c.l;btn.dataset.cat=c.k;btn.onclick=()=>showCat(c.k);cat.appendChild(btn);});
+  const list=document.getElementById('plist');list.innerHTML='';
+  for(const p of PRODUCTS) list.insertAdjacentHTML('beforeend',rowHTML(p,PS[p.id]));
+  list.querySelectorAll('[data-tgl]').forEach(el=>el.onclick=()=>{const id=el.dataset.tgl;
+    PS[id].active=!PS[id].active;
+    if(!PS[id].active) PS[id].pct=0;
+    distributeEqually();   // split 100% evenly across whatever is now selected
+    syncRows();
+    render();
+  });
+  list.querySelectorAll('[data-pct]').forEach(el=>el.oninput=()=>{const id=el.dataset.pct;
+    let v=+el.value;
+    const others=PRODUCTS.reduce((s,p)=>s+((p.id!==id&&PS[p.id].active)?PS[p.id].pct:0),0);
+    const maxV=Math.max(0,100-others);                 // never let the total cross 100%
+    if(v>maxV){v=maxV; el.value=v;}
+    PS[id].pct=v; document.querySelector(`[data-pcv="${id}"]`).textContent=v+'%';render();});
+    list.querySelectorAll('[data-rt]').forEach(el=>el.oninput=()=>{PS[el.dataset.rt].ret=+el.value||0;render();});
+  list.querySelectorAll('[data-elitog]').forEach(el=>el.onclick=()=>document.querySelector(`[data-eli-wrap="${el.dataset.elitog}"]`).classList.toggle('show'));
+  CURRENT_CAT=S().cats[0].k; showCat(CURRENT_CAT);
+}
+function showCat(k){
+  CURRENT_CAT=k;
+  document.querySelectorAll('.cattab').forEach(el=>el.classList.toggle('on',el.dataset.cat===k));
+  document.querySelectorAll('.prow').forEach(el=>el.classList.toggle('hidecat',el.dataset.pcat!==k));
+}
+
+/* ===== HOME PATHS ===== */
+function renderPaths(){
+  const g=document.getElementById('pathgrid');g.innerHTML='';
+  S().paths.forEach(p=>{const d=document.createElement('div');d.className='pathcard';
+    d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
+    d.onclick=()=>goPath(p.sec,p.mode||null);g.appendChild(d);});
+}
+function goPath(sec,mode){
+  if(mode){document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===mode));setMode(mode);}
+  showSec(sec);
+}
+function renderPresets(){
+  const r=document.getElementById('presetrow');if(!r)return;r.innerHTML='';
+  S().presets.forEach(p=>{const b=document.createElement('button');b.className='preset';b.dataset.preset=p.key;
+    b.innerHTML=`<span>${p.ic}</span><span>${p.t}</span>`;b.onclick=()=>applyPreset(p.key);r.appendChild(b);});
+}
+function applyPreset(key){
+  const ps=PRESETS[key];if(!ps)return;
+  for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}
+  for(const id in ps.alloc){if(PS[id]){PS[id].active=true;PS[id].pct=ps.alloc[id];}}
+  document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===ps.mode));
+  setMode(ps.mode);
+  buildList();applyLang();showSec('choose');
+}
+function resetAll(){
+  try{localStorage.removeItem(LM_KEY);localStorage.removeItem('lm_seen');}catch(e){}   // clean reset — wipe saved state + re-arm the coachmark
+  document.body.classList.remove('kid'); { const kb=document.getElementById('kidBtn'); if(kb){kb.classList.remove('on');kb.textContent='🧒 Kid mode';} }
+  const d=PS_DEFAULTS;
+  for(const id in PS){PS[id].active=d[id].active;PS[id].pct=d[id].pct;PS[id].years=d[id].years;PS[id].ret=d[id].ret;PS[id].broke=d[id].broke;}
+  REGIME='new';INF_H=10;PLAN_YEARS=10;
+  { const py=document.getElementById('planYears'); if(py)py.value=10; const su=document.getElementById('sipStepup'); if(su)su.value=10; }
+  document.getElementById('lumpAmt').value=500000;
+  document.getElementById('sipAmt').value=10000;
+  document.getElementById('swpCorpus').value=2000000;
+  document.getElementById('swpWd').value=15000;
+  document.getElementById('inc').value=incomeToSlider(1500000);
+  document.getElementById('infAmt').value=500000;
+  document.getElementById('infRate').value=5;
+  EXIT_EARLY=false; INFL_ADJ=false; INFL_YRS=0;
+  document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.exit==='0'));
+  document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.adj==='0'));
+  document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.iy==='0'));
+  document.querySelectorAll('#regChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.r==='new'));
+  document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.h==='10'));
+  document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m==='lumpsum'));
+  setMode('lumpsum');
+  buildList();applyLang();
+  showSec('home'); NAV_STACK=[];        // back to a clean home
+  showCoachIfFirst();                   // storage cleared → welcome shows again
+}
+
+/* ===== HOME PILLARS ===== */
+function renderPillars(){
+  const g=document.getElementById('pillargrid'), sc=document.getElementById('simcard');
+  if(g){ g.innerHTML='';
+    S().pillars.filter(p=>p.key!=='tryit').forEach(p=>{const d=document.createElement('div');d.className='pathcard';
+      d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
+      d.onclick=()=>showSec(p.key);g.appendChild(d);});
+  }
+  if(sc){ sc.innerHTML=''; const t=S().pillars.find(p=>p.key==='tryit');
+    if(t){const d=document.createElement('div');d.className='simcta';
+      d.innerHTML=`<span class="sim-sheen"></span><span class="sim-badge2">Interactive</span><div class="sim-ic">${t.ic}</div><div class="sim-body"><h3>${t.t}</h3><p>${t.d}</p><span class="sim-cta-btn"><span class="pbadge">▶</span>Start the simulator</span></div><div class="sim-arr">→</div>`;
+      d.onclick=()=>showSec('tryit'); sc.appendChild(d);}
+  }
+}
+
+/* ===== INVESTING LIBRARY (read-only lessons) ===== */
+let LIB_CAT='all';
+function behavBlock(p){return `<div class="behav"><span class="bi" data-lbi="${p.anim}"></span><span><span class="bcap" data-lbehavcap></span><span data-lbehav="${p.anim}"></span></span></div>`;}
+function foodBlock(p){return `<div class="foodie">🍱 <b>Like…</b> ${S().food[p.id]}</div>`;}
+function taxLine(p){return `<div class="ltax kidhide">💰 Tax: <span data-ltaxb="${p.bucket}"></span> · <span class="taxlink" data-taxlink>How tax works →</span></div>`;}
+function shallowLessonHTML(p){
+  return foodBlock(p)+behavBlock(p)+`<div class="etext" data-leli="${p.id}"></div><div class="ex" data-lex="${p.id}"></div><div class="ltip" data-ltip="${p.id}"></div>`+taxLine(p);
+}
+function deepLessonHTML(p,L){
+  // keep=true → still shown in Kid mode; otherwise hidden behind the "grown-up details" toggle
+  const sec=(label,val,keep)=> val?`<div class="lsec${keep?'':' kidhide'}"><div class="lsech">${label}</div><div class="lsecb">${val}</div></div>`:'';
+  const list=(arr)=> (arr&&arr.length)?('<ul class="proscons">'+arr.map(x=>`<li>${x}</li>`).join('')+'</ul>'):'';
+  return foodBlock(p)+behavBlock(p)
+   + sec('What it is',L.what)+sec('How it works',L.works)+sec('Returns &amp; what drives them',L.returns)
+   + sec('Example',S().examples[p.id],true)
+   + sec('Risks',L.risk)+sec('Liquidity / lock-in',L.liquidity)+sec('Taxation',L.tax)+sec('Costs',L.costs)+sec("Who it's for",L.forwhom)
+   + `<div class="pcwrap2 kidhide"><div class="pccol"><div class="lsech" style="color:var(--green-d)">👍 Pros</div>${list(L.pros)}</div><div class="pccol"><div class="lsech" style="color:var(--red)">👎 Cons</div>${list(L.cons)}</div></div>`
+   + taxLine(p);
+}
+function buildLibrary(){
+  const tabs=document.getElementById('invtabs');if(!tabs)return;tabs.innerHTML='';
+  [{k:'all',l:S().libAll}].concat(S().cats).forEach(c=>{const b=document.createElement('div');
+    b.className='cattab'+(c.k==='all'?' on':'');b.textContent=c.l;b.dataset.lcat=c.k;b.onclick=()=>showLibCat(c.k);tabs.appendChild(b);});
+  const list=document.getElementById('invlist');list.innerHTML='';
+  S().cats.forEach(c=>{
+    list.insertAdjacentHTML('beforeend',`<div class="invcat" data-lcathdr="${c.k}">${c.l}</div>`);
+    for(const p of PRODUCTS.filter(x=>x.cat===c.k)){
+      const L=S().lessons&&S().lessons[p.id];
+      const lbody=L?deepLessonHTML(p,L):shallowLessonHTML(p);
+      list.insertAdjacentHTML('beforeend',`<div class="lrow" data-lrow="${p.id}" data-lcatrow="${p.cat}" data-deep="${L?1:0}">
+        <div class="lhead" data-lhead="${p.id}"><div class="lic">${p.icon}</div><div class="lnm" data-lnm="${p.id}"></div><span class="bucket ${BCLS[p.bucket]}" data-lbn="${p.bucket}"></span><span class="lchev">›</span></div>
+        <div class="lbody">${lbody}</div></div>`);
+    }
+  });
+  list.querySelectorAll('[data-lhead]').forEach(el=>el.onclick=()=>el.closest('.lrow').classList.toggle('open'));
+  list.querySelectorAll('[data-taxlink]').forEach(el=>el.onclick=(e)=>{e.stopPropagation();showSec('tax');});
+  showLibCat('all');
+}
+function showLibCat(k){
+  LIB_CAT=k;
+  document.querySelectorAll('#invtabs .cattab').forEach(el=>el.classList.toggle('on',el.dataset.lcat===k));
+  document.querySelectorAll('#invlist .lrow').forEach(el=>el.style.display=(k==='all'||el.dataset.lcatrow===k)?'':'none');
+  document.querySelectorAll('#invlist .invcat').forEach(el=>el.style.display=(k==='all'||el.dataset.lcathdr===k)?'':'none');
+}
+
+/* ===== TAKE-HOME (salary) CALCULATOR ===== */
+function slabTaxOf(taxable, slabs){ let t=0; for(const [lo,hi,r] of slabs){ if(taxable>lo) t+=(Math.min(taxable,hi)-lo)*r; } return t; }
+function oldSlabs(age){ const ex = age==='80'?500000 : age==='60'?300000 : 250000;   // senior-citizen exemption
+  return [[0,ex,0],[ex,500000,0.05],[500000,1000000,0.20],[1000000,Infinity,0.30]]; }
+function surchargeRate(income, regime){
+  if(income<=5000000) return 0; if(income<=10000000) return 0.10; if(income<=20000000) return 0.15;
+  if(regime==='new') return 0.25;                                  // new regime caps at 25%
+  return income<=50000000?0.25:0.37;                               // old: 25% (2–5Cr), 37% (>5Cr)
+}
+function incomeTaxOn(taxable, regime, age){       // slabs + 87A + marginal relief + surcharge + cess
+  const slabs = regime==='old'? oldSlabs(age) : REGIME_NEW;
+  let base = slabTaxOf(taxable, slabs);
+  if(regime==='new'){ if(taxable<=1200000) base=0; else base=Math.min(base, taxable-1200000); }  // 87A + marginal relief
+  else if(taxable<=500000) base=0;
+  const sr=surchargeRate(taxable,regime); let withSur=base*(1+sr);
+  if(sr>0){                                                        // surcharge marginal relief
+    const thr = taxable<=10000000?5000000 : taxable<=20000000?10000000 : taxable<=50000000?20000000 : 50000000;
+    const cap = slabTaxOf(thr,slabs)*(1+surchargeRate(thr-1,regime)) + (taxable-thr);
+    if(withSur>cap) withSur=cap;
+  }
+  return Math.max(0, withSur*(1+CESS));
+}
+function salaryCalc(regime){
+  const gv=id=>{const e=document.getElementById(id);return e?(+e.value||0):0;};
+  const ctc=Math.max(0,gv('thCtc')), basic=ctc*(gv('thBasic')||40)/100;
+  const epfRate=Math.max(0,gv('thEpfRate'))/100;                 // editable EPF % of basic
+  const employerPF=basic*epfRate, employeePF=basic*epfRate;
+  const gratuity=basic*Math.max(0,gv('thGrat'))/100;             // employer gratuity (in CTC, exempt, not in-hand)
+  const employerNPS=Math.min(basic*Math.max(0,gv('thEmpNps'))/100, basic*0.10); // 80CCD(2), capped 10% basic, both regimes
+  const metro=(document.querySelector('#thMetroChips .chip.on')||{dataset:{metro:'1'}}).dataset.metro==='1';
+  const age=(document.querySelector('#thAgeChips .chip.on')||{dataset:{age:'lt60'}}).dataset.age;
+  const hraComp=basic*(gv('thHraPct')/100);                      // editable HRA % of basic
+  const special=Math.max(0, ctc - basic - hraComp - employerPF - gratuity - employerNPS); // balancing special allowance
+  const gross=Math.max(0, ctc - employerPF - gratuity - employerNPS), std=regime==='new'?75000:50000;
+  const pt=Math.max(0,gv('thPt'));
+  let ded=0,hraEx=0,c80=0;
+  if(regime==='old'){
+    const rent=gv('thRent');
+    hraEx=Math.max(0, Math.min(hraComp, rent-0.1*basic, (metro?0.5:0.4)*basic)); // HRA exemption (capped)
+    c80=Math.min(gv('thC')+employeePF, 150000);                  // your EPF auto-counts toward 80C
+    ded=c80 + gv('thD') + Math.min(gv('thNps'),50000) + Math.min(gv('thHome'),200000) + hraEx;
+  }
+  const taxable=Math.max(0, gross - std - pt - ded);             // professional tax deductible (both regimes)
+  const tax=incomeTaxOn(taxable, regime, age);
+  const net=Math.max(0, gross - tax - employeePF - pt);
+  return {regime,ctc,gross,basic,hraComp,special,gratuity,employerPF,employeePF,employerNPS,std,pt,ded,hraEx,c80,taxable,tax,net,age};
+}
+function renderTakehome(){
+  if(!document.getElementById('thCtc')) return;
+  updateAmtTexts();
+  document.getElementById('thBasicV').textContent=document.getElementById('thBasic').value;
+  const mode=(document.querySelector('#thRegChips .chip.on')||{dataset:{thr:'compare'}}).dataset.thr;
+  document.getElementById('thOldGrp').style.display=(mode==='new')?'none':'block';
+  const nw=salaryCalc('new'), od=salaryCalc('old');
+  const best=(mode==='old')?od:(mode==='new')?nw:(od.net>=nw.net?od:nw);
+  animateNum(document.getElementById('thNet'),Math.round(best.net/12),rupee);
+  document.getElementById('thNetYr').textContent=rupee(Math.round(best.net));
+  const v=document.getElementById('thVerdict');
+  if(mode==='compare'){ const diff=Math.round(Math.abs(od.net-nw.net)); const win=od.net>=nw.net?'Old':'New';
+    v.innerHTML=diff<1?'Both regimes give the same take-home.':`<b>${win} regime</b> gives about <b>${rupee(diff)}</b>/yr more — showing it.`;
+  } else v.innerHTML=`Showing the <b>${mode} regime</b>.`;
+  const pc=document.getElementById('thCompare');
+  if(mode==='compare'){ pc.style.display='grid';
+    const card=(c,label)=>`<div class="pcard${best.regime===c.regime?' broke':''}"><div class="top">${label}${best.regime===c.regime?' <span class="bucket b-exempt">better</span>':''}</div><div class="g"><div class="k">Income tax</div><div class="v red">${rupee(Math.round(c.tax))}</div><div class="k">In-hand/mo</div><div class="v green">${rupee(Math.round(c.net/12))}</div></div></div>`;
+    pc.innerHTML=card(nw,'New regime')+card(od,'Old regime');
+  } else pc.style.display='none';
+  const b=best, R=x=>rupee(Math.round(x));
+  const row=(k,v,bold)=>`<tr><td>${bold?'<b>'+k+'</b>':k}</td><td style="text-align:right">${bold?'<b>'+v+'</b>':v}</td></tr>`;
+  document.getElementById('thBreak').innerHTML=
+    `<div class="lsech">Salary structure — per year (${b.regime} regime)</div>`
+   +`<table class="slab"><tbody>`
+   + row('Basic',R(b.basic)) + row('HRA',R(b.hraComp)) + row('Special allowance',R(b.special))
+   + row('Employer PF (in CTC, not paid to you)','−'+R(b.employerPF))
+   + (b.gratuity>0?row('Gratuity (in CTC, exempt)','−'+R(b.gratuity)):'')
+   + (b.employerNPS>0?row('Employer NPS 80CCD(2) (in CTC, exempt)','−'+R(b.employerNPS)):'')
+   + row('Gross (taxable salary)',R(b.gross),1)
+   + row('− Income tax','−'+R(b.tax)) + row('− Your EPF','−'+R(b.employeePF)) + row('− Professional tax','−'+R(b.pt))
+   + row('In-hand (take-home)',R(b.net),1)
+   + `</tbody></table>`
+   + (b.regime==='old' ? `<div class="hint" style="margin-top:8px">HRA exemption: <b>${R(b.hraEx)}</b> · 80C used (incl your EPF): <b>${R(b.c80)}</b> · plus 80D/NPS(1B)/home-loan. Professional tax is also deducted before tax.</div>` : `<div class="hint" style="margin-top:8px">New regime: ₹75k standard deduction + professional tax; employer NPS (80CCD2) still exempt. No 80C/HRA.</div>`);
+}
+
+/* ===== GLOSSARY (tap-to-define jargon) ===== */
+const GLOSS_TERMS=Object.keys(GLOSS).sort((a,b)=>b.length-a.length); // longest first so multi-word wins
+function glossify(root){
+  if(!root) return;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+  const nodes=[]; let n; while(n=walker.nextNode()) nodes.push(n);
+  const done=new Set();
+  for(const node of nodes){
+    if(!node.nodeValue.trim()) continue;
+    if(node.parentElement && node.parentElement.closest('.gloss')) continue;
+    for(const t of GLOSS_TERMS){
+      if(done.has(t)) continue;
+      const re=new RegExp('\\b'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b');
+      const m=node.nodeValue.match(re);
+      if(m){
+        const i=m.index, before=node.nodeValue.slice(0,i), after=node.nodeValue.slice(i+m[0].length);
+        const span=document.createElement('span'); span.className='gloss'; span.dataset.term=t; span.textContent=m[0];
+        const frag=document.createDocumentFragment();
+        if(before) frag.appendChild(document.createTextNode(before));
+        frag.appendChild(span);
+        if(after) frag.appendChild(document.createTextNode(after));
+        node.parentNode.replaceChild(frag,node);
+        done.add(t); break; // this node is consumed
+      }
+    }
+  }
+  root.querySelectorAll('.gloss').forEach(el=>{ if(!el._b){el._b=1; el.onclick=(e)=>{e.stopPropagation(); toggleGloss(el);}; }});
+}
+function toggleGloss(el){
+  if(el._open){ if(el._def){el._def.remove(); el._def=null;} el._open=false; el.classList.remove('on'); return; }
+  const d=document.createElement('span'); d.className='glossdef'; d.textContent=' — '+GLOSS[el.dataset.term];
+  el.parentNode.insertBefore(d, el.nextSibling); el._def=d; el._open=true; el.classList.add('on');
+}
+function glossifyAll(){
+  document.querySelectorAll('#invlist .lbody').forEach(glossify);
+  document.querySelectorAll('#sec-tax .card, #sec-credit .card').forEach(glossify);
+  a11yify();
+}
+/* ===== A11Y: make click-only divs keyboard-operable ===== */
+function a11yify(){
+  document.querySelectorAll('.chip,.cattab,.tgl,.brk,.elitog,.pathcard,.simcta,.preset,.lhead,.gloss,.taxlink,[data-step]').forEach(el=>{
+    if(!el.hasAttribute('role')) el.setAttribute('role','button');
+    if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
+  });
+}
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  if((e.key==='Enter'||e.key===' ')&&t&&t.getAttribute&&t.getAttribute('role')==='button'){e.preventDefault();t.click();}
+});
+/* ===== Input hardening: clamp to min/max on blur ===== */
+function clampNum(el){
+  const min=el.min!==''?+el.min:-Infinity, max=el.max!==''?+el.max:Infinity;
+  let v=+el.value;
+  if(el.value===''||isNaN(v)) v=(min>-Infinity)?min:0;
+  v=Math.max(min,Math.min(max,v));
+  if(String(v)!==el.value){el.value=v; el.dispatchEvent(new Event('input',{bubbles:true}));}
+}
+function confirmReset(){ if(typeof confirm!=='function'||confirm('Reset everything back to the starting example?')) resetAll(); }
+function toggleKid(){ const on=document.body.classList.toggle('kid'); const b=document.getElementById('kidBtn'); if(b){b.classList.toggle('on',on); b.textContent=on?'🧒 Kid mode: ON':'🧒 Kid mode';} saveState(); }
+
+/* ===== FIRST-TIME COACHMARK ===== */
+function showCoachIfFirst(){ let seen=true; try{seen=!!localStorage.getItem('lm_seen');}catch(e){seen=true;} if(!seen){const c=document.getElementById('coach'); if(c)c.style.display='flex';} }
+function dismissCoach(){ const c=document.getElementById('coach'); if(c)c.style.display='none'; try{localStorage.setItem('lm_seen','1');}catch(e){} }
+const TOUR=[
+ {sel:'#simcard .simcta',t:'Build & see',b:'Tap here to build a pretend portfolio and watch what you actually keep after tax, charges & inflation.'},
+ {sel:'.secnav [data-sec="invest"]',t:'Learn any product',b:'Browse all 32 — each explained with a 🍱 food analogy, in plain words.'},
+ {sel:'.secnav [data-sec="takehome"]',t:'Your take-home pay',b:'Curious about your real monthly in-hand? It’s here, pre-filled — just tweak.'},
+ {sel:'#kidBtn',t:'New to money?',b:'Turn on Kid mode anytime for the simple, food-style version of everything.'}
+];
+let tourI=0;
+function startTour(){ const c=document.getElementById('coach'); if(c)c.style.display='none'; showSec('home'); tourI=0; tourStep(); }
+function tourStep(){
+  document.querySelectorAll('.tour-spot').forEach(e=>e.classList.remove('tour-spot'));
+  const tip=document.getElementById('tourtip'), step=TOUR[tourI];
+  if(!step){ endTour(); return; }
+  const el=document.querySelector(step.sel); if(!el){ tourI++; return tourStep(); }
+  el.classList.add('tour-spot'); if(el.scrollIntoView) el.scrollIntoView({block:'center'});
+  tip.innerHTML=`<h4>${step.t}</h4>${step.b}<div class="trow"><span class="tdot">${tourI+1}/${TOUR.length}</span><span><button class="tskip" onclick="endTour()">Skip</button> <button class="tnext" onclick="nextTour()">${tourI===TOUR.length-1?'Done 👍':'Next →'}</button></span></div>`;
+  tip.style.display='block';
+  const r=el.getBoundingClientRect(), tw=Math.min(300, (window.innerWidth||400)-24);
+  let top=r.bottom+12, left=Math.min((window.innerWidth||400)-tw-12, Math.max(12, r.left));
+  if(top+170>(window.innerHeight||700)) top=Math.max(12, r.top-180);
+  tip.style.top=top+'px'; tip.style.left=left+'px'; tip.style.maxWidth=tw+'px';
+}
+function nextTour(){ tourI++; tourStep(); }
+function endTour(){ document.querySelectorAll('.tour-spot').forEach(e=>e.classList.remove('tour-spot')); const t=document.getElementById('tourtip'); if(t)t.style.display='none'; try{localStorage.setItem('lm_seen','1');}catch(e){} }
+
+/* ===== PERSISTENCE (localStorage) ===== */
+const LM_KEY='lm_state';
+function saveState(){ try{
+  const ps={}; for(const id in PS){const s=PS[id]; ps[id]={active:s.active,pct:s.pct,years:s.years,ret:s.ret,broke:s.broke};}
+  const g=id=>{const e=document.getElementById(id);return e?e.value:null;};
+  localStorage.setItem(LM_KEY, JSON.stringify({
+    ps, mode:MODE, regime:REGIME, exit:EXIT_EARLY, adj:INFL_ADJ, adjYrs:INFL_YRS, infH:INF_H,
+    kid:document.body.classList.contains('kid'),
+    lump:g('lumpAmt'),sip:g('sipAmt'),swpC:g('swpCorpus'),swpW:g('swpWd'),
+    infAmt:g('infAmt'),infRate:g('infRate'),incSlider:g('inc'),
+    planYears:PLAN_YEARS, sipStepup:g('sipStepup')
+  }));
+}catch(e){} }
+function loadState(){ let s; try{s=JSON.parse(localStorage.getItem(LM_KEY));}catch(e){} if(!s) return false;
+  try{
+    if(s.ps) for(const id in PS){ if(s.ps[id]) Object.assign(PS[id], s.ps[id]); }
+    if(s.mode) MODE=s.mode; if(s.regime) REGIME=s.regime;
+    EXIT_EARLY=!!s.exit; INFL_ADJ=!!s.adj; INFL_YRS=s.adjYrs||0; INF_H=s.infH||10;
+    const setv=(id,v)=>{const e=document.getElementById(id); if(e&&v!=null)e.value=v;};
+    setv('lumpAmt',s.lump);setv('sipAmt',s.sip);setv('swpCorpus',s.swpC);setv('swpWd',s.swpW);
+    setv('infAmt',s.infAmt);setv('infRate',s.infRate);setv('inc',s.incSlider);
+    setv('planYears',s.planYears);setv('sipStepup',s.sipStepup); PLAN_YEARS=Math.max(1,Math.min(40,Math.round(+s.planYears||10)));
+    document.querySelectorAll('#regChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.r===REGIME));
+    document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.toggle('on',(x.dataset.exit==='1')===EXIT_EARLY));
+    document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.toggle('on',(x.dataset.adj==='1')===INFL_ADJ));
+    document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.iy===INFL_YRS));
+    document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.h===INF_H));
+    if(s.kid){document.body.classList.add('kid'); const b=document.getElementById('kidBtn'); if(b){b.classList.add('on');b.textContent='🧒 Kid mode: ON';}}
+    return true;
+  }catch(e){return false;}
+}
+
+/* ===== TAX SECTION ===== */
+function slabAmt(v){const L=v/100000;return '₹'+(Number.isInteger(L)?L:L.toFixed(1))+'L';}
+function slabRows(slabs){return slabs.map(([lo,hi,r])=>{
+  const range=lo===0?('Up to '+slabAmt(hi)):(hi===Infinity?('Above '+slabAmt(lo)):(slabAmt(lo)+'–'+slabAmt(hi)));
+  return `<tr><td>${range}</td><td>${(r*100).toFixed(0)}%</td></tr>`;}).join('');}
+function renderTax(){
+  const sn=document.getElementById('slabNewBody'),so=document.getElementById('slabOldBody');
+  if(sn) sn.innerHTML=slabRows(REGIME_NEW);
+  if(so) so.innerHTML=slabRows(REGIME_OLD);
+}
+
+/* ===== CREDIT: cost-of-carrying-a-balance ===== */
+let CC_MODE='min';
+function renderCredit(){
+  updateAmtTexts();
+  const balEl=document.getElementById('ccBal'); if(!balEl) return;
+  const bal=Math.max(0,+balEl.value||0), apr=+document.getElementById('ccApr').value||0, i=apr/100/12;
+  const fixedPay=Math.max(0,+document.getElementById('ccPay').value||0);
+  document.getElementById('ccAprV').textContent=apr;
+  let B=bal, months=0, totalInt=0, totalPaid=0, never=false; const cap=1200;
+  if(bal>0){
+    while(B>0.5 && months<cap){
+      const interest=B*i;
+      let pay = CC_MODE==='min' ? Math.max(B*0.05, 500) : fixedPay;
+      if(pay<=interest+1e-9){never=true;break;}          // payment never beats interest → grows forever
+      pay=Math.min(pay, B+interest);                      // final month tops out at the remaining balance
+      B=B+interest-pay; totalInt+=interest; totalPaid+=pay; months++; if(B<0)B=0;
+    }
+    if(months>=cap) never=true;
+  }
+  const base=Math.max(bal+totalInt,1);
+  const sP=document.getElementById('ccSegP'), sI=document.getElementById('ccSegI');
+  sP.style.width=(bal/base*100)+'%'; sI.style.width=(totalInt/base*100)+'%';
+  sP.textContent=(bal/base>0.16)?rupee(Math.round(bal)):''; sI.textContent=(totalInt/base>0.12)?rupee(Math.round(totalInt)):'';
+  const r=document.getElementById('ccResult');
+  if(bal<=0){r.innerHTML='Enter a balance to see the cost.';return;}
+  if(never){
+    r.innerHTML=`⚠️ Paying this way <b>never clears the balance</b> — interest alone is about <b>₹${fmtIN(Math.round(bal*i))}/month</b>, so the debt only grows. You must pay more than the monthly interest to make progress.`;
+  }else{
+    const yrTxt = months>=12 ? ` (≈ ${(months/12).toFixed(1)} years)` : '';
+    r.innerHTML=`At ${apr}% a year, clearing ₹${fmtIN(bal)} takes <b>${months} months</b>${yrTxt}. You repay about <b>${rupee(Math.round(totalPaid))}</b> — of which <b>${rupee(Math.round(totalInt))}</b> is pure interest.`+(CC_MODE==='min'?` Paying only the minimum is the slowest, costliest way out.`:``);
+  }
+}
+
+/* ===== SECTION NAV (history-aware) ===== */
+let CURRENT_SEC='home', NAV_STACK=[];
+const SIM_STEPS=['inflation','how','choose','results'];
+function updateStepper(name){
+  const ss=document.getElementById('simsteps'); if(!ss) return;
+  const idx=SIM_STEPS.indexOf(name);
+  if(idx<0){ ss.style.display='none'; return; }
+  ss.style.display='flex';
+  ss.querySelectorAll('[data-step]').forEach((b,i)=>{ b.classList.toggle('active',i===idx); b.classList.toggle('done',i<idx); });
+}
+function updateBackBar(){
+  const bb=document.getElementById('backbar');
+  if(bb) bb.style.display=(CURRENT_SEC!=='home' && NAV_STACK.length)?'block':'none';
+}
+function applySec(name){          // pure switch — no history mutation
+  document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+name));
+  const navName=SIM_STEPS.includes(name)?'tryit':name;
+  document.querySelectorAll('.secnav button').forEach(b=>b.classList.toggle('on',b.dataset.sec===navName));
+  CURRENT_SEC=name; updateBackBar(); updateStepper(name);
+  if(name==='results') render();
+  if(name==='inflation') renderInflation();
+  if(name==='credit') renderCredit();
+  if(name==='takehome') renderTakehome();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showSec(name){
+  if(name===CURRENT_SEC) return;
+  NAV_STACK.push(CURRENT_SEC);
+  applySec(name);
+  try{history.pushState({sec:name},'');}catch(e){}
+}
+function goBack(){
+  const prev=NAV_STACK.length?NAV_STACK.pop():'home';
+  applySec(prev);
+}
+function canSeeResults(){ let act=0,tot=0; for(const p of PRODUCTS){const st=PS[p.id]; if(st.active){act++;tot+=st.pct;}} return act>0 && tot===100; }
+function proceedToResults(){ if(canSeeResults()) showSec('results'); }
+window.addEventListener('popstate',()=>{ if(NAV_STACK.length) goBack(); });
+
+/* ===== LANG ===== */
+function applyLang(){
+  const s=S();
+  document.querySelectorAll('[data-i]').forEach(el=>{const k=el.dataset.i,v=s[k];if(k==='heroH')el.innerHTML=`${v[0]}<em>${v[1]}</em>${v[2]}`;else if(typeof v==='string')el.textContent=v;});
+  document.querySelectorAll('[data-nm]').forEach(el=>el.textContent=s.names[el.dataset.nm]);
+  document.querySelectorAll('[data-bn]').forEach(el=>el.textContent=s.bnames[el.dataset.bn]);
+  document.querySelectorAll('[data-eli]').forEach(el=>el.textContent=s.eli5[el.dataset.eli]);
+  document.querySelectorAll('[data-behav]').forEach(el=>el.textContent=s.behav[el.dataset.behav]);
+  document.querySelectorAll('[data-bi]').forEach(el=>el.textContent=BEHAV_IC[el.dataset.bi]);
+  document.querySelectorAll('[data-behavcap]').forEach(el=>el.textContent=s.behavCap);
+  document.querySelectorAll('[data-ex]').forEach(el=>el.innerHTML=s.examples[el.dataset.ex]);
+  document.querySelectorAll('[data-yl]').forEach(el=>el.textContent=s.yrsL);
+  document.querySelectorAll('[data-rl]').forEach(el=>el.textContent=s.retL);
+  document.querySelectorAll('[data-elitog]').forEach(el=>el.textContent=s.whatis);
+  document.querySelectorAll('.cattab').forEach(el=>{const c=s.cats.find(x=>x.k===el.dataset.cat);if(c)el.textContent=c.l;});
+  document.querySelectorAll('[data-lnm]').forEach(el=>el.textContent=s.names[el.dataset.lnm]);
+  document.querySelectorAll('[data-lbn]').forEach(el=>el.textContent=s.bnames[el.dataset.lbn]);
+  document.querySelectorAll('[data-lbehav]').forEach(el=>el.textContent=s.behav[el.dataset.lbehav]);
+  document.querySelectorAll('[data-lbi]').forEach(el=>el.textContent=BEHAV_IC[el.dataset.lbi]);
+  document.querySelectorAll('[data-lbehavcap]').forEach(el=>el.textContent=s.behavCap);
+  document.querySelectorAll('[data-leli]').forEach(el=>el.textContent=s.eli5[el.dataset.leli]);
+  document.querySelectorAll('[data-lex]').forEach(el=>el.innerHTML=s.examples[el.dataset.lex]);
+  document.querySelectorAll('[data-ltaxb]').forEach(el=>el.textContent=s.bnames[el.dataset.ltaxb]);
+  document.querySelectorAll('[data-ltip]').forEach(el=>el.textContent=s.tips[el.dataset.ltip]);
+  renderPaths(); renderPresets(); renderPillars();
+  render(); renderInflation(); a11yify();
+}
+function setLang(l){LANG=l;document.getElementById('enBtn').classList.toggle('on',l==='en');document.getElementById('hiBtn').classList.toggle('on',l==='hi');document.documentElement.lang=l;applyLang();}
+function setMode(m){MODE=m;document.getElementById('grpLump').classList.toggle('on',m==='lumpsum');document.getElementById('grpSip').classList.toggle('on',m==='sip');document.getElementById('grpSwpC').classList.toggle('on',m==='swp');document.getElementById('grpSwpW').classList.toggle('on',m==='swp');document.getElementById('grpStepup').classList.toggle('on',m==='sip');render();}
+
+/* ===== HANDLERS ===== */
+document.getElementById('modeChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');setMode(c.dataset.m);});
+document.getElementById('exitChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');EXIT_EARLY=c.dataset.exit==='1';render();});
+document.getElementById('adjChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');INFL_ADJ=c.dataset.adj==='1';render();});
+document.getElementById('adjYrsChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');INFL_YRS=+c.dataset.iy;render();});
+document.querySelectorAll('#thRegChips .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#thRegChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');renderTakehome();});
+document.querySelectorAll('#thMetroChips .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#thMetroChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');renderTakehome();});
+document.querySelectorAll('#thAgeChips .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#thAgeChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');renderTakehome();});
+document.getElementById('regChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#regChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');REGIME=c.dataset.r;render();});
+document.getElementById('infChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');INF_H=+c.dataset.h;renderInflation();});
+document.querySelectorAll('.secnav button').forEach(b=>b.onclick=()=>showSec(b.dataset.sec));
+document.querySelectorAll('#simsteps [data-step]').forEach(b=>b.onclick=()=>{ if(b.dataset.step==='results'&&!canSeeResults())return; showSec(b.dataset.step); });
+const ccmc=document.getElementById('ccModeChips');
+if(ccmc) ccmc.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ccmc.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');CC_MODE=c.dataset.cm;document.getElementById('ccPayGrp').classList.toggle('on',CC_MODE==='fixed');renderCredit();});
+
+/* ===== INIT ===== */
+document.getElementById('inc').value=incomeToSlider(1500000);
+loadState();                 // restore saved portfolio/settings (if any) before building
+buildList();
+buildLibrary();
+renderTax();
+renderCredit();
+document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
+setMode(MODE);
+applyLang();
+renderTakehome();
+glossifyAll();
+showCoachIfFirst();
+try{history.replaceState({sec:'home'},'');}catch(e){}
+window.addEventListener('resize',()=>{render();renderInflation();});
+</script>
+</body>
+</html>

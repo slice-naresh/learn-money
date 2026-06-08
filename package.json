@@ -1,0 +1,17 @@
+{
+  "name": "learn-money",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tax-aware investment-education sandbox for SliceBank (generated single-file app).",
+  "scripts": {
+    "build": "python3 gen.py",
+    "test": "node test_journeys.js && node test_buckets.js",
+    "test:ui": "node ui_test.js",
+    "test:all": "npm run build && npm test && npm run test:ui"
+  },
+  "devDependencies": {
+    "jsdom": "^24.0.0",
+    "puppeteer": "^22.0.0",
+    "ffmpeg-static": "^5.2.0"
+  }
+}

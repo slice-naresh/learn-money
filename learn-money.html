@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learn Money — Investment Sandbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f3f4f3;--paper-2:#e9ebe9;--ink:#0a0f0c;--ink-soft:#6b746e;--green:#00d54b;--green-d:#009a39;--amber:#ff9f1c;--amber-l:#ffbf57;--red:#ff463c;--violet:#8a63ff;--line:#e6e8e6;--card:#ffffff;--display:"Space Grotesk",sans-serif;--body:"Outfit",sans-serif;--spring:cubic-bezier(.34,1.56,.64,1);}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:0 18px}
+  header{position:sticky;top:0;z-index:30;background:#f6f1e7e8;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .head-in{display:flex;align-items:center;gap:14px;max-width:940px;margin:0 auto;padding:13px 18px}
+  .brand{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #1f9d5f22}
+  .head-sp{flex:1}
+  .sim-badge{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);border:1px solid #e6c98a;background:#fbf3df;padding:5px 11px;border-radius:999px;font-weight:600}
+  .lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;font-weight:600;font-size:.85rem}
+  .lang button{border:none;background:transparent;padding:6px 13px;cursor:pointer;font-family:var(--body);color:var(--ink-soft)}
+  .lang button.on{background:var(--ink);color:var(--paper)}
+  .secnav{position:sticky;top:52px;z-index:20;background:#f6f1e7f2;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .secnav .wrapn{display:flex;gap:6px;max-width:940px;margin:0 auto;padding:8px 18px;overflow-x:auto}
+  .secnav button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 15px;cursor:pointer;font-weight:600;font-size:.88rem;color:var(--ink-soft);font-family:var(--body);white-space:nowrap}
+  .secnav button.on{background:var(--green);color:#fff;border-color:var(--green)}
+  .hero{padding:34px 0 8px}
+  .hero h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,5vw,3rem);line-height:1.02;letter-spacing:-.02em;max-width:18ch}
+  .hero h1 em{font-style:italic;color:var(--green)}
+  .hero p{color:var(--ink-soft);margin-top:12px;max-width:60ch;font-size:1.05rem}
+  .sec{display:none}
+  .sec.on{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0;box-shadow:0 1px 0 #00000005}
+  .card h2{font-family:var(--display);font-weight:600;font-size:1.35rem;letter-spacing:-.01em;margin-bottom:4px}
+  .card .hint{color:var(--ink-soft);font-size:.9rem;margin-bottom:16px}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col{flex:1;min-width:200px}
+  label.l{display:block;font-size:.82rem;color:var(--ink-soft);font-weight:600;margin-bottom:6px}
+  .val{font-family:var(--display);font-weight:700;color:var(--ink)}
+  input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:99px;background:var(--paper-2);border:1px solid var(--line);outline:none;margin-top:4px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--green);cursor:pointer;box-shadow:0 0 0 4px #1f9d5f22;border:2px solid #fff}
+  input[type=range]::-moz-range-thumb{width:20px;height:20px;border:2px solid #fff;border-radius:50%;background:var(--green);cursor:pointer}
+  input[type=number]{font-family:var(--body);font-size:1rem;font-weight:600;border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%;background:var(--paper);color:var(--ink)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .chip{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:8px 15px;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--ink-soft);font-family:var(--body)}
+  .chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .marg{margin-top:12px;background:var(--paper);border:1px dashed var(--line);border-radius:11px;padding:11px 14px;font-size:.9rem;color:var(--ink-soft)}
+  .marg b{color:var(--ink);font-family:var(--display)}
+  .amtgrp{display:none}.amtgrp.on{display:block}
+  .nextbtn{margin-top:8px;background:var(--green);color:#fff;border:none;border-radius:12px;padding:13px 22px;font-weight:700;font-size:1rem;cursor:pointer;font-family:var(--body)}
+  .nextbtn:hover{background:var(--green-d)}
+  .cattabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .cattab{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 13px;cursor:pointer;font-weight:600;font-size:.82rem;color:var(--ink-soft);font-family:var(--body)}
+  .cattab.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .prow{border-top:1px solid var(--line);padding:12px 0}
+  .prow.hidecat{display:none}
+  .prow .main{display:flex;align-items:center;gap:11px}
+  .tgl{position:relative;width:42px;height:24px;flex-shrink:0;border-radius:999px;background:var(--paper-2);border:1px solid var(--line);cursor:pointer;transition:.2s}
+  .tgl::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px #0002;transition:.2s}
+  .tgl.on{background:var(--green);border-color:var(--green)}.tgl.on::after{transform:translateX(18px)}
+  .prow .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:1.2rem;background:var(--paper);flex-shrink:0}
+  .prow .nm{font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex:1}
+  .bucket{font-size:.62rem;letter-spacing:.04em;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:6px}
+  .b-slab{background:#fbe3dd;color:#b23a24}.b-flat{background:#dcecfb;color:#2563a8}.b-exempt{background:#dcf3e4;color:#16713f}.b-mixed{background:#f4e7d0;color:#9a6a17}.b-crypto{background:#ece1fa;color:#6a3fb0}
+  .prow .pcwrap{display:flex;align-items:center;gap:9px}
+  .prow .pcwrap input[type=range]{width:92px}
+  .prow .pc{width:40px;text-align:right;font-family:var(--display);font-weight:700}
+  .sub{margin:11px 0 0 49px;display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  .sub.off{display:none}
+  .mini{width:88px}.mini label{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:600;margin-bottom:3px}.mini input{padding:6px 8px;font-size:.9rem}
+  .elitog{font-size:.78rem;color:var(--ink-soft);cursor:pointer;text-decoration:underline dotted;padding-bottom:8px}
+  .eli5{margin-top:8px;display:none}.eli5.show{display:block}
+  .behav{margin:0 0 10px 49px;background:#eef3f0;border:1px solid var(--line);border-left:3px solid var(--ink-soft);border-radius:11px;padding:11px 14px;font-size:.92rem;color:var(--ink);line-height:1.5;display:flex;gap:9px;align-items:flex-start}
+  .behav .bi{font-size:1.1rem;line-height:1.3;flex-shrink:0}
+  .behav .bcap{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:700;display:block;margin-bottom:2px}
+  .etext{font-size:.92rem;color:var(--ink-soft);line-height:1.55;margin-left:49px}
+  .ex{font-size:.9rem;color:var(--ink);background:#f3efe7;border:1px solid var(--line);border-left:3px solid var(--green);border-radius:8px;padding:10px 12px;margin:8px 0 0 49px;line-height:1.55}
+  .ex b{color:var(--green-d)}
+  @media(max-width:560px){.behav,.etext,.ex{margin-left:0}.prow .pcwrap input[type=range]{width:64px}}
+  .headline{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+  .hl-box{flex:1;min-width:140px}
+  .hl-cap{font-size:.76rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:600}
+  .hl-num{font-family:var(--display);font-weight:700;font-size:clamp(1.5rem,4.2vw,2.3rem);line-height:1.05;letter-spacing:-.02em}
+  .green{color:var(--green-d)}.red{color:var(--red)}.amber{color:var(--amber)}
+  .flow{margin:20px 0 6px}
+  .flow-track{display:flex;height:52px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .seg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;transition:width .6s cubic-bezier(.2,.8,.2,1);min-width:0;white-space:nowrap;overflow:hidden}
+  .seg.net{background:linear-gradient(135deg,var(--green),var(--green-d))}.seg.chg{background:linear-gradient(135deg,var(--amber-l),var(--amber))}.seg.tax{background:linear-gradient(135deg,#e8715c,var(--red))}
+  .flow-key{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.82rem;color:var(--ink-soft)}
+  .flow-key span{display:flex;align-items:center;gap:6px}.sw{width:11px;height:11px;border-radius:3px}
+  canvas{width:100%;display:block;margin-top:8px;height:200px}
+  #infChart{height:190px}
+  .pcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+  @media(max-width:560px){.pcards{grid-template-columns:1fr}}
+  .pcard{border:1px solid var(--line);border-radius:13px;padding:14px;background:var(--paper)}
+  .pcard .top{display:flex;align-items:center;gap:8px;font-weight:600;margin-bottom:8px}
+  .pcard .g{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:.85rem}
+  .pcard .k{color:var(--ink-soft)}.pcard .v{text-align:right;font-weight:600}
+  .total-bar{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-weight:600}
+  .total-bar .t{font-family:var(--display);font-size:1.1rem}.warn{color:var(--red)}
+  footer{color:var(--ink-soft);font-size:.78rem;padding:26px 0 60px}.disc{max-width:70ch;line-height:1.5}
+  .pathgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.pathgrid{grid-template-columns:1fr}}
+  .pathcard{border:1px solid var(--line);background:var(--card);border-radius:16px;padding:18px;cursor:pointer;transition:.18s;display:flex;gap:14px;align-items:flex-start}
+  .pathcard:hover{transform:translateY(-2px);box-shadow:0 8px 22px #0000000f;border-color:var(--green)}
+  .pathcard .pic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:1.5rem;background:var(--paper);flex-shrink:0}
+  .pathcard h3{font-family:var(--display);font-weight:600;font-size:1.08rem;margin-bottom:3px}
+  .pathcard p{font-size:.86rem;color:var(--ink-soft);line-height:1.45}
+  .pathcard .arr{margin-left:auto;color:var(--green);font-weight:700;align-self:center;font-size:1.2rem}
+  /* ===== Cash App-style language ===== */
+  header{background:#f3f4f3e6}
+  .secnav{background:#f3f4f3f2}
+  .brand{font-weight:700;letter-spacing:-.02em}
+  .brand .dot{background:var(--green);box-shadow:0 0 0 4px #00d54b22}
+  .sim-badge{background:#eafced;border-color:#bff0cd;color:var(--green-d)}
+  .card{border:none;border-radius:26px;box-shadow:0 2px 14px #0a0f0c0a;padding:24px}
+  .card h2{font-weight:700;letter-spacing:-.025em}
+  .hero h1{font-weight:700;letter-spacing:-.04em}
+  .hero h1 em{font-style:normal;color:var(--green-d)}
+  button,.chip,.cattab,.tgl,.pathcard,.nextbtn,.lang button{transition:transform .16s var(--spring),background .15s,color .15s,border-color .15s,filter .15s}
+  button:active,.chip:active,.cattab:active,.pathcard:active{transform:scale(.96)}
+  .chip{border-radius:999px;font-weight:600}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .secnav button.on,.cattab.on{background:var(--green);color:#06120b;border-color:var(--green)}
+  .nextbtn{border-radius:999px;background:var(--green);color:#06120b;font-weight:700;padding:15px 26px;box-shadow:0 4px 0 #00a93b}
+  .nextbtn:hover{filter:brightness(1.04)}
+  .nextbtn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none;filter:none}
+  .nextbtn:active{box-shadow:0 1px 0 #00a93b;transform:translateY(3px) scale(.99)}
+  .lang button.on{background:var(--ink)}
+  input[type=range]::-webkit-slider-thumb{background:var(--green);box-shadow:0 0 0 4px #00d54b33}
+  input[type=range]::-moz-range-thumb{background:var(--green)}
+  .tgl.on{background:var(--green);border-color:var(--green)}
+  .hl-num{font-weight:700;letter-spacing:-.045em;font-size:clamp(1.7rem,5.4vw,2.8rem)}
+  .green{color:var(--green-d)}
+  .seg.net{background:var(--green)}
+  .sec.on{animation:secin .4s var(--spring)}
+  @keyframes secin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .pathcard{border-radius:22px;border:none;box-shadow:0 2px 12px #0a0f0c0a}
+  .pathcard:hover{box-shadow:0 12px 28px #0a0f0c16}
+  .pathcard .pic{background:#eafced}
+  .pathcard h3{font-weight:700;letter-spacing:-.02em}
+  .pathcard .arr{background:none;color:var(--ink-soft);width:auto;height:auto;align-self:center;font-size:1.5rem;font-weight:500;transition:transform .18s var(--spring),color .15s}
+  .pathcard:hover .arr{color:var(--green-d);transform:translateX(4px)}
+  .pcard{border-radius:18px;border:none;background:var(--paper)}
+  /* ===== Unique "Try it" simulator CTA (interactive, vs the reading pillars) ===== */
+  .simcta{margin-top:16px;background:linear-gradient(135deg,#00e052,var(--green-d));border-radius:26px;padding:26px;color:#06120b;cursor:pointer;display:flex;align-items:center;gap:18px;box-shadow:0 12px 34px #00d54b3a;position:relative;overflow:hidden;transition:transform .18s var(--spring),box-shadow .18s}
+  .simcta:before{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:#ffffff22}
+  .simcta:after{content:"";position:absolute;right:30px;bottom:-50px;width:120px;height:120px;border-radius:50%;background:#ffffff14}
+  .simcta:hover{transform:translateY(-3px);box-shadow:0 18px 44px #00d54b4d}
+  .simcta:active{transform:scale(.99)}
+  .simcta .sim-ic{font-size:2.7rem;flex-shrink:0;filter:drop-shadow(0 2px 4px #0003);z-index:1}
+  .simcta .sim-body{flex:1;z-index:1}
+  .simcta h3{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.025em;margin-bottom:4px;color:#06120b}
+  .simcta p{font-size:.93rem;color:#06351b;line-height:1.45}
+  .simcta .sim-badge2{position:absolute;top:16px;right:18px;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;background:#06120b;color:#00e052;padding:5px 11px;border-radius:999px;z-index:1}
+  .simcta .sim-arr{font-size:1.7rem;font-weight:700;color:#06120b;z-index:1}
+  .sim-cta-btn{display:inline-flex;align-items:center;gap:9px;margin-top:14px;background:#fff;color:#06120b;font-family:var(--display);font-weight:800;font-size:.95rem;padding:10px 20px 10px 12px;border-radius:999px;z-index:1;position:relative;box-shadow:0 4px 14px #0003;animation:ctaBreathe 2.6s ease-in-out infinite}
+  .sim-cta-btn .pbadge{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#06120b;color:#00e052;font-size:.72rem;padding-left:2px;animation:ctaPulse 2.2s infinite}
+  .simcta:hover .sim-cta-btn{filter:brightness(1.04);transform:translateY(-1px)}
+  .simcta:active .sim-cta-btn{transform:scale(.97)}
+  @keyframes ctaPulse{0%{box-shadow:0 0 0 0 #06120b66}70%{box-shadow:0 0 0 13px #06120b00}100%{box-shadow:0 0 0 0 #06120b00}}
+  @keyframes ctaBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+  @media(prefers-reduced-motion:reduce){.sim-cta-btn,.sim-cta-btn .pbadge{animation:none}}
+  @media(max-width:560px){.simcta{padding:20px;gap:14px}.simcta .sim-ic{font-size:2.2rem}.simcta h3{font-size:1.2rem}}
+  .sim-sheen{position:absolute;top:0;left:-60%;width:45%;height:100%;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:skewX(-18deg);z-index:0;animation:simSheen 4.5s ease-in-out infinite}
+  @keyframes simSheen{0%{left:-60%}55%,100%{left:130%}}
+  .simcta .sim-arr{animation:simBob 1.6s ease-in-out infinite}
+  @keyframes simBob{0%,100%{transform:translateX(0)}50%{transform:translateX(7px)}}
+  .simcta .sim-badge2{animation:simPulse 2.4s ease-in-out infinite}
+  @keyframes simPulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .simcta .sim-ic{animation:simFloatIc 3.4s ease-in-out infinite}
+  @keyframes simFloatIc{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .simcta:after{animation:simFloat 6s ease-in-out infinite}
+  @keyframes simFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  @media(prefers-reduced-motion:reduce){.sim-sheen,.simcta .sim-arr,.simcta .sim-badge2,.simcta .sim-ic,.simcta:after{animation:none}}
+  .ex{border-left-color:var(--green);border-radius:12px}
+  .total-bar .t{font-weight:700}
+  .resetbtn{border:none;background:var(--paper-2);color:var(--ink);border-radius:999px;padding:15px 22px;font-weight:700;font-size:1rem;cursor:pointer;font-family:var(--body)}
+  .resetbtn:hover{filter:brightness(.97)}
+  .resetbtn:active{transform:scale(.97)}
+  .presetrow{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px}
+  .preset{border:none;background:var(--card);box-shadow:0 2px 12px #0a0f0c0a;border-radius:999px;padding:11px 17px;cursor:pointer;font-weight:600;font-family:var(--body);font-size:.92rem;display:flex;gap:8px;align-items:center;color:var(--ink)}
+  .preset:hover{box-shadow:0 6px 18px #0a0f0c14;transform:translateY(-1px)}
+  .preset:active{transform:scale(.96)}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  /* live "play" readout on Choose (terminal-style) */
+  .liveres{margin-top:16px;background:var(--ink);color:#eef2ef;border-radius:18px;padding:16px 18px;position:sticky;bottom:12px;z-index:5;box-shadow:0 8px 24px #0a0f0c2e}
+  .liveres .lr-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:5px 0}
+  .liveres .lr-cap{font-size:.85rem;color:#aeb6b0}
+  .liveres .lr-val{font-family:var(--display);font-weight:700;font-size:1.4rem;letter-spacing:-.02em}
+  .liveres .lr-val.green{color:#4ade80}
+  .liveres .lr-val.red{color:#ff8a7a}
+  .liveres .lr-verdict{font-size:.86rem;margin-top:8px;color:#dfe4e1;line-height:1.45;border-top:1px solid #ffffff1f;padding-top:8px}
+  .liveres .lr-verdict b{color:#fff}
+  .brk{font-size:.74rem;border:1px solid #f0b9b2;color:var(--red);background:#fdeeec;border-radius:999px;padding:5px 11px;cursor:pointer;font-weight:600;font-family:var(--body);align-self:center;transition:transform .16s var(--spring)}
+  .brk.on{background:var(--red);color:#fff;border-color:var(--red)}
+  input[type=range]:disabled{opacity:.35;cursor:not-allowed}
+  .prow .pcwrap input[type=range]:disabled ~ .pc{opacity:.35}
+  :focus-visible{outline:2px solid var(--green-d);outline-offset:2px}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .amt-txt{font-size:.8rem;color:var(--ink-soft);font-weight:600;margin-top:5px;min-height:1em}
+  .brk:active{transform:scale(.95)}
+  .pcard.broke{outline:2px solid #ffb3a8;outline-offset:-1px}
+  .lens{background:var(--paper);border:1px dashed var(--line);border-radius:14px;padding:14px 16px;margin:14px 0}
+  .lens-h{font-family:var(--display);font-weight:700;font-size:.95rem;margin-bottom:10px}
+  .backbar{padding:14px 0 0}
+  /* ===== Journey stepper (Try-it flow) ===== */
+  .simsteps{display:none;gap:6px;margin:14px 0 2px;align-items:center;overflow-x:auto}
+  .simsteps button{flex:1;min-width:0;border:none;background:var(--card);box-shadow:0 1px 6px #0a0f0c0a;border-radius:999px;padding:8px 10px;font-family:var(--body);font-weight:600;font-size:.8rem;color:var(--ink-soft);cursor:pointer;display:flex;align-items:center;gap:6px;justify-content:center;white-space:nowrap;transition:background .2s,color .2s,transform .16s var(--spring)}
+  .simsteps button:active{transform:scale(.96)}
+  .simsteps .sn{width:18px;height:18px;border-radius:50%;background:var(--paper-2);color:var(--ink-soft);display:grid;place-items:center;font-size:.7rem;font-weight:700;flex-shrink:0;transition:background .2s,color .2s}
+  .simsteps button.done{color:var(--green-d)}
+  .simsteps button.done .sn{background:var(--green);color:#fff}
+  .simsteps button.active{background:var(--green);color:#06120b}
+  .simsteps button.active .sn{background:#06120b;color:var(--green);animation:stepPop .3s var(--spring)}
+  @keyframes stepPop{0%{transform:scale(.5)}100%{transform:scale(1)}}
+  .simsteps button:disabled{opacity:.4;cursor:not-allowed}
+  /* ===== Site-wide engagement motion ===== */
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .sec.on .card{animation:rise .45s var(--spring) both}
+  .sec.on .card:nth-of-type(2){animation-delay:.05s}
+  .sec.on .card:nth-of-type(3){animation-delay:.10s}
+  .sec.on .card:nth-of-type(4){animation-delay:.15s}
+  .sec.on .card:nth-of-type(n+5){animation-delay:.2s}
+  .pathcard .pic{transition:transform .2s var(--spring)}
+  .pathcard:hover .pic{transform:scale(1.12) rotate(-4deg)}
+  .lrow .lic{transition:transform .2s var(--spring)}
+  .lrow:hover .lic{transform:scale(1.1)}
+  @media(prefers-reduced-motion:reduce){.sec.on .card{animation:none}.simsteps button.active .sn{animation:none}.pathcard:hover .pic,.lrow:hover .lic{transform:none}}
+  .backbtn{border:none;background:var(--paper-2);color:var(--ink);border-radius:999px;padding:9px 16px;font-weight:600;font-family:var(--body);font-size:.9rem;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:transform .16s var(--spring),filter .15s}
+  .backbtn:hover{filter:brightness(.97)}
+  .backbtn:active{transform:scale(.96)}
+  .soon{display:inline-block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#9a6a17;background:#fdf6e8;border:1px solid #f0c98a;border-radius:999px;padding:5px 12px}
+  .soonlist{margin:10px 0 0 20px;color:var(--ink);line-height:1.7;font-size:.95rem}
+  .soonlist li{margin:3px 0}
+  /* ===== Tax section ===== */
+  .taxdisc{background:#fdf6e8;border:1px solid #f0c98a;color:#7a5a12;border-radius:14px;padding:12px 16px;font-size:.84rem;margin:14px 0;line-height:1.5}
+  .slabwrap{display:flex;gap:18px;flex-wrap:wrap}
+  .slabcol{flex:1;min-width:240px}
+  .slabcol h3{font-family:var(--display);font-size:1rem;margin-bottom:6px}
+  table.slab{width:100%;border-collapse:collapse;font-size:.9rem}
+  table.slab th{text-align:left;font-family:var(--display);font-size:.74rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;border-bottom:2px solid var(--line)}
+  table.slab td{padding:7px 8px;border-bottom:1px solid var(--line)}
+  table.slab td:last-child{text-align:right;font-family:var(--display);font-weight:700}
+  .taxbucket{display:flex;gap:11px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--line)}
+  .taxbucket .br{flex:1}
+  .taxrule{font-size:.92rem;color:var(--ink);margin-top:2px}
+  .taxeg{font-size:.84rem;color:var(--ink-soft);margin-top:3px}
+  .dedlist{list-style:none}
+  .dedlist li{padding:10px 0;border-top:1px solid var(--line);font-size:.92rem;line-height:1.5}
+  .dedlist b{font-family:var(--display)}
+  .ltax{margin-top:10px;font-size:.86rem;color:var(--ink-soft)}
+  .taxlink{color:var(--green-d);font-weight:600;cursor:pointer;text-decoration:underline dotted}
+  .ltip{margin-top:10px;font-size:.88rem;color:var(--ink);background:#f0f4f1;border-radius:10px;padding:9px 12px;line-height:1.5}
+  .lsec{margin-top:11px}
+  .lsech{font-family:var(--display);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:3px}
+  .lsecb{font-size:.92rem;line-height:1.55;color:var(--ink)}
+  .lsecb b{color:var(--green-d)}
+  .pcwrap2{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+  .pccol{flex:1;min-width:200px}
+  .proscons{list-style:none;margin-top:4px}
+  .proscons li{font-size:.9rem;line-height:1.5;padding:3px 0 3px 16px;position:relative}
+  .proscons li:before{content:"•";position:absolute;left:2px;color:var(--ink-soft)}
+  .gloss{border-bottom:1px dotted var(--green-d);color:var(--green-d);cursor:help;font-weight:500}
+  .gloss.on{background:#eafced;border-radius:4px;padding:0 2px}
+  .glossdef{color:var(--ink-soft);font-style:italic;font-size:.9em}
+  /* ===== Investing library (read-only lessons) ===== */
+  .invcat{font-family:var(--display);font-weight:700;font-size:1rem;margin:22px 0 8px;color:var(--ink-soft)}
+  .lrow{background:var(--card);border-radius:16px;box-shadow:0 2px 12px #0a0f0c0a;margin:10px 0;overflow:hidden}
+  .lrow .lhead{display:flex;align-items:center;gap:12px;padding:15px 16px;cursor:pointer}
+  .lrow .lic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;background:var(--paper);flex-shrink:0}
+  .lrow .lnm{font-weight:700;font-family:var(--display);flex:1;letter-spacing:-.01em}
+  .lrow .lchev{color:var(--ink-soft);font-size:1.3rem;transition:transform .2s var(--spring);flex-shrink:0}
+  .lrow.open .lchev{transform:rotate(90deg)}
+  .lrow .lbody{display:none;padding:2px 16px 16px}
+  .lrow.open .lbody{display:block;animation:fade .25s ease}
+  .lbody .behav,.lbody .etext,.lbody .ex{margin-left:0}
+  .foodie{background:#fff7e8;border:1px solid #f0d49a;border-radius:12px;padding:11px 13px;font-size:.95rem;line-height:1.5;color:#5a4612;margin:2px 0 4px}
+  .foodie b{color:#9a6a17}
+  .kidtgl{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-family:var(--body);font-weight:600;font-size:.8rem;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:transform .16s var(--spring),background .15s,color .15s}
+  .kidtgl:active{transform:scale(.96)}
+  .kidtgl.on{background:var(--green);color:#06120b;border-color:var(--green)}
+  @media(max-width:560px){ .sim-badge{display:none} .head-in{gap:7px;padding:11px 12px} .kidtgl{padding:6px 9px;font-size:.72rem} .brand{font-size:1.1rem} }
+  /* ===== Ad slots (POC placeholders) ===== */
+  body{padding-bottom:92px}
+  .adbox{border:1px dashed #c7ccc8;border-radius:12px;background:#fafbfa;color:#9aa39d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:.78rem;font-weight:600;text-align:center;position:relative;line-height:1.4}
+  .adbox .adtag{position:absolute;top:6px;left:9px;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#bcc2bd}
+  .adbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;padding:8px 10px;background:#f3f4f3f0;backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+  .adbar .adbox{width:100%;max-width:728px;height:64px}
+  .adrail{display:none}
+  .liveres{bottom:104px}
+  @media(min-width:1300px){
+    .adrail{display:block;position:fixed;top:118px;width:160px;z-index:35}
+    .adrail .adbox{width:160px;height:600px}
+    .adleft{left:calc((100vw - 940px)/2 - 178px)}
+    .adright{right:calc((100vw - 940px)/2 - 178px)}
+  }
+  @media(max-width:560px){ body{padding-bottom:66px} .adbar .adbox{height:46px;font-size:.7rem} .liveres{bottom:78px} }
+  body.kid .kidhide{display:none}
+  body.kid .foodie{font-size:1.05rem}
+  .kidonly{display:none}
+  body.kid .kidonly{display:block}
+  .kidcard{background:#eafced;border:1px solid #bff0cd;border-radius:18px;padding:18px 20px;margin:14px 0;font-size:1rem;line-height:1.6;color:#0a3a1c}
+  .kidcard h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin-bottom:6px}
+  .coach{position:fixed;inset:0;background:#0a0f0cb0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;animation:fade .25s ease}
+  .coach-card{background:var(--card);border-radius:22px;padding:24px;max-width:430px;box-shadow:0 24px 64px #0007;animation:secin .35s var(--spring)}
+  .coach-card h3{font-family:var(--display);font-weight:700;font-size:1.3rem;margin-bottom:10px}
+  .coach-card ul{list-style:none;margin:0 0 16px}
+  .coach-card li{padding:10px 0;line-height:1.5;font-size:.96rem;border-top:1px solid var(--line)}
+  .coach-card li:first-child{border-top:none}
+  .coach-card .nextbtn,.coach-card .resetbtn{flex:1;min-width:140px}
+  .tour-spot{position:relative;z-index:10001;box-shadow:0 0 0 4px var(--green),0 0 0 9999px rgba(10,15,12,.78)!important;border-radius:14px}
+  .tourtip{position:fixed;z-index:10002;max-width:300px;background:var(--card);border-radius:16px;padding:16px 18px;box-shadow:0 16px 50px #0008;font-size:.94rem;line-height:1.5;animation:secin .3s var(--spring)}
+  .tourtip h4{font-family:var(--display);font-weight:700;font-size:1.05rem;margin-bottom:5px}
+  .tourtip .trow{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-top:13px}
+  .tourtip .tnext{border:none;background:var(--green);color:#06120b;font-weight:700;border-radius:999px;padding:8px 16px;cursor:pointer;font-family:var(--body)}
+  .tourtip .tskip{border:none;background:none;color:var(--ink-soft);cursor:pointer;font-size:.85rem}
+  .tourtip .tdot{font-size:.8rem;color:var(--ink-soft);font-weight:600}
+  .lbody .etext{margin-top:8px}
+  .lrow:active{transform:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-in">
+    <div class="brand" onclick="showSec('home')" style="cursor:pointer"><span class="dot"></span><span data-i="brand">Learn Money</span></div>
+    <div class="head-sp"></div>
+    <button id="resetBtn" class="kidtgl" onclick="confirmReset()" title="Clear everything and start fresh">↺ Reset</button>
+    <button id="kidBtn" class="kidtgl" onclick="toggleKid()" title="Show the simple, kid-friendly version of each lesson">🧒 Kid mode</button>
+    <span class="sim-badge" data-i="sim">Simulation</span>
+    <div class="lang" style="display:none"><button id="enBtn" class="on" onclick="setLang('en')">EN</button><button id="hiBtn" onclick="setLang('hi')">हिं</button></div>
+  </div>
+</header>
+<div class="secnav" role="navigation" aria-label="Sections"><div class="wrapn">
+  <button class="on" data-sec="home" data-i="navHome"></button>
+  <button data-sec="tryit" data-i="navTry"></button>
+  <button data-sec="invest" data-i="navInvest"></button>
+  <button data-sec="tax" data-i="navTax"></button>
+  <button data-sec="takehome" data-i="navTake"></button>
+  <button data-sec="credit" data-i="navCredit"></button>
+</div></div>
+
+<div class="wrap" role="main">
+  <div class="backbar" id="backbar" style="display:none"><button class="backbtn" onclick="goBack()">← <span data-i="backHome"></span></button></div>
+  <div class="simsteps" id="simsteps" style="display:none">
+    <button data-step="inflation"><span class="sn">1</span>Inflation</button>
+    <button data-step="how"><span class="sn">2</span>Setup</button>
+    <button data-step="choose"><span class="sn">3</span>Choose</button>
+    <button data-step="results"><span class="sn">4</span>Results</button>
+  </div>
+  <section id="sec-home" class="sec on">
+    <div class="hero"><h1 data-i="heroH"></h1><p data-i="heroP"></p></div>
+    <div id="simcard"></div>
+    <div style="font-family:var(--display);font-weight:600;font-size:1.15rem;margin:24px 0 12px" data-i="homeKick"></div>
+    <div class="pathgrid" id="pillargrid"></div>
+  </section>
+
+  <section id="sec-invest" class="sec">
+    <div class="hero"><h1 data-i="invH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="invP"></p></div>
+    <div class="cattabs" id="invtabs" style="margin-top:18px"></div>
+    <div id="invlist"></div>
+  </section>
+
+  <section id="sec-tax" class="sec">
+    <div class="hero"><h1 data-i="taxH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="taxP"></p></div>
+    <div class="taxdisc kidhide">⚠️ Educational and simplified. Figures reflect <b>FY2026-27</b> and are <b>pending CA review</b> — not tax advice. Consult a qualified CA for real decisions.</div>
+
+    <div class="kidcard kidonly">
+      <h3>🧒 Tax, simply</h3>
+      When you earn a lot — or your money grows a lot — the government takes a small <b>bite</b> called tax. Some piggy-bank types like <b>PPF</b> have <b>no bite at all</b>. Shares have a small bite. <b>Crypto</b> has a big bite. Tax is why "what you keep" is less than "what it grew to."
+    </div>
+
+    <div class="card kidhide">
+      <h2>Income tax slabs</h2>
+      <div class="hint">A "slab" means different parts of your income are taxed at different rates — only the income inside each band pays that band's rate. You pick one of two regimes each year.</div>
+      <div class="slabwrap">
+        <div class="slabcol"><h3>New regime <span class="bucket b-exempt">default</span></h3>
+          <table class="slab"><caption class="sr-only">New regime income tax slabs</caption><thead><tr><th>Income band</th><th>Rate</th></tr></thead><tbody id="slabNewBody"></tbody></table>
+          <div class="hint" style="margin-top:8px">+ ₹75,000 standard deduction. The <b>87A rebate</b> means income up to <b>₹12L</b> effectively pays <b>zero</b> tax. No deductions like 80C allowed.</div>
+        </div>
+        <div class="slabcol"><h3>Old regime</h3>
+          <table class="slab"><caption class="sr-only">Old regime income tax slabs</caption><thead><tr><th>Income band</th><th>Rate</th></tr></thead><tbody id="slabOldBody"></tbody></table>
+          <div class="hint" style="margin-top:8px">+ ₹50,000 standard deduction. Higher rates, lower exemption — but you <b>can</b> claim deductions (below).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card kidhide">
+      <h2>Surcharge &amp; cess</h2>
+      <div class="hint">On top of the slab tax, very high incomes pay an extra <b>surcharge</b>, and everyone pays a <b>4% health &amp; education cess</b> on the tax amount.</div>
+      <ul class="dedlist">
+        <li>Income up to ₹50L — <b>no surcharge</b></li>
+        <li>₹50L–₹1Cr — <b>10%</b> surcharge</li>
+        <li>₹1Cr–₹2Cr — <b>15%</b> surcharge</li>
+        <li>Above ₹2Cr — <b>25%</b> surcharge</li>
+        <li>Then <b>4% cess</b> on the total tax (surcharge for capital gains is capped at 15%).</li>
+      </ul>
+    </div>
+
+    <div class="card kidhide">
+      <h2>Deductions <span style="font-weight:400;color:var(--ink-soft);font-size:.9rem">(old regime only)</span></h2>
+      <div class="hint">Deductions lower the income you're taxed on. The old regime trades higher rates for these:</div>
+      <ul class="dedlist">
+        <li><b>80C — up to ₹1.5L:</b> PPF, ELSS, EPF, SSY, SCSS, ULIP, life insurance, home-loan principal. <span style="color:var(--green-d)">(products marked 80C in Investing earn this)</span></li>
+        <li><b>80CCD(1B) — up to ₹50k:</b> extra NPS contribution, on top of 80C.</li>
+        <li><b>80D:</b> health insurance premiums (self + family + parents).</li>
+        <li><b>80TTA / 80TTB:</b> savings-account / senior-citizen interest.</li>
+        <li><b>Section 24(b) — up to ₹2L:</b> interest paid on a home loan.</li>
+      </ul>
+    </div>
+
+    <div class="card kidhide">
+      <h2>How your investments are taxed</h2>
+      <div class="hint">Every product in Investing falls into one of five tax "buckets". This is why two products with the same return can leave you very different amounts.</div>
+      <div class="taxbucket"><span class="bucket b-slab">Slab</span><div class="br"><div class="taxrule"><b>Taxed at your income slab rate.</b> FDs, RDs, most bonds, debt funds.</div><div class="taxeg">A 30%-slab person loses ~30% of FD interest to tax.</div></div></div>
+      <div class="taxbucket"><span class="bucket b-flat">LTCG 12.5%</span><div class="br"><div class="taxrule"><b>Listed equity: 12.5% on long-term gains</b>, with the first <b>₹1.25L of gains each year tax-free</b> (pooled across all your equity). Stocks, equity funds, index/ELSS.</div><div class="taxeg">₹2L equity gain → only ₹75k is taxed at 12.5%.</div></div></div>
+      <div class="taxbucket"><span class="bucket b-exempt">Tax-free</span><div class="br"><div class="taxrule"><b>No tax at all.</b> PPF, EPF, SSY, tax-free bonds.</div><div class="taxeg">₹0 tax however much it grows — the quiet winner over long horizons.</div></div></div>
+      <div class="taxbucket"><span class="bucket b-mixed">Mixed</span><div class="br"><div class="taxrule"><b>12.5% if held long enough, otherwise your slab rate.</b> Gold, REITs, foreign stocks/funds.</div><div class="taxeg">Holding period decides which rate applies.</div></div></div>
+      <div class="taxbucket"><span class="bucket b-crypto">Crypto 30%</span><div class="br"><div class="taxrule"><b>Flat 30% on every gain</b> — no exemption, and losses can't offset other income.</div><div class="taxeg">₹1L crypto profit → ₹30k tax, even at a low income.</div></div></div>
+    </div>
+  </section>
+
+  <section id="sec-credit" class="sec">
+    <div class="hero"><h1 data-i="credH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="credP"></p></div>
+    <div class="taxdisc kidhide">⚠️ Educational and simplified — illustrative card terms (Indian cards typically charge 36–48% a year on unpaid balances). Not financial advice.</div>
+
+    <div class="kidcard kidonly">
+      <h3>🧒 Credit cards, simply</h3>
+      A credit card lets you spend the bank's money for a few weeks <b>free</b>. If you pay it <b>all back on time</b> → it stays free. If you pay <b>late</b> or only the tiny "minimum", the bank charges a <b>LOT</b> extra every month (interest) and the debt grows. Rule: only spend what you can pay back fully. Try the calculator below to see the trap.
+    </div>
+
+    <div class="card kidhide">
+      <h2>1. How the billing cycle works</h2>
+      <div class="hint">A credit card is a short-term loan you take every time you swipe. The bank groups it into a monthly cycle:</div>
+      <ul class="dedlist">
+        <li><b>Statement / billing date:</b> the bank totals everything you spent that cycle into one bill.</li>
+        <li><b>Due date:</b> usually ~15–20 days after the statement. This gap is the <b>grace period</b>.</li>
+        <li><b>Grace period (interest-free):</b> pay the <b>full</b> statement amount by the due date and you pay <b>₹0 interest</b> — you used the bank's money free for up to ~45–50 days.</li>
+        <li><b>Total due vs. minimum due:</b> the bill shows both. "Minimum due" (~5% of the balance) is the smallest payment to avoid a late fee — it is <b>not</b> the smart amount to pay.</li>
+      </ul>
+    </div>
+
+    <div class="card kidhide">
+      <h2>2. Paying on time vs. late — this is everything</h2>
+      <div class="slabwrap">
+        <div class="slabcol">
+          <h3 style="color:var(--green-d)">✅ Pay full amount, on time</h3>
+          <ul class="dedlist">
+            <li><b>₹0 interest</b> — grace period stays intact.</li>
+            <li>You keep your rewards/cashback for free.</li>
+            <li><b>Credit score rises</b> — on-time payment is the biggest score factor.</li>
+            <li>The card works <i>for</i> you: convenience + a free short loan.</li>
+          </ul>
+        </div>
+        <div class="slabcol">
+          <h3 style="color:var(--red)">⚠️ Pay late, partial, or only the minimum</h3>
+          <ul class="dedlist">
+            <li><b>Grace period is lost</b> — interest (36–48%/yr) is charged from the <b>purchase date</b>, not the due date.</li>
+            <li>Interest applies to the <b>old balance AND every new spend</b> until you clear it fully.</li>
+            <li><b>Late-payment fee</b> (tiered, ~₹500–₹1,300) <b>+ 18% GST</b> on fees and interest.</li>
+            <li><b>Credit score drops;</b> 30+ days late is reported and can hurt for years.</li>
+            <li>Repeated defaults → card blocked, higher rates, collection calls.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="taxdisc" style="margin-top:14px">The golden rule: <b>always pay the full statement amount by the due date.</b> If you ever can't, pay as much above the minimum as possible — the minimum is a debt trap, not a target.</div>
+    </div>
+
+    <div class="card kidhide">
+      <h2>3. How interest is actually charged</h2>
+      <div class="hint">Once you miss a full payment and start "revolving" a balance:</div>
+      <ul class="dedlist">
+        <li>Interest is quoted monthly (e.g. <b>3.5%/month</b>) which is about <b>42%/year</b> — far higher than any loan.</li>
+        <li>It's charged <b>daily</b> on your running balance from each purchase date, so it compounds fast.</li>
+        <li>New purchases get <b>no grace period</b> either, until the full balance is cleared.</li>
+      </ul>
+      <div class="taxeg" style="margin-top:6px">Example: ₹50,000 unpaid at 42%/yr is about <b>₹1,750 of interest in the very first month</b> — before you buy anything new.</div>
+    </div>
+
+    <div class="card kidhide">
+      <h2>4. Other costly traps</h2>
+      <div class="taxbucket"><span style="font-size:1.2rem">🏧</span><div class="br"><div class="taxrule"><b>Cash withdrawal.</b> Taking cash on a card charges interest from <b>day one</b> (no grace) plus a 2.5–3% fee. Avoid unless an emergency.</div></div></div>
+      <div class="taxbucket"><span style="font-size:1.2rem">📉</span><div class="br"><div class="taxrule"><b>Over-limit fee.</b> Spending past your limit triggers a fee and a score hit.</div></div></div>
+      <div class="taxbucket"><span style="font-size:1.2rem">🧾</span><div class="br"><div class="taxrule"><b>EMI conversion.</b> "No-cost EMI" usually isn't — interest is often hidden in the price or a processing fee. Read the rate.</div></div></div>
+      <div class="taxbucket"><span style="font-size:1.2rem">🌐</span><div class="br"><div class="taxrule"><b>Forex markup.</b> Overseas/foreign-currency spends add a ~1.5–3.5% markup.</div></div></div>
+    </div>
+
+    <div class="card kidhide">
+      <h2>5. Rewards vs. real cost</h2>
+      <div class="hint">Cashback, points and miles are genuinely valuable — but only on one condition.</div>
+      <ul class="dedlist">
+        <li>Rewards are typically worth ~<b>1–2%</b> of what you spend.</li>
+        <li>Card interest is ~<b>42%/year</b>. <b>One month of interest wipes out a whole year of rewards.</b></li>
+        <li>So rewards are free money <b>only if you pay in full every month.</b> Otherwise the card is winning, not you.</li>
+      </ul>
+    </div>
+
+    <div class="card kidhide">
+      <h2>6. Your credit score (CIBIL)</h2>
+      <div class="hint">A 300–900 score lenders use to decide your loans and rates. A card is the easiest way to build it — or wreck it.</div>
+      <ul class="dedlist">
+        <li><b>On-time payments (~35%)</b> — the single biggest factor. Never miss a due date.</li>
+        <li><b>Credit utilisation (~30%)</b> — keep spends under ~30% of your limit; high usage looks risky.</li>
+        <li><b>Age of credit, credit mix, new enquiries</b> make up the rest — don't churn many cards/loans at once.</li>
+        <li>A good score (750+) later gets you <b>cheaper home/car loans</b> — that's the real long-term payoff.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Cost of carrying a balance</h2>
+      <div class="hint">See what an unpaid balance really costs if you don't clear it in full.</div>
+      <div class="row">
+        <div class="col"><label class="l" for="ccBal">Unpaid balance (₹)</label><input type="number" id="ccBal" value="50000" min="1000" max="10000000" step="5000" aria-label="Unpaid card balance in rupees" oninput="renderCredit()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="ccBal"></div></div>
+        <div class="col"><label class="l" for="ccApr">Interest rate (APR) <span class="val"><span id="ccAprV">42</span>%</span></label><input type="range" id="ccApr" min="12" max="48" step="1" value="42" aria-label="Interest rate APR percent" oninput="renderCredit()"></div>
+      </div>
+      <div style="margin-top:14px"><label class="l">How you pay it back</label>
+        <div class="chips" id="ccModeChips"><div class="chip on" data-cm="min">Only the minimum (5%)</div><div class="chip" data-cm="fixed">A fixed amount/month</div></div>
+      </div>
+      <div class="col amtgrp" id="ccPayGrp" style="margin-top:12px"><label class="l" for="ccPay">Fixed payment per month (₹)</label><input type="number" id="ccPay" value="5000" min="100" max="10000000" step="500" aria-label="Fixed monthly payment in rupees" oninput="renderCredit()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="ccPay"></div></div>
+      <div class="flow" style="margin-top:16px"><div class="flow-track"><div class="seg net" id="ccSegP"></div><div class="seg tax" id="ccSegI"></div></div>
+        <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span>What you borrowed</span><span><span class="sw" style="background:var(--red)"></span>Pure interest</span></div>
+      </div>
+      <div class="marg" id="ccResult" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section id="sec-takehome" class="sec">
+    <div class="hero"><h1 data-i="thH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="thP"></p></div>
+    <div class="taxdisc">⚠️ Illustrative, FY2026-27, pending CA review — not tax advice. Everything is pre-filled; adjust any field.</div>
+    <div class="card">
+      <div class="lsech" style="margin-bottom:8px">Your salary</div>
+      <div class="row">
+        <div class="col"><label class="l" for="thCtc">Annual salary / CTC (₹)</label><input type="number" id="thCtc" value="1200000" min="100000" max="1000000000" step="50000" aria-label="Annual CTC in rupees" oninput="renderTakehome()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="thCtc"></div></div>
+        <div class="col"><label class="l" for="thBasic">Basic pay <span class="val"><span id="thBasicV">40</span>% of CTC</span></label><input type="range" id="thBasic" min="30" max="60" step="5" value="40" aria-label="Basic percent of CTC" oninput="renderTakehome()"></div>
+      </div>
+      <div style="margin-top:14px"><label class="l">Tax regime</label><div class="chips" id="thRegChips"><div class="chip on" data-thr="compare">Compare both</div><div class="chip" data-thr="new">New</div><div class="chip" data-thr="old">Old</div></div></div>
+      <div class="row" style="margin-top:12px">
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thEpfRate">EPF (% of basic)</label><input type="number" id="thEpfRate" value="12" min="0" max="100" step="1" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thHraPct">HRA (% of basic)</label><input type="number" id="thHraPct" value="50" min="0" max="100" step="5" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thGrat">Gratuity (% of basic)</label><input type="number" id="thGrat" value="4.81" min="0" max="20" step="0.1" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thEmpNps">Employer NPS (% of basic)</label><input type="number" id="thEmpNps" value="0" min="0" max="14" step="1" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        <div class="col mini" style="width:auto;flex:1"><label class="l" for="thPt">Professional tax (₹/yr)</label><input type="number" id="thPt" value="2400" min="0" max="50000" step="200" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+      </div>
+      <div id="thOldGrp" style="margin-top:14px">
+        <label class="l">Your age <span style="font-weight:400;color:var(--ink-soft)">(affects old-regime exemption)</span></label>
+        <div class="chips" id="thAgeChips"><div class="chip on" data-age="lt60">Under 60</div><div class="chip" data-age="60">60–80</div><div class="chip" data-age="80">80+</div></div>
+        <label class="l" style="margin-top:12px">Old-regime deductions &amp; HRA <span style="font-weight:400;color:var(--ink-soft)">(used only for the old regime)</span></label>
+        <div class="row" style="margin-top:6px">
+          <div class="col"><label class="l" for="thRent">Yearly rent paid (₹)</label><input type="number" id="thRent" value="240000" min="0" max="10000000" step="10000" oninput="renderTakehome()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="thRent"></div></div>
+          <div class="col"><label class="l">City</label><div class="chips" id="thMetroChips"><div class="chip on" data-metro="1">Metro</div><div class="chip" data-metro="0">Non-metro</div></div></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="col mini" style="width:auto;flex:1"><label class="l" for="thC">80C (₹)</label><input type="number" id="thC" value="150000" min="0" max="150000" step="10000" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+          <div class="col mini" style="width:auto;flex:1"><label class="l" for="thD">80D health (₹)</label><input type="number" id="thD" value="25000" min="0" max="100000" step="5000" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+          <div class="col mini" style="width:auto;flex:1"><label class="l" for="thNps">NPS 80CCD(1B) (₹)</label><input type="number" id="thNps" value="50000" min="0" max="50000" step="10000" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+          <div class="col mini" style="width:auto;flex:1"><label class="l" for="thHome">Home-loan interest (₹)</label><input type="number" id="thHome" value="0" min="0" max="200000" step="10000" oninput="renderTakehome()" onblur="clampNum(this)"></div>
+        </div>
+      </div>
+      <div class="liveres" style="position:static;margin-top:18px">
+        <div class="lr-row"><span class="lr-cap">Monthly in-hand</span><span class="lr-val green" id="thNet">₹0</span></div>
+        <div class="lr-row"><span class="lr-cap">Per year</span><span class="lr-val" id="thNetYr" style="font-size:1.05rem">₹0</span></div>
+        <div class="lr-verdict" id="thVerdict"></div>
+      </div>
+      <div class="pcards" id="thCompare" style="margin-top:14px"></div>
+      <div class="marg" id="thBreak" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <section id="sec-tryit" class="sec">
+    <div class="hero"><h1 data-i="tryH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="tryP"></p></div>
+    <div style="font-family:var(--display);font-weight:600;font-size:1.15rem;margin:24px 0 12px" data-i="tryKick"></div>
+    <div class="pathgrid" id="pathgrid"></div>
+    <div style="font-family:var(--display);font-weight:600;font-size:1rem;margin:22px 0 10px;color:var(--ink-soft)" data-i="presetKick"></div>
+    <div class="presetrow" id="presetrow"></div>
+  </section>
+
+  <section id="sec-inflation" class="sec">
+    <div class="card">
+      <h2 data-i="infH"></h2><div class="hint" data-i="infHint"></div>
+      <div class="row">
+        <div class="col"><label class="l" for="infAmt" data-i="infAmtL"></label><input type="number" id="infAmt" value="500000" min="1000" max="1000000000" step="10000" aria-label="Money kept as cash in rupees" oninput="renderInflation()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="infAmt"></div></div>
+        <div class="col"><label class="l" for="infRate"><span data-i="infRateL"></span> <span class="val"><span id="infRateV">5.0</span>%</span></label><input type="range" id="infRate" min="2" max="10" step="0.5" value="5" aria-label="Inflation rate percent" oninput="renderInflation()"><div data-i="infRbi" style="font-size:.78rem;color:var(--ink-soft);margin-top:6px"></div></div>
+      </div>
+      <div style="margin-top:14px"><label class="l" data-i="infHorizonL"></label><div class="chips" id="infChips"><div class="chip" data-h="5">5</div><div class="chip on" data-h="10">10</div><div class="chip" data-h="20">20</div><div class="chip" data-h="30">30</div></div></div>
+      <canvas id="infChart" height="190"></canvas>
+      <div class="flow-key"><span><span class="sw" style="background:#efe7d6;border:1px dashed #b9ad95"></span><span data-i="infKeyHave"></span></span><span><span class="sw" style="background:var(--red)"></span><span data-i="infKeyWorth"></span></span></div>
+      <div class="marg" id="infResult" style="margin-top:14px"></div>
+      <button class="nextbtn" onclick="showSec('how')" data-i="next"></button>
+    </div>
+  </section>
+
+  <section id="sec-how" class="sec">
+    <div class="card">
+      <h2 data-i="s1h"></h2><div class="hint" data-i="s1hint"></div>
+      <label class="l" data-i="modeL"></label>
+      <div class="chips" id="modeChips"><div class="chip on" data-m="lumpsum" data-i="mLump"></div><div class="chip" data-m="sip" data-i="mSip"></div><div class="chip" data-m="swp" data-i="mSwp"></div></div>
+      <div class="marg" id="modeBox"></div>
+      <div class="row" style="margin-top:14px">
+        <div class="col amtgrp on" id="grpLump"><label class="l" for="lumpAmt" data-i="lumpL"></label><input type="number" id="lumpAmt" value="500000" min="1000" max="1000000000" step="10000" aria-label="One-time amount in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="lumpAmt"></div></div>
+        <div class="col amtgrp" id="grpSip"><label class="l" for="sipAmt" data-i="sipL"></label><input type="number" id="sipAmt" value="10000" min="500" max="10000000" step="500" aria-label="Monthly investment in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="sipAmt"></div></div>
+        <div class="col amtgrp" id="grpSwpC"><label class="l" for="swpCorpus" data-i="swpCL"></label><input type="number" id="swpCorpus" value="2000000" min="10000" max="10000000000" step="50000" aria-label="Starting corpus in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpCorpus"></div></div>
+        <div class="col amtgrp" id="grpSwpW"><label class="l" for="swpWd" data-i="swpWL"></label><input type="number" id="swpWd" value="15000" min="500" max="100000000" step="500" aria-label="Monthly withdrawal in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpWd"></div></div>
+        <div class="col kidhide"><label class="l" for="inc"><span data-i="incL"></span> <span class="val"><span id="incV"></span></span></label><input type="range" id="inc" min="0" max="1000" step="1" value="0" aria-label="Your annual income" oninput="render()"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <div class="col"><label class="l" for="planYears">Invest for (years)</label><input type="number" id="planYears" value="10" min="1" max="40" step="1" aria-label="Years to invest" oninput="setPlanYears()" onblur="clampNum(this)"></div>
+        <div class="col amtgrp" id="grpStepup"><label class="l" for="sipStepup">Yearly SIP increase (%)</label><input type="number" id="sipStepup" value="10" min="0" max="50" step="1" aria-label="Yearly SIP step-up percent" oninput="render()" onblur="clampNum(this)"></div>
+      </div>
+      <div class="kidhide" style="margin-top:16px"><label class="l" data-i="regL"></label><div class="chips" id="regChips"><div class="chip on" data-r="new" data-i="regNew"></div><div class="chip" data-r="old" data-i="regOld"></div></div></div>
+      <div class="marg kidhide" id="regBox" style="margin-top:10px"></div>
+      <div class="marg kidhide" id="margBox"></div>
+      <div class="kidcard kidonly">🧒 Income and tax are set to a sensible default. A grown-up can switch off Kid mode to change them — for now, just pick how you'll invest and how much.</div>
+      <button class="nextbtn" style="margin-top:18px" onclick="showSec('choose')" data-i="next"></button>
+    </div>
+  </section>
+
+  <section id="sec-choose" class="sec">
+    <div class="card">
+      <h2 data-i="s2h"></h2><div class="hint" data-i="s2hint"></div>
+      <div class="cattabs" id="cattabs"></div>
+      <div id="plist"></div>
+      <div class="total-bar"><span class="t" data-i="totalL"></span><span class="t" id="totalPct">100%</span></div>
+      <div class="marg" id="allocWarn" style="display:none;margin-top:12px;border-color:#f0b9b2;background:#fdeeec;color:var(--red)"></div>
+      <div class="liveres" id="liveRes">
+        <div class="lr-row"><span class="lr-cap" data-i="liveKeepL"></span><span class="lr-val green" id="liveKeep">₹0</span></div>
+        <div class="lr-row"><span class="lr-cap" data-i="liveLostL"></span><span class="lr-val red" id="liveLost">₹0</span></div>
+        <div class="lr-verdict" id="liveVerdict"></div>
+      </div>
+      <div class="btnrow">
+        <button class="nextbtn" id="toResults" onclick="proceedToResults()" data-i="seeResults"></button>
+      </div>
+    </div>
+  </section>
+
+  <section id="sec-results" class="sec">
+    <div class="card">
+      <h2 data-i="s3h"></h2><div class="hint" id="resSummary"></div>
+      <div class="lens">
+        <div class="lens-h" data-i="lensH"></div>
+        <label class="l" data-i="exitL"></label>
+        <div class="chips" id="exitChips"><div class="chip on" data-exit="0" data-i="exitHold"></div><div class="chip" data-exit="1" data-i="exitEarly"></div></div>
+        <div class="marg" id="exitBox" style="margin-top:8px"></div>
+        <div class="marg" id="exitCalc" style="display:none;margin-top:8px;border-color:#f0b9b2;background:#fdeeec"></div>
+        <label class="l" data-i="adjL" style="margin-top:14px"></label>
+        <div class="chips" id="adjChips"><div class="chip on" data-adj="0" data-i="adjFuture"></div><div class="chip" data-adj="1" data-i="adjToday"></div></div>
+        <label class="l" data-i="adjYrsL" style="margin-top:12px"></label>
+        <div class="chips" id="adjYrsChips"><div class="chip on" data-iy="0" data-i="adjYrsAuto"></div><div class="chip" data-iy="5">5 yrs</div><div class="chip" data-iy="10">10 yrs</div><div class="chip" data-iy="20">20 yrs</div><div class="chip" data-iy="30">30 yrs</div></div>
+        <div class="marg" id="adjBox" style="margin-top:8px"></div>
+      </div>
+      <div class="marg" id="dedBox" style="display:none;border-color:#9bcfae;background:#eef8f1"></div>
+      <div class="marg" id="swpDryBox" style="display:none;border-color:#f0c98a;background:#fdf6e8;color:#9a6a17"></div>
+      <div class="headline">
+        <div class="hl-box"><div class="hl-cap" id="cap1"></div><div class="hl-num green" id="num1">₹0</div></div>
+        <div class="hl-box"><div class="hl-cap" id="cap2"></div><div class="hl-num red" id="num2">₹0</div></div>
+        <div class="hl-box"><div class="hl-cap" id="cap3"></div><div class="hl-num amber" id="num3">0</div></div>
+      </div>
+      <div class="flow"><div class="flow-track"><div class="seg net" id="segNet"></div><div class="seg chg" id="segChg"></div><div class="seg tax" id="segTax"></div></div>
+        <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span><span data-i="keyNet"></span></span><span><span class="sw" style="background:var(--amber)"></span><span data-i="keyChg"></span></span><span><span class="sw" style="background:var(--red)"></span><span data-i="keyTax"></span></span></div>
+      </div>
+      <canvas id="growth" height="200"></canvas>
+      <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
+      <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
+      <div class="pcards" id="pcards"></div>
+    </div>
+  </section>
+
+  <footer><div class="disc" data-i="disc"></div></footer>
+</div>
+
+<div id="coach" class="coach" style="display:none" onclick="if(event.target===this)dismissCoach()">
+  <div class="coach-card">
+    <h3>👋 Welcome to Learn Money</h3>
+    <ul>
+      <li>📈 <b>Tap a topic</b> to learn how each money product really works.</li>
+      <li>🧪 <b>Start the simulator</b> to build a pretend portfolio and see what you keep after tax, charges &amp; inflation.</li>
+      <li>🧒 New to money? Turn on <b>Kid mode</b> (top-right) for simple, food-style explanations.</li>
+    </ul>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+      <button class="nextbtn" onclick="startTour()">🚀 Show me around</button>
+      <button class="resetbtn" onclick="toggleKid();dismissCoach()">🧒 Start simple</button>
+    </div>
+    <button class="tskip" style="margin-top:10px;border:none;background:none;color:var(--ink-soft);cursor:pointer;font-size:.85rem" onclick="dismissCoach()">Skip — I'll explore on my own</button>
+  </div>
+</div>
+<div id="tourtip" class="tourtip" style="display:none"></div>
+
+<aside class="adrail adleft" id="adLeft"><div class="adbox"><span class="adtag">Ad</span>Advertisement<br>160 × 600</div></aside>
+<aside class="adrail adright" id="adRight"><div class="adbox"><span class="adtag">Ad</span>Advertisement<br>160 × 600</div></aside>
+<div class="adbar" id="adBar"><div class="adbox"><span class="adtag">Ad</span>Advertisement — 728 × 90</div></div>
+
+<script>
+/* ===== ENGINE ===== */
+const REGIME_NEW=[[0,400000,0],[400000,800000,0.05],[800000,1200000,0.10],[1200000,1600000,0.15],[1600000,2000000,0.20],[2000000,2400000,0.25],[2400000,Infinity,0.30]];
+const REGIME_OLD=[[0,250000,0],[250000,500000,0.05],[500000,1000000,0.20],[1000000,Infinity,0.30]];
+const CESS=0.04, EQ_EXEMPT=125000, LIMIT_80C=150000;
+const PRODUCTS=[
+  {id:'stocks',icon:'📊',cat:'equity',bucket:'flat',anim:'bumpy',spread:0.12,charge:0,early:null,is80c:false},
+  {id:'equity_mf',icon:'📈',cat:'equity',bucket:'flat',anim:'bumpy',spread:0.1,charge:0.015,early:null,is80c:false},
+  {id:'index',icon:'🧺',cat:'equity',bucket:'flat',anim:'bumpy',spread:0.1,charge:0.003,early:null,is80c:false},
+  {id:'elss',icon:'🌱',cat:'equity',bucket:'flat',anim:'bumpy',spread:0.1,charge:0.013,early:null,is80c:true},
+  {id:'hybrid',icon:'⚖️',cat:'equity',bucket:'mixed',anim:'bumpy',spread:0.06,charge:0.012,early:null,is80c:false},
+  {id:'reit',icon:'🏢',cat:'equity',bucket:'mixed',anim:'bumpy',spread:0.08,charge:0,early:null,is80c:false},
+  {id:'fd',icon:'🏦',cat:'safe',bucket:'slab',anim:'steady',spread:0.01,charge:0,early:'fdPen',is80c:false},
+  {id:'rd',icon:'📅',cat:'safe',bucket:'slab',anim:'steady',spread:0.01,charge:0,early:null,is80c:false},
+  {id:'savings',icon:'💵',cat:'safe',bucket:'slab',anim:'steady',spread:0.005,charge:0,early:null,is80c:false},
+  {id:'corp_fd',icon:'🏬',cat:'safe',bucket:'slab',anim:'steady',spread:0.04,charge:0,early:null,is80c:false},
+  {id:'ppf',icon:'🛡️',cat:'govt',bucket:'exempt',anim:'locked',spread:0.005,charge:0,early:'ppfLock',is80c:true},
+  {id:'epf',icon:'👷',cat:'govt',bucket:'exempt',anim:'locked',spread:0.005,charge:0,early:null,is80c:false},
+  {id:'nps',icon:'🪺',cat:'govt',bucket:'exempt',anim:'locked',spread:0.06,charge:0.001,early:null,is80c:false},
+  {id:'ssy',icon:'👧',cat:'govt',bucket:'exempt',anim:'locked',spread:0.003,charge:0,early:null,is80c:true},
+  {id:'scss',icon:'👴',cat:'govt',bucket:'slab',anim:'steady',spread:0.005,charge:0,early:null,is80c:true},
+  {id:'apy',icon:'🧓',cat:'govt',bucket:'slab',anim:'steady',spread:0.005,charge:0,early:null,is80c:false},
+  {id:'post_office',icon:'📮',cat:'govt',bucket:'slab',anim:'steady',spread:0.005,charge:0,early:null,is80c:false},
+  {id:'gsec',icon:'🏛️',cat:'bonds',bucket:'slab',anim:'steady',spread:0.01,charge:0,early:null,is80c:false},
+  {id:'corp_bond',icon:'🧾',cat:'bonds',bucket:'slab',anim:'steady',spread:0.03,charge:0,early:null,is80c:false},
+  {id:'rbi_frsb',icon:'🇮🇳',cat:'bonds',bucket:'slab',anim:'steady',spread:0.005,charge:0,early:null,is80c:false},
+  {id:'tax_free_bonds',icon:'🎟️',cat:'bonds',bucket:'exempt',anim:'locked',spread:0.005,charge:0,early:null,is80c:false},
+  {id:'tbill_sdl',icon:'📜',cat:'bonds',bucket:'slab',anim:'steady',spread:0.01,charge:0,early:null,is80c:false},
+  {id:'gold_etf',icon:'🥇',cat:'gold',bucket:'mixed',anim:'floaty',spread:0.08,charge:0.006,early:null,is80c:false},
+  {id:'gold_physical',icon:'💍',cat:'gold',bucket:'mixed',anim:'floaty',spread:0.08,charge:0,early:null,is80c:false},
+  {id:'sgb',icon:'🪙',cat:'gold',bucket:'mixed',anim:'floaty',spread:0.08,charge:0,early:null,is80c:false},
+  {id:'debt_mf',icon:'📉',cat:'advanced',bucket:'slab',anim:'steady',spread:0.03,charge:0.005,early:null,is80c:false},
+  {id:'crypto',icon:'🪩',cat:'advanced',bucket:'crypto',anim:'wild',spread:0.3,charge:0,early:null,is80c:false},
+  {id:'foreign',icon:'🌎',cat:'advanced',bucket:'mixed',anim:'bumpy',spread:0.12,charge:0,early:null,is80c:false},
+  {id:'intl_mf',icon:'🌐',cat:'advanced',bucket:'mixed',anim:'bumpy',spread:0.1,charge:0.012,early:null,is80c:false},
+  {id:'ulip',icon:'📑',cat:'advanced',bucket:'exempt',anim:'bumpy',spread:0.06,charge:0.02,early:null,is80c:true},
+  {id:'endowment',icon:'🛟',cat:'advanced',bucket:'exempt',anim:'locked',spread:0.01,charge:0.015,early:null,is80c:true},
+  {id:'real_estate',icon:'🏠',cat:'advanced',bucket:'mixed',anim:'steady',spread:0.05,charge:0,early:null,is80c:false}
+];
+const PS={
+  stocks:{active:false,pct:0,years:7,ret:13,broke:false},
+  equity_mf:{active:false,pct:0,years:7,ret:12,broke:false},
+  index:{active:false,pct:0,years:7,ret:11.5,broke:false},
+  elss:{active:false,pct:0,years:3,ret:13,broke:false},
+  hybrid:{active:false,pct:0,years:5,ret:10,broke:false},
+  reit:{active:false,pct:0,years:5,ret:9,broke:false},
+  fd:{active:false,pct:0,years:5,ret:6.8,broke:false},
+  rd:{active:false,pct:0,years:5,ret:6.5,broke:false},
+  savings:{active:false,pct:0,years:1,ret:3,broke:false},
+  corp_fd:{active:false,pct:0,years:3,ret:8,broke:false},
+  ppf:{active:false,pct:0,years:15,ret:7.1,broke:false},
+  epf:{active:false,pct:0,years:15,ret:8.25,broke:false},
+  nps:{active:false,pct:0,years:20,ret:10,broke:false},
+  ssy:{active:false,pct:0,years:15,ret:8.2,broke:false},
+  scss:{active:false,pct:0,years:5,ret:8.2,broke:false},
+  apy:{active:false,pct:0,years:20,ret:8,broke:false},
+  post_office:{active:false,pct:0,years:5,ret:7.5,broke:false},
+  gsec:{active:false,pct:0,years:5,ret:7,broke:false},
+  corp_bond:{active:false,pct:0,years:5,ret:8.5,broke:false},
+  rbi_frsb:{active:false,pct:0,years:7,ret:8.05,broke:false},
+  tax_free_bonds:{active:false,pct:0,years:10,ret:5.5,broke:false},
+  tbill_sdl:{active:false,pct:0,years:3,ret:6.8,broke:false},
+  gold_etf:{active:false,pct:0,years:5,ret:9,broke:false},
+  gold_physical:{active:false,pct:0,years:5,ret:9,broke:false},
+  sgb:{active:false,pct:0,years:8,ret:9,broke:false},
+  debt_mf:{active:false,pct:0,years:5,ret:7.5,broke:false},
+  crypto:{active:false,pct:0,years:3,ret:18,broke:false},
+  foreign:{active:false,pct:0,years:7,ret:13,broke:false},
+  intl_mf:{active:false,pct:0,years:7,ret:12,broke:false},
+  ulip:{active:false,pct:0,years:5,ret:8,broke:false},
+  endowment:{active:false,pct:0,years:20,ret:5,broke:false},
+  real_estate:{active:false,pct:0,years:10,ret:7,broke:false}
+};
+const PS_DEFAULTS=JSON.parse(JSON.stringify(PS));
+const PRESETS={
+ safe:{mode:'lumpsum',alloc:{fd:30,ppf:30,gsec:20,index:20}},
+ aggressive:{mode:'sip',alloc:{index:40,equity_mf:25,stocks:20,crypto:15}},
+ balanced:{mode:'lumpsum',alloc:{index:35,ppf:20,fd:15,gold_etf:15,equity_mf:15}}
+};
+const BCLS={slab:'b-slab',flat:'b-flat',exempt:'b-exempt',mixed:'b-mixed',crypto:'b-crypto'};
+// plain-language icon per behaviour type (paired with the written caption in STR.behav)
+const BEHAV_IC={steady:'📈',bumpy:'🎢',wild:'⚡',locked:'🔒',floaty:'🥇'};
+const GLOSS={"NAV": "the price of one unit of a mutual fund, updated once a day", "demat account": "an online locker that holds your shares and fund units — like a bank account for investments", "demat": "an online locker that holds your shares and fund units", "expense ratio": "the yearly fee a fund charges, taken as a small % of your money", "LTCG": "long-term capital gains — profit on something you held a long time before selling", "STCG": "short-term capital gains — profit on something you sold soon after buying", "STT": "a small government tax on each stock trade", "dividends": "a share of a company's profit, paid out to people who own its shares", "dividend": "a share of a company's profit, paid out to people who own its shares", "distributions": "money a REIT or fund pays out to investors, like rent or interest", "distribution": "money a REIT or fund pays out to investors, like rent or interest", "yield": "the yearly income from an investment, shown as a % of its price", "rebalances": "adjusts the mix back to target — e.g. sells some stocks to buy bonds", "rebalance": "adjust the mix back to target — e.g. sell some stocks to buy bonds", "corpus": "the total pot of money you've built up", "SIP": "investing a fixed amount every month, automatically", "SWP": "withdrawing a fixed amount every month from your investments", "lump sum": "a single one-time amount, instead of monthly bits", "units": "the 'shares' of a mutual fund that you own", "large-cap": "a very big, well-established company", "small-cap": "a smaller, younger company — riskier but can grow faster", "ETFs": "funds that trade on the stock exchange like a single share", "ETF": "a fund that trades on the stock exchange like a single share", "brokerage": "the fee a broker charges to buy or sell for you", "GST": "a government tax added on fees and services", "forex": "foreign currency — money from another country", "EMI": "equated monthly instalment — paying something off in equal monthly amounts", "APR": "annual percentage rate — the interest rate charged per year", "grace period": "the interest-free days you get to pay your card bill in full", "credit score": "a number (300–900) lenders use to judge how reliably you repay", "utilisation": "how much of your card limit you're currently using", "CIBIL": "India's main credit score, from 300 to 900", "NBFC": "a finance company that lends like a bank but isn't one", "ULIP": "a policy that mixes life insurance with market-linked investing", "endowment": "a traditional life-insurance policy that also pays a guaranteed lump sum if you survive the term", "term insurance": "pure life cover — pays your family if you die, with no investment or return", "money-back": "an insurance plan that returns part of your money at intervals, not just at the end", "10(10D)": "the rule that makes life-insurance maturity tax-free, within premium limits", "TDS": "tax deducted at source — a slice of tax cut before you even get the money", "EEE": "exempt-exempt-exempt — no tax going in, while growing, or coming out", "annuity": "a plan that pays you a fixed amount regularly, usually for life", "coupon": "the fixed interest a bond pays you", "indexation": "adjusting your purchase price for inflation so you're taxed on less gain", "feeder fund": "an Indian fund that simply invests into one bigger overseas fund", "DICGC": "the body that insures bank deposits up to ₹5 lakh", "surcharge": "an extra tax on top of your tax, for very high incomes", "cess": "a small extra charge (4%) added on your tax, for health & education", "standard deduction": "a flat amount cut from your salary before tax, no proof needed", "rebate": "a reduction that can bring your tax down to zero up to a limit (Section 87A)", "80C": "a rule letting you cut up to ₹1.5L from taxable income via certain investments", "80D": "a deduction for health-insurance premiums you pay", "80TTA": "a deduction for interest earned in a savings account", "80CCD(1B)": "an extra ₹50,000 deduction for putting money into NPS", "NSC": "National Savings Certificate — a fixed-term government savings scheme", "KVP": "Kisan Vikas Patra — a government scheme that doubles your money over a set period", "remittance": "sending money abroad — capped yearly under RBI rules"};
+let LANG='en', REGIME='new', MODE='lumpsum', INCOME=1500000, CURRENT_CAT=null, EXIT_EARLY=false, INFL_ADJ=false, INFL_YRS=0, PLAN_YEARS=10;
+function sipStep(){ const e=document.getElementById('sipStepup'); return e?Math.max(0,+e.value||0)/100:0; } // yearly SIP increase
+function setPlanYears(){ const e=document.getElementById('planYears'); PLAN_YEARS=Math.max(1,Math.min(40,Math.round(+e.value||10))); render(); }
+
+/* ===== I18N ===== */
+const STR={
+ en:{
+  brand:"Learn Money", sim:"Simulation",
+  heroH:["Learn how money ","actually"," works"],
+  heroP:"Investing, tax and credit — explained simply. Understand what each product really earns you after tax, charges and inflation, then try it yourself.",
+  navInf:"Inflation", navHow:"Setup", navChoose:"Choose", navResults:"Results", next:"Next →", seeResults:"See full breakdown →",
+  navHome:"Home", navInvest:"Investing", navTax:"Tax", navTake:"Salary", navCredit:"Credit", navTry:"Try it",
+  thH:"Salary calculator", thP:"Enter your salary — everything's pre-filled, adjust anything. See your real monthly in-hand after tax, PF and professional tax, and which regime pays you more.",
+  homeKick:"What would you like to learn?",
+  pillars:[
+   {key:'invest',ic:'📈',t:'Investing',d:'How every product works — stocks, FDs, gold, bonds, PPF and more. 32 explained simply.'},
+   {key:'tax',ic:'🧾',t:'Tax & take-home',d:'Income tax slabs, deductions like 80C, and how each investment is taxed — what you actually keep.'},
+   {key:'takehome',ic:'💼',t:'Salary calculator',d:'Enter your salary (CTC) and see your real monthly in-hand after tax, PF and more — old vs new regime.'},
+   {key:'credit',ic:'💳',t:'Credit & borrowing',d:'How credit cards really work — interest, the minimum-due trap, and your credit score.'},
+   {key:'tryit',ic:'🧪',t:'Try it (Simulator)',d:'Want to see investing play out? Build a mock portfolio and watch it grow after tax and charges.'}
+  ],
+  invH:"How each investment works", invP:"Tap any product to learn what it is, how it behaves, and a real example. Browse all 32 — nothing is hidden behind a paywall or jargon.",
+  taxH:"Tax & take-home", taxP:"The part most tools hide: how much of your returns you actually keep.",
+  credH:"Credit & borrowing", credP:"Borrowed money has a cost too — here's how to see it.",
+  tryH:"Try the simulator", tryP:"Pick how you'd invest, choose products, and see what you keep after tax, charges and inflation.", tryKick:"Where would you like to start?", libAll:"All", backHome:"Back",
+  paths:[
+   {ic:'🌧️',t:'What doing nothing costs',d:'See how inflation quietly shrinks money left lying around as cash.',sec:'inflation'},
+   {ic:'💰',t:'Invest a lump sum',d:'Put a one-time amount to work and watch it compound over the years.',sec:'how',mode:'lumpsum'},
+   {ic:'📅',t:'Start a monthly SIP',d:'Build wealth with small, steady investments every month.',sec:'how',mode:'sip'},
+   {ic:'🏧',t:'Make your money pay you',d:'Turn a corpus into a steady monthly income with an SWP.',sec:'how',mode:'swp'},
+  ],
+  infH:"Doing nothing has a cost", infHint:"Cash lying around doesn't grow — but prices keep rising, so every year your money quietly buys less. That's inflation, and it's why 'not investing' is also a choice.",
+  infAmtL:"Money kept as cash (₹)", infRateL:"Inflation rate", infHorizonL:"Over how many years", infRbi:"The RBI tries to keep inflation near 4%, but everyday prices often rise faster.",
+  infKeyHave:"What you still have (on paper)", infKeyWorth:"What it can actually buy",
+  infResult:(amt,real,loss,pct,n)=>`Keep ₹${amt} as cash and in ${n} years it still reads ₹${amt} — but it'll only buy about <b>₹${real}</b> worth of things. A quiet loss of <b>₹${loss}</b> (${pct}% of its value).`,
+  infSamosa:(f)=>` A ₹100 plate of food today would cost about ₹${fmtIN(f)} by then.`,
+  s1h:"How you invest", s1hint:"Pick how you'll invest — once, monthly, or drawing an income. Set your income (it drives your tax) and your tax regime. Every number is editable.",
+  modeL:"Investing style", mLump:"Invest once", mSip:"Invest monthly", mSwp:"Take money out",
+  modeBox:{lumpsum:"<b>Invest once (lump sum):</b> put the whole amount in once and let it compound.",sip:"<b>Invest monthly (SIP):</b> a fixed amount every month — smaller commitment, automatic discipline, and you buy at many price points.",swp:"<b>Take money out (SWP):</b> start with a pot and withdraw a fixed sum every month — a self-made income. Only the <i>growth</i> part of each withdrawal is taxed, not your principal."},
+  lumpL:"One-time amount (₹)", sipL:"Monthly investment (₹)", swpCL:"Starting pot / corpus (₹)", swpWL:"Monthly withdrawal (₹)",
+  incL:"Your annual income", regL:"Tax regime", regNew:"New regime", regOld:"Old regime",
+  lensH:"🎛️ Play with it", exitL:"All your picks", exitHold:"Hold to term", exitEarly:"Exit all early", brkL:"💔 Exit this early?",
+  adjL:"Show money as", adjFuture:"Future ₹", adjToday:"Today's ₹ (after inflation)",
+  adjYrsL:"Inflation over how many years", adjYrsAuto:"Auto (your horizon)",
+  adjBox:(rate,real,yrs)=>`💸 Inflation check: at <b>${rate}%</b> a year, what you keep is worth about <b>₹${real}</b> in <b>today's</b> money after ${yrs} year${yrs===1?'':'s'} — that's its real spending power.`,
+  exitCalc:(pen,tax,keep,held,cost)=>`<b>💔 What exiting early costs you</b><br>• Early-exit penalties: <b>${pen}</b><br>• Tax now (tax-free / LTCG breaks forfeited, gains taxed at slab): <b>${tax}</b><br>• You keep <b>${keep}</b> — vs <b>${held}</b> if you held to term, i.e. about <b>${cost}</b> less. Per-product hits are on the cards below.`,
+  exitBox:{
+   hold:"<b>Hold to term</b> — you stay invested for each product's full period, so there are no early-exit penalties. The normal, intended way.",
+   exit:"<b>Exit early</b> — you pull out before the lock-ins/terms finish. Locked products (PPF, ELSS, FDs…) charge a penalty <i>and</i> you lose their tax breaks — gains get taxed at your slab. See the hit on each card below."
+  },
+  regDetailNew:"<b>New regime (default):</b> ₹4L tax-free, ₹75k standard deduction, income up to ₹12L pays zero tax. The catch — deductions like 80C and 80TTA are NOT allowed.",
+  regDetailOld:"<b>Old regime:</b> only ₹2.5L tax-free and higher rates — but you CAN claim deductions: 80C up to ₹1.5L, 80TTA, 80D, home-loan interest and more.",
+  marg:(r)=>{const su=surcharge(INCOME);return `At ₹${fmtIN(INCOME)} income, your top tax slab is <b>${(r*100).toFixed(0)}%</b> (${REGIME==='old'?'old regime':'new regime'})`+(su>0?` plus a <b>${(su*100).toFixed(0)}% surcharge</b> on very high incomes`:'')+`. That rate hits the "slab-taxed" investments — but not the flat-taxed or tax-free ones.`;},
+  ded80c:(s)=>`💡 Old-regime bonus: your 80C investments (PPF, ELSS, SSY, SCSS, ULIP) save about <b>₹${fmtIN(s)}</b> in tax upfront (within the ₹1.5L cap) — on top of the figures below.`,
+  s2h:"Choose your investments", s2hint:"Switch tabs to browse all 32 products. Toggle the ones you want, then set each one's share and return. Tap 'what is this?' to learn it. Your picks stay as you move around.",
+  totalL:"Total allocated", resetBtn:"Reset to defaults",
+  presetKick:"Or start from a ready-made mix:",
+  presets:[
+   {key:'safe',ic:'🛡️',t:'Safe & steady'},
+   {key:'aggressive',ic:'🚀',t:'Young & aggressive'},
+   {key:'balanced',ic:'⚖️',t:'Balanced'}
+  ],
+  allocWarn:(t)=>`⚠️ Your allocations add up to <b>${t}%</b>, not 100% — <b>${t>100?(t-100)+'% over':(100-t)+'% to go'}</b>. Results assume you actually invest these shares; drag the sliders so they total 100%.`,
+  swpDry:(n)=>`⚠️ In this scenario, <b>${n}</b> of your picks run out of money before the end — the monthly withdrawal outpaces growth. Lower the withdrawal, raise the corpus, or shorten the horizon.`,
+  growthYou:"Your money", growthInf:"If it only kept pace with inflation",
+  s3h:"What you'd keep", keyNet:"You keep", keyChg:"Charges & penalties", keyTax:"Tax",
+  caps:{keep:"You keep",keepReal:"You keep (today's ₹)",leak:"Lost to tax, charges & penalties",cagr:"Post-tax return %/yr",invested:"Total you put in",corpus:"Corpus left at end"},
+  resSummary:{lumpsum:(inv,fv)=>`Your mock ${fmtShort(inv)} grows to about ${fmtShort(fv)} before money leaks out.`,sip:(inv,fv)=>`Investing monthly, you put in ${fmtShort(inv)} total, which grows to about ${fmtShort(fv)}.`,swp:(inv,fv,d)=>`From a ${fmtShort(inv)} corpus you draw ${fmtShort(d)} as income, leaving about ${fmtShort(fv)} at the end.`},
+  fdPen:"FD broken early — 1% penalty", ppfLock:"PPF locked 15 yrs",
+  bnames:{slab:"Taxed at your slab",flat:"Flat 12.5% (LTCG)",exempt:"Tax-free",mixed:"Mixed",crypto:"Flat 30%"},
+  yrsL:"Years", retL:"Return %", whatis:"what is this?",
+  pcInv:"Put in", pcNet:"You keep", pcTax:"Tax", pcChg:"Charges", pcPen:"Early-exit penalty",
+  liveKeepL:"You keep", liveLostL:"Lost to tax, charges & penalties",
+  names:{stocks:"Direct stocks",equity_mf:"Equity mutual fund",index:"Index fund / ETF",elss:"ELSS (tax-saver fund)",hybrid:"Hybrid / balanced fund",reit:"REIT",fd:"Fixed Deposit",rd:"Recurring Deposit",savings:"Savings account",corp_fd:"Corporate / NBFC FD",ppf:"PPF",epf:"EPF / VPF",nps:"NPS",ssy:"Sukanya Samriddhi (SSY)",scss:"Senior Citizens Scheme (SCSS)",apy:"Atal Pension Yojana",post_office:"Post Office (NSC/KVP/POMIS)",gsec:"Government bonds (G-Sec)",corp_bond:"Corporate bonds / NCDs",rbi_frsb:"RBI Floating Rate Bond",tax_free_bonds:"Tax-free bonds",tbill_sdl:"T-Bills / SDLs",gold_etf:"Gold ETF",gold_physical:"Physical gold",sgb:"Sovereign Gold Bond",debt_mf:"Debt mutual fund",crypto:"Crypto",foreign:"Foreign stocks (US)",intl_mf:"International funds",ulip:"ULIP (Unit-Linked Insurance Plan)",endowment:"Endowment / money-back (LIC-style)",real_estate:"Real estate"}, eli5:{stocks:"Buy a piece of one company you believe in. If it wins you win big; if it stumbles, you feel it.",equity_mf:"A pro picks a basket of stocks for you — less homework than single stocks.",index:"Copies the whole market automatically and charges almost nothing. Simple and cheap.",elss:"An equity fund that also cuts your tax — but locked for 3 years.",hybrid:"A mix of stocks and bonds in one — a smoother ride than pure stocks.",reit:"Own a slice of big rent-earning buildings, traded like a share.",fd:"Like handing money to a giant, super-safe piggy bank. It pays you a little extra (interest). Catch: that extra is taxed at your salary's rate.",rd:"Like an FD you feed every month — great for building a saving habit.",savings:"Your everyday account. Super handy, but barely grows.",corp_fd:"Like a bank FD but from a company — pays more, but riskier and not insured.",ppf:"A government piggy bank with a 15-year lock. Grows safely and the government never takes a rupee of it in tax.",epf:"Retirement savings auto-cut from your salary; your employer adds a matching bit.",nps:"A retirement pot you grow till 60; part becomes a monthly pension later.",ssy:"A special tax-free account for a daughter's future. Locked till she's grown.",scss:"A safe scheme for people 60+, paying steady interest every quarter.",apy:"A government pension for everyone — pay a little now, get a fixed pension later.",post_office:"Government-backed savings at the post office — boringly safe.",gsec:"Lend money to the government itself — the safest rupee investment there is.",corp_bond:"Lend to a company for fixed interest — more than a bank, but watch the risk.",rbi_frsb:"A government bond whose interest floats with the market — locked 7 years.",tax_free_bonds:"Old government-backed bonds whose interest is completely tax-free.",tbill_sdl:"Very short government IOUs — park money safely for under a year.",gold_etf:"Gold you keep on your phone instead of as a chain. No locker, no jeweller's charges.",gold_physical:"Real gold — coins or jewellery. Pretty, but you pay extra to make and store it.",sgb:"Government gold bonds that also paid 2.5% interest. No new ones are sold now.",debt_mf:"A fund that lends your money out for steady interest. Calmer than stocks.",crypto:"Digital coins like Bitcoin — wild swings, and India taxes gains a flat 30%.",foreign:"Buy US shares like Apple from India. Currency moves matter too.",intl_mf:"An Indian fund that invests abroad for you — no paperwork hassle.",ulip:"One policy that does two jobs: it gives you life insurance AND invests your money in stock/bond funds you choose. Part of each premium pays for the life cover; the rest is invested, so returns rise and fall with the market. Locked 5 years, and several charges come off the top.",endowment:"A traditional insurance-plus-savings policy. It pays your family if something happens to you, and returns a guaranteed lump sum (or periodic 'money-back') if you survive the term. Very safe, but the returns are low — usually 4–6%.",real_estate:"Buy property to rent out and (hopefully) sell higher. Big money, slow to sell."}, examples:{stocks:"<b>Example:</b> ₹10,000 in a stock growing 15%/yr → about <b>₹20,100</b> in 5 years — but it can fall hard too.",equity_mf:"<b>Example:</b> ₹10,000 at ~12%/yr → about <b>₹17,600</b> in 5 years, minus a ~1.5% yearly fee.",index:"<b>Example:</b> ₹10,000 at ~11.5%/yr → about <b>₹17,200</b> in 5 years, with tiny fees.",elss:"<b>Example:</b> ₹10,000 grows like equity, and in the old regime it also saves tax under 80C.",hybrid:"<b>Example:</b> ₹10,000 at ~10%/yr → about <b>₹16,100</b> in 5 years, with smaller swings.",reit:"<b>Example:</b> ₹10,000 can pay regular rent income plus grow ~9%/yr.",fd:"<b>Example:</b> ₹10,000 in an FD at 7% for 1 year → <b>₹10,700</b>. The ₹700 is interest (a slice goes to tax).",rd:"<b>Example:</b> ₹2,000/month at ~6.5% → about <b>₹1.42L</b> in 5 years.",savings:"<b>Example:</b> ₹10,000 at 3% → just ₹10,300 after a year; inflation eats most of it.",corp_fd:"<b>Example:</b> ₹10,000 at 8% → ₹10,800 in a year, if the company stays healthy.",ppf:"<b>Example:</b> ₹10,000/year for 15 years (₹1.5L total) → about <b>₹2.7L</b> at 7.1%, with <b>₹0 tax</b>.",epf:"<b>Example:</b> ₹5,000/month from you + employer match grows at ~8.25%, mostly tax-free.",nps:"<b>Example:</b> 60% of the corpus comes out tax-free at 60; 40% buys a pension that is then taxed.",ssy:"<b>Example:</b> ₹10,000/year for a girl child grows tax-free at ~8.2% till she turns 21.",scss:"<b>Example:</b> ₹10L at ~8.2% pays about ₹82,000 a year (taxed at your slab).",apy:"<b>Example:</b> Small monthly payments now → a guaranteed ₹1,000–₹5,000/month pension after 60.",post_office:"<b>Example:</b> ₹10,000 in NSC at ~7.5% becomes about ₹14,400 in 5 years.",gsec:"<b>Example:</b> ₹10,000 at ~7% pays ₹700/year interest (taxed at your slab).",corp_bond:"<b>Example:</b> ₹10,000 at ~8.5% pays ₹850/year, if the company doesn't default.",rbi_frsb:"<b>Example:</b> ₹10,000 at ~8.05% pays about ₹805/year (taxed at your slab).",tax_free_bonds:"<b>Example:</b> ₹10,000 at 5.5% tax-free ≈ about 8% pre-tax for a 30%-slab person.",tbill_sdl:"<b>Example:</b> Buy a ₹9,650 T-Bill, get ₹10,000 back in a year — the ₹350 is your return.",gold_etf:"<b>Example:</b> ₹10,000 of gold → about ₹15,000 in 5 years if gold rises ~9%/yr (can fall too).",gold_physical:"<b>Example:</b> ₹10,000 of jewellery loses 10–25% to making charges before it even grows.",sgb:"<b>Example:</b> Held to maturity by the first buyer, the price gain came out fully tax-free.",debt_mf:"<b>Example:</b> ₹10,000 at ~7.5% → about ₹14,400 in 5 years, all taxed at your slab now.",crypto:"<b>Example:</b> ₹10,000 could double… or halve. Any profit is taxed <b>30%</b>, and losses can't be set off.",foreign:"<b>Example:</b> ₹10,000 in US stocks; gains over 2 years taxed at 12.5% — no ₹1.25L free limit.",intl_mf:"<b>Example:</b> ₹10,000 tracking global markets; held over 2 years, gains taxed at 12.5%.",ulip:"<b>Example:</b> Pay ₹10,000/yr — some buys life cover, some goes to charges, the rest is invested. Because of those charges it usually trails a plain index fund + a separate term plan.",endowment:"<b>Example:</b> ₹50,000/yr for 20 years might return about ₹15–18L (~4–6%). The same money in an index fund could grow far more — that's the cost of mixing insurance with investing.",real_estate:"<b>Example:</b> A ₹50L flat: stamp duty + registration alone can cost ₹3L+ upfront."}, cats:[{k:'equity',l:"Stocks & funds"},{k:'safe',l:"Safe & guaranteed"},{k:'govt',l:"Govt schemes"},{k:'bonds',l:"Bonds"},{k:'gold',l:"Gold"},{k:'advanced',l:"Advanced & risky"}], behav:{steady:"Grows slowly and steadily. Very safe — few surprises.",bumpy:"Goes up and down a lot. Can grow well over many years, but expect drops along the way.",wild:"Swings violently — can shoot up or crash fast. Only use money you can afford to lose.",locked:"Your money is locked in for years. In return it stays safe and grows quietly.",floaty:"Tracks the price of gold — it drifts up and down with the market."}, behavCap:"How it behaves", tips:{stocks:"Good for: long-term growth if you'll research and stomach swings. Watch: one company can crash hard.",equity_mf:"Good for: hands-off equity growth. Watch: a ~1–1.5%/yr fee quietly eats returns.",index:"Good for: cheap, simple market growth. Watch: you get the market — no more, no less.",elss:"Good for: equity growth plus an 80C tax break. Watch: 3-year lock-in.",hybrid:"Good for: a smoother stock-and-bond mix. Watch: less upside than pure equity.",reit:"Good for: rental-style income without buying property. Watch: price moves with markets.",fd:"Good for: safety and certainty. Watch: interest taxed at your slab; often trails inflation.",rd:"Good for: building a monthly saving habit. Watch: modest, slab-taxed returns.",savings:"Good for: everyday access. Watch: barely grows — inflation eats it.",corp_fd:"Good for: higher interest than a bank FD. Watch: not insured; the company can default.",ppf:"Good for: safe, fully tax-free long-term growth plus 80C. Watch: 15-year lock-in.",epf:"Good for: automatic retirement savings with an employer match. Watch: mostly locked till retirement.",nps:"Good for: a low-cost retirement pot plus an extra 80CCD(1B) break. Watch: locked till 60; part of the payout is taxed.",ssy:"Good for: a daughter's future, tax-free. Watch: girl-child only; locked till she's grown.",scss:"Good for: seniors wanting steady, safe income. Watch: age 60+; interest is slab-taxed.",apy:"Good for: a guaranteed small pension for everyone. Watch: fixed, modest payout.",post_office:"Good for: government-safe small savings. Watch: modest, slab-taxed returns.",gsec:"Good for: the safest rupee interest there is. Watch: slab-taxed; price moves if sold early.",corp_bond:"Good for: more interest than government bonds. Watch: company credit risk; slab-taxed.",rbi_frsb:"Good for: government safety with a floating rate. Watch: 7-year lock; slab-taxed.",tax_free_bonds:"Good for: tax-free interest — great for high earners. Watch: only on the secondary market now; long tenure.",tbill_sdl:"Good for: parking money safely for under a year. Watch: low returns; slab-taxed.",gold_etf:"Good for: easy digital gold, no storage hassle. Watch: earns no income; price swings.",gold_physical:"Good for: jewellery you can actually wear. Watch: 10–25% making charges; storage risk.",sgb:"Good for: gold plus 2.5% interest, tax-free at maturity. Watch: no new issues; long tenure.",debt_mf:"Good for: steadier-than-equity returns. Watch: slab-taxed now; small fee.",crypto:"Good for: a tiny, high-risk punt only. Watch: wild swings; flat 30% tax; losses can't offset.",foreign:"Good for: owning global giants, with currency exposure. Watch: currency risk; no ₹1.25L exemption.",intl_mf:"Good for: easy global exposure from India. Watch: fees; taxed as a mixed asset.",ulip:"Good for: insurance and investment in one. Watch: high charges usually trail a simple fund.",endowment:"Good for: ultra-safe, guaranteed savings with life cover + 80C. Watch: low (4–6%) returns — term insurance + an index fund usually beats it.",real_estate:"Good for: rental income plus long-term value. Watch: huge upfront costs; slow to sell."}, lessons:{"stocks": {"what": "Buying shares of a single listed company makes you a part-owner. You profit if the share price rises, and from any dividends the company pays.", "works": "You buy and sell on a stock exchange (NSE/BSE) through a demat + trading account. The price moves second by second with the company's results and overall market mood.", "returns": "No fixed return. Strong companies have historically compounded ~12–15%/yr over long periods, but any single stock can do far better — or lose most of its value.", "risk": "High and concentrated. One company can collapse on bad results, fraud or a sector shock. You have no diversification unless you deliberately buy many stocks.", "liquidity": "Very liquid for large companies — they sell in seconds during market hours. Smaller companies can be harder to exit at a fair price.", "tax": "Listed equity: gains held over 1 year are long-term, taxed at 12.5% with the first ₹1.25L of equity gains each year tax-free. Under 1 year is short-term at 20%. Dividends are taxed at your slab.", "costs": "Brokerage, exchange fees, STT and GST on each trade — small individually, but they add up if you trade often. No annual holding fee.", "forwhom": "People willing to research companies, hold for years, and stay calm through sharp ups and downs.", "pros": ["Highest long-term growth potential", "You choose exactly what you own", "Earn from price gains and dividends", "Very liquid"], "cons": ["A single company can crash hard", "Needs research and emotional discipline", "No built-in diversification", "Easy to over-trade and lose"]}, "equity_mf": {"what": "A professionally managed fund that pools money from many investors and buys a basket of stocks — so one purchase gives you a slice of dozens of companies.", "works": "A fund manager picks and rebalances the holdings. You buy 'units' at the day's NAV; the fund's value rises and falls with its stocks. You can invest a lump sum or a monthly SIP.", "returns": "Aims to grow with the equity market, ~10–13%/yr over long periods. Actively managed funds try to beat the index, but many fail to after fees.", "risk": "Market risk like stocks, but spread across many companies, so one failure hurts far less. It still falls in a market downturn.", "liquidity": "Open-ended funds redeem in 1–3 working days. (ELSS funds have a lock-in — see ELSS.)", "tax": "Taxed as listed equity: long-term (over 1 year) 12.5% with ₹1.25L/yr exemption; short-term 20%.", "costs": "An annual expense ratio (~0.5–1.5%) charged on your whole balance every year — it quietly compounds against you, so lower is better.", "forwhom": "Most people who want equity growth without picking individual stocks.", "pros": ["Instant diversification", "Professionally managed", "SIP makes investing automatic", "Easy to start small"], "cons": ["Annual fee drags on returns", "Many active funds trail the index", "Still falls in market crashes", "Overwhelming number of choices"]}, "index": {"what": "A fund that simply copies a market index (like the Nifty 50) instead of trying to beat it — you own the whole market in one cheap product.", "works": "It holds the same stocks as the index in the same proportions, tracking the market automatically with almost no human judgement. ETFs trade like a share; index funds are bought at NAV.", "returns": "Matches the market minus a tiny fee — historically ~11–12%/yr long term. You won't beat the market, but you also won't badly trail it.", "risk": "Full market risk — it falls when the market falls. But there's no single-stock risk and no fund-manager risk.", "liquidity": "Index funds redeem in 1–3 days; ETFs sell instantly on the exchange during market hours.", "tax": "Listed-equity rules: long-term 12.5% (₹1.25L/yr free), short-term 20%.", "costs": "The lowest fees around — often 0.1–0.3%/yr. That cost edge compounds into a big advantage over decades.", "forwhom": "Almost everyone — the simplest, cheapest core of a long-term portfolio.", "pros": ["Rock-bottom fees", "Broad diversification", "No fund-manager risk", "Simple and transparent"], "cons": ["Never beats the market", "Falls fully in crashes", "ETFs need a demat account", "'Boring' (which is actually fine)"]}, "elss": {"what": "An equity mutual fund that also gives a tax deduction under Section 80C — the only equity product that saves you tax.", "works": "It invests in stocks like any equity fund, but each investment is locked for 3 years. Up to ₹1.5L a year counts toward 80C in the old tax regime.", "returns": "Equity-like, ~10–13%/yr over long periods.", "risk": "Equity market risk, plus you cannot exit for 3 years even if you suddenly need the money.", "liquidity": "A hard 3-year lock-in per investment — though that's the shortest lock-in among all 80C options.", "tax": "80C deduction up to ₹1.5L (old regime only). Gains taxed as equity: long-term 12.5%, ₹1.25L/yr free.", "costs": "An expense ratio like other active equity funds (~1–1.5%/yr).", "forwhom": "Old-regime taxpayers who want equity growth and a tax break in the same product.", "pros": ["Tax deduction under 80C", "Full equity growth", "Shortest 80C lock-in (3 years)", "SIP-friendly"], "cons": ["3-year lock-in", "Only useful in the old regime", "Active-fund fees", "Market risk"]}, "hybrid": {"what": "A single fund that mixes stocks and bonds, aiming for a smoother ride than pure equity.", "works": "The manager holds a blend (for example 65% equity / 35% debt) and rebalances it. The bond part cushions falls; the equity part drives growth.", "returns": "Sits between equity and debt — typically ~8–11%/yr, with smaller swings than pure stocks.", "risk": "Moderate. It falls less than equity in a crash, but also rises less in a boom.", "liquidity": "Open-ended; redeems in 1–3 working days.", "tax": "Depends on the equity share: funds with at least 65% equity are taxed as equity (12.5% long-term); more debt-heavy ones are taxed at your slab. Check the specific fund.", "costs": "Expense ratio ~1–1.5%/yr.", "forwhom": "First-time or cautious investors who want equity exposure with less stomach-churn.", "pros": ["Smoother than pure equity", "Automatic rebalancing", "One-fund simplicity", "Good starter fund"], "cons": ["Lower upside than equity", "Annual fee", "Tax depends on the mix", "Still carries market risk"]}, "reit": {"what": "A Real Estate Investment Trust lets you own a slice of large rent-earning commercial buildings, traded on the exchange like a share.", "works": "The REIT owns offices and malls, collects rent, and must pay most of it out to investors. You earn regular distributions plus any rise in the unit price.", "returns": "Typically a ~6–8% distribution yield plus modest price growth — total ~8–10%/yr, varying with the property market and interest rates.", "risk": "Property-market and interest-rate risk, and the unit price swings with the stock market too. Less diversified than an equity fund.", "liquidity": "Listed REITs trade on the exchange during market hours — far more liquid than owning an actual building.", "tax": "Mixed: distributions can be part interest (slab-taxed), part dividend and part return-of-capital; unit gains follow the holding period. Treat it as a mixed asset.", "costs": "Brokerage to buy and sell; the REIT also has its own management costs built in.", "forwhom": "Investors who want real-estate income without buying or managing property themselves.", "pros": ["Regular rental-style income", "No property or tenant hassle", "Liquid, unlike real estate", "Small ticket size"], "cons": ["Price swings with the market", "Sensitive to interest rates", "Complex taxation", "Few options in India so far"]}, "fd": {"what": "You lock a sum with a bank for a fixed term; it pays a fixed, guaranteed rate of interest.", "works": "You choose the amount and tenure (7 days to 10 years). The bank pays a pre-agreed rate and returns your principal plus interest at maturity (or pays interest periodically).", "returns": "Fixed and modest — about 6.5–7.5%/yr depending on bank and tenure. Senior citizens usually get ~0.5% extra.", "risk": "Very low — bank FDs are insured up to ₹5L per bank by DICGC. The real 'risk' is that the return often barely beats inflation.", "liquidity": "Breakable any time, but early withdrawal usually costs a ~0.5–1% rate penalty.", "tax": "Interest is taxed at your slab every year (even if not withdrawn); TDS applies above ₹40k (₹50k for seniors).", "costs": "None to open. A penalty only if you break it early.", "forwhom": "Anyone wanting guaranteed safety for short-to-medium goals or an emergency buffer.", "pros": ["Capital safe + insured to ₹5L", "Guaranteed, predictable return", "No market risk", "Easy to open"], "cons": ["Returns often trail inflation", "Interest fully slab-taxed", "Penalty for breaking early", "Locks your rate even if rates rise"]}, "rd": {"what": "Like an FD you feed monthly — you deposit a fixed amount every month for a set term at a fixed rate.", "works": "You commit a monthly amount (say ₹2,000) for 6 months–10 years; each deposit earns the fixed rate until maturity.", "returns": "Similar to FDs, about 6–7%/yr.", "risk": "Very low; bank-backed with the same ₹5L DICGC insurance.", "liquidity": "Premature closure allowed with a small penalty; missing instalments may attract a fee.", "tax": "Interest taxed at your slab; TDS rules like FDs.", "costs": "None; penalty for early closure or missed instalments.", "forwhom": "People building a saving habit from monthly income without a lump sum to start.", "pros": ["Builds monthly discipline", "Guaranteed and bank-safe", "Start small (₹500/mo)", "Predictable maturity value"], "cons": ["Modest, slab-taxed returns", "Penalty for missed instalments", "Trails inflation", "Locked rate"]}, "savings": {"what": "Your everyday bank account — holds cash you can spend any time and pays a little interest.", "works": "Money stays available for spending and withdrawal; the bank pays a small interest on the balance, usually credited quarterly.", "returns": "Very low, about 2.5–4%/yr — well below inflation.", "risk": "Minimal; insured to ₹5L. The real risk is leaving too much idle here and quietly losing value to inflation.", "liquidity": "The most liquid of all — instant access via card, UPI or ATM.", "tax": "Interest taxed at slab, but 80TTA makes up to ₹10,000/yr of it tax-free (₹50,000 for seniors via 80TTB) in the old regime.", "costs": "Usually none; some accounts need a minimum balance.", "forwhom": "Everyone — for daily money and a small emergency float, not for growth.", "pros": ["Instant access anytime", "Bank-safe", "No lock-in", "80TTA interest break"], "cons": ["Barely grows", "Inflation erodes idle cash", "Tempting to overspend", "Low rate"]}, "corp_fd": {"what": "A fixed deposit from a company or NBFC instead of a bank — higher interest, but higher risk.", "works": "Same idea as a bank FD, but you're lending to a company, so the rate is higher to compensate for the extra risk.", "returns": "Higher than bank FDs, about 7.5–9%/yr depending on the issuer's credit rating.", "risk": "Higher — NOT covered by the ₹5L bank insurance. If the company defaults you can lose money. Check the credit rating (AAA is safest).", "liquidity": "Often locked; premature withdrawal is restricted or penalised.", "tax": "Interest taxed at your slab.", "costs": "None to invest; the real cost is default risk.", "forwhom": "Investors comfortable with some credit risk for extra yield, sticking to highly rated issuers.", "pros": ["Higher rate than bank FDs", "Fixed, predictable income", "Choice of tenures", "Higher senior rates"], "cons": ["Not insured", "Company default risk", "Less liquid", "Slab-taxed"]}, "ppf": {"what": "A government-backed long-term savings scheme with a 15-year term that grows safely and fully tax-free.", "works": "You deposit ₹500–₹1.5L per year; the government sets the interest (~7.1%) each quarter. It's locked for 15 years, extendable in 5-year blocks.", "returns": "About 7.1%/yr, compounded yearly — modest, but completely tax-free and government-guaranteed.", "risk": "Effectively zero — sovereign-backed.", "liquidity": "Very low — 15-year lock; partial withdrawals only from year 7, loans from year 3.", "tax": "EEE — the deposit qualifies for 80C (up to ₹1.5L), and both the interest and the maturity amount are fully tax-free.", "costs": "None.", "forwhom": "Long-term, safety-first savers and anyone wanting guaranteed tax-free retirement money.", "pros": ["Fully tax-free (EEE)", "Government-guaranteed", "80C deduction", "Compounds quietly for decades"], "cons": ["15-year lock-in", "₹1.5L/yr cap", "Modest rate", "Rate can change quarterly"]}, "epf": {"what": "A retirement fund for salaried employees — part of your salary is auto-saved monthly and your employer matches some of it.", "works": "12% of basic pay is deducted and the employer adds a matching contribution. It earns a government-declared rate (~8.25%). VPF lets you contribute extra voluntarily.", "returns": "About 8.25%/yr — one of the best risk-free rates available, and largely tax-free.", "risk": "Very low — government-managed.", "liquidity": "Low — meant for retirement; partial withdrawals allowed for specific needs (home, medical, etc.).", "tax": "Largely EEE; but interest on your own contributions above ₹2.5L/yr (₹5L if there's no employer contribution) is taxable.", "costs": "None.", "forwhom": "Salaried employees — it's automatic, and VPF is a great way to save more, safely.", "pros": ["Employer match = free money", "High, near-tax-free rate", "Automatic discipline", "Government-backed"], "cons": ["Mostly locked till retirement", "EPF is for salaried only", "High-contribution interest is taxed", "Strict withdrawal rules"]}, "nps": {"what": "A low-cost retirement scheme where you build a pot until age 60, invested across equity and debt of your choice.", "works": "You contribute regularly; fund managers invest it across equity and bonds per your chosen mix. At 60 you take part as cash and must use the rest to buy a pension (annuity).", "returns": "Market-linked, about 8–10%/yr long term depending on your equity allocation.", "risk": "Moderate — depends on your equity share; more equity means more swings.", "liquidity": "Very low — largely locked till 60, with only limited partial withdrawals.", "tax": "80C plus an extra ₹50,000 under 80CCD(1B). At 60, 60% of the corpus is tax-free; the 40% annuity is taxed as income later. (Shown simplified here.)", "costs": "Among the cheapest managed products — very low fund-management fees.", "forwhom": "People building a disciplined, low-cost retirement corpus who want an extra tax break.", "pros": ["Extra ₹50k tax break (80CCD1B)", "Very low fees", "Equity growth option", "60% tax-free at 60"], "cons": ["Locked till 60", "Forced annuity on 40%", "Annuity income is taxed", "Returns not guaranteed"]}, "ssy": {"what": "A government scheme for a girl child's future — a tax-free account opened by parents, locked until she grows up.", "works": "Open it before the girl turns 10; deposit ₹250–₹1.5L/yr for 15 years. It earns a government rate (~8.2%) and matures when she turns 21 (or on marriage after 18).", "returns": "About 8.2%/yr, tax-free — among the highest guaranteed rates available.", "risk": "Effectively zero — sovereign-backed.", "liquidity": "Very low — long lock; a 50% partial withdrawal is allowed for higher education after she turns 18.", "tax": "EEE — 80C deduction, with tax-free interest and maturity.", "costs": "None.", "forwhom": "Parents of a girl child saving for her education or marriage.", "pros": ["High tax-free rate", "Government-guaranteed", "80C deduction", "Disciplined long-term saving"], "cons": ["Girl child only, opened under age 10", "Very long lock-in", "₹1.5L/yr cap", "Rate can change"]}, "scss": {"what": "A safe government scheme for people aged 60+ that pays steady interest every quarter.", "works": "You invest a lump sum (up to ₹30L) for 5 years (extendable); interest is paid out every quarter.", "returns": "About 8.2%/yr, paid quarterly — high for a guaranteed product.", "risk": "Effectively zero — government-backed.", "liquidity": "Low — 5-year term; premature withdrawal allowed with a penalty.", "tax": "Interest taxed at slab; the deposit qualifies for 80C, and 80TTB gives seniors up to ₹50k interest tax-free.", "costs": "None; penalty if closed early.", "forwhom": "Retirees wanting safe, regular income.", "pros": ["Steady quarterly income", "Government-safe", "80C deduction", "High guaranteed rate"], "cons": ["Age 60+ only", "Interest slab-taxed", "₹30L cap", "5-year lock"]}, "apy": {"what": "A government pension scheme for everyone — pay small amounts now to receive a fixed pension after 60.", "works": "You pick a target pension (₹1,000–₹5,000/month); your monthly contribution is set by your current age. After 60 you receive that pension for life.", "returns": "Not a return product — it's a guaranteed fixed pension; the government makes up any shortfall.", "risk": "Very low — a government-guaranteed pension.", "liquidity": "Very low — designed to run till 60; exit before that is restricted.", "tax": "Contributions can qualify under 80CCD; the pension you receive is taxed as income.", "costs": "None.", "forwhom": "Lower-income or informal-sector workers wanting a guaranteed basic pension.", "pros": ["Guaranteed lifelong pension", "Tiny contributions", "Government-backed", "Spouse continuation"], "cons": ["Small fixed payout", "Locked till 60", "Pension is taxed", "Penalty for missed payments"]}, "post_office": {"what": "Government savings schemes sold at post offices — boringly safe options like NSC, KVP and the Monthly Income Scheme.", "works": "You deposit a lump sum into a scheme (e.g. NSC for 5 years); it earns a government-set rate. POMIS pays monthly income; KVP doubles your money over a set period.", "returns": "About 7.0–7.7%/yr depending on the scheme.", "risk": "Effectively zero — sovereign-backed.", "liquidity": "Low to moderate; most have lock-ins with limited premature exit.", "tax": "Interest taxed at slab; NSC also qualifies for 80C (and its reinvested interest counts toward 80C too).", "costs": "None.", "forwhom": "Conservative savers, especially in smaller towns, who want government safety.", "pros": ["Government-guaranteed", "Some qualify for 80C", "Widely accessible", "Predictable"], "cons": ["Modest, slab-taxed returns", "Lock-ins", "Paperwork can be manual", "Trails equity long term"]}, "gsec": {"what": "Loans you make to the Government of India — the safest rupee investment, paying fixed interest.", "works": "You buy a bond with a face value and a coupon (interest) rate; the government pays interest periodically and returns the face value at maturity. Buy via RBI Retail Direct or debt funds.", "returns": "About 7%/yr coupon; longer bonds pay a little more.", "risk": "No default risk (sovereign). But the price moves if you sell before maturity — when interest rates rise, bond prices fall.", "liquidity": "Tradable, but the retail secondary market can be thin; easiest is to hold to maturity.", "tax": "Interest taxed at your slab; capital gains apply if sold before maturity.", "costs": "Negligible via RBI Retail Direct.", "forwhom": "Safety-first investors wanting predictable, government-backed income.", "pros": ["Safest rupee investment", "Predictable interest", "Many tenures", "No default risk"], "cons": ["Slab-taxed interest", "Price falls if rates rise", "Modest returns", "Thin retail market"]}, "corp_bond": {"what": "Loans to a company in return for fixed interest — higher pay than government bonds, with credit risk.", "works": "A company issues bonds or NCDs with a coupon and maturity. You earn interest and get your principal back at maturity, provided the company stays solvent.", "returns": "About 8–9.5%/yr depending on the issuer's rating.", "risk": "Credit risk — a weak company can delay payments or default. Check the rating (AAA safest). The price also moves with interest rates.", "liquidity": "Varies; listed NCDs trade on exchanges but can be illiquid.", "tax": "Interest taxed at slab; capital-gains rules apply if sold.", "costs": "Low; brokerage if traded on an exchange.", "forwhom": "Yield-seekers comfortable assessing a company's credit quality.", "pros": ["Higher yield than G-Secs", "Fixed income", "Range of ratings and tenures", "Listed options exist"], "cons": ["Default/credit risk", "Can be illiquid", "Slab-taxed", "Rate-sensitive price"]}, "rbi_frsb": {"what": "A government savings bond whose interest rate floats — it resets with market rates — locked for 7 years.", "works": "You invest with the RBI; the rate is pegged above the NSC rate and resets every 6 months. Interest is paid half-yearly.", "returns": "About 8%/yr currently, but it changes at every reset.", "risk": "No default risk (government). Your income varies as the rate resets.", "liquidity": "Very low — 7-year lock (some relaxation for seniors); not tradable.", "tax": "Interest taxed at your slab.", "costs": "None.", "forwhom": "Safety-first investors wanting government backing and protection if rates rise.", "pros": ["Government-guaranteed", "Benefits if rates rise", "Higher than many FDs", "Half-yearly income"], "cons": ["7-year lock-in", "Income unpredictable (floating)", "Slab-taxed", "Not tradable"]}, "tax_free_bonds": {"what": "Older bonds from government-backed bodies whose interest is completely tax-free.", "works": "Issued years ago by PSUs (like NHAI, PFC), they pay a fixed coupon with no tax on the interest. No new ones are issued now — you buy them on the exchange.", "returns": "Coupon around 5.5%/yr tax-free — equivalent to roughly 8% pre-tax for a 30%-slab person.", "risk": "Low — government-backed issuers; the price moves with rates if you sell early.", "liquidity": "Listed and tradable, but volumes can be low.", "tax": "Interest is fully tax-free. Capital gains apply if sold before maturity.", "costs": "Brokerage on the exchange.", "forwhom": "High-tax-bracket investors wanting safe, tax-free income.", "pros": ["Tax-free interest", "Government-backed issuers", "Great for high earners", "Long, stable income"], "cons": ["Only on the secondary market now", "Low liquidity", "Long tenures", "Price falls if rates rise"]}, "tbill_sdl": {"what": "Very short-term government IOUs — Treasury Bills and State Development Loans — to park money safely for under a year.", "works": "T-Bills are sold at a discount and redeem at face value (the gap is your return) in 91/182/364 days. Buy via RBI Retail Direct.", "returns": "About 6.5–7%/yr equivalent, depending on tenure.", "risk": "Negligible default risk (sovereign), and very short, so little price risk.", "liquidity": "High for short tenures; easy to hold to maturity.", "tax": "The gain is taxed at your slab.", "costs": "Negligible via RBI Retail Direct.", "forwhom": "Anyone parking money safely for a few months with full government safety.", "pros": ["Government-safe", "Very short term", "Predictable", "Better than idle savings"], "cons": ["Low returns", "Slab-taxed", "Not for long-term growth", "A bit manual to buy"]}, "gold_etf": {"what": "Gold you hold digitally in your demat account instead of as jewellery or coins — each unit tracks the gold price.", "works": "You buy and sell units on the exchange like a share; each unit is backed by real gold held by the fund. No locker, no making charges.", "returns": "Tracks gold prices — historically about 8–9%/yr long term, but volatile and earning no income.", "risk": "Price risk — gold can fall or stay flat for years. It pays no income; you only gain from price changes.", "liquidity": "High — trades on the exchange during market hours.", "tax": "Treated as a mixed asset — gains taxed at 12.5% if held long enough, otherwise at your slab (rules evolving).", "costs": "A small expense ratio (~0.5–0.8%) plus brokerage.", "forwhom": "Investors wanting gold for diversification without the storage hassle.", "pros": ["No storage or making charges", "Pure gold-price exposure", "Liquid", "Small ticket size"], "cons": ["Earns no income", "Price swings", "Needs a demat account", "Small annual fee"]}, "gold_physical": {"what": "Real gold you own — coins, bars or jewellery.", "works": "You buy from a jeweller or bank; with jewellery you also pay making charges and usually lose some value when you sell.", "returns": "Tracks gold prices (~8–9%/yr long term), but making charges (10–25% on jewellery) eat into your gain.", "risk": "Price risk plus theft/storage risk and purity concerns.", "liquidity": "Sellable, but jewellery fetches less than its purchase price due to making charges.", "tax": "Mixed asset — gains taxed at 12.5% if held long enough, otherwise at your slab.", "costs": "Making charges (jewellery), locker/storage, and possible purity loss on resale.", "forwhom": "People who value gold for use or tradition rather than as a pure investment.", "pros": ["Tangible and usable (jewellery)", "Cultural value", "No account needed", "Universally accepted"], "cons": ["High making charges", "Theft/storage risk", "Purity and resale loss", "Earns no income"]}, "sgb": {"what": "Government bonds linked to the gold price that also paid 2.5% yearly interest — the best way to own gold, though no new ones are issued now.", "works": "Issued by the RBI, their value tracks gold and they paid 2.5% interest on top. Held to maturity (8 years), the price gain was tax-free.", "returns": "Gold-price growth plus 2.5%/yr interest — better than holding plain gold.", "risk": "Price risk like gold; no default risk (sovereign).", "liquidity": "Listed ones trade on the exchange, but volumes are low; best held to maturity.", "tax": "Interest taxed at slab; the capital gain at maturity was tax-free for the original holder.", "costs": "None to hold.", "forwhom": "Long-term gold investors (now only available via the secondary market).", "pros": ["Gold plus 2.5% interest", "Tax-free gain at maturity", "Government-backed", "No storage needed"], "cons": ["No new issues", "Low secondary-market liquidity", "8-year tenure", "Price swings with gold"]}, "debt_mf": {"what": "A fund that lends your money out (to governments and companies) for interest — calmer than equity, but not risk-free.", "works": "The fund holds bonds and other debt; its value moves gently with interest rates and the credit quality of what it holds.", "returns": "About 6.5–8%/yr typically, steadier than equity.", "risk": "Lower than equity, but not zero — interest-rate risk, and credit risk if the fund holds weak borrowers.", "liquidity": "Open-ended; redeems in 1–2 working days.", "tax": "Gains are taxed at your slab (the old long-term tax benefit was removed).", "costs": "A small expense ratio (~0.2–1%).", "forwhom": "Investors wanting steadier-than-equity returns or to park money for a few years.", "pros": ["Steadier than equity", "Better than idle cash", "Easy to redeem", "Professionally managed"], "cons": ["Now fully slab-taxed", "Credit and rate risk remain", "Annual fee", "Modest returns"]}, "crypto": {"what": "Digital currencies like Bitcoin — extremely volatile, lightly regulated as an asset, and heavily taxed in India.", "works": "You buy and sell coins on exchanges; prices swing wildly on demand, sentiment and global events. There's no underlying cash flow behind them.", "returns": "No fundamental return — it's pure price speculation. It can multiply or crash; treat anything you put in as at-risk.", "risk": "Very high — huge swings, hacks and scams, no investor protection, and prices can fall to near-zero.", "liquidity": "Generally high on major exchanges, but can freeze in times of stress.", "tax": "A flat 30% on every gain with no expense deductions, plus 1% TDS on sales; losses can't offset other income or even other crypto gains.", "costs": "Exchange fees, spreads, and 1% TDS.", "forwhom": "Only money you can fully afford to lose, as a tiny speculative slice of a portfolio.", "pros": ["Very high upside potential", "Easy to start", "Trades 24/7", "Tiny amounts possible"], "cons": ["Can crash to near-zero", "Flat 30% tax, no loss offset", "Scam and hack risk", "No investor protection"]}, "foreign": {"what": "Buying shares of overseas companies (like Apple or Google) directly from India.", "works": "Through brokers that allow US investing under the RBI's remittance scheme; your returns depend on the stock AND the rupee–dollar exchange rate.", "returns": "The stock's return plus currency moves — a weakening rupee adds to gains; a strengthening rupee subtracts.", "risk": "Market risk + currency risk + the company's own risk; concentrated if you pick single stocks.", "liquidity": "High during US market hours.", "tax": "Treated as a foreign/mixed asset — long-term gains taxed at 12.5% (no ₹1.25L exemption); dividends also face US withholding tax.", "costs": "Brokerage, forex-conversion charges, and possible platform fees.", "forwhom": "Investors wanting global diversification who understand currency risk.", "pros": ["Own global giants", "Currency diversification", "Access to big tech", "Diversifies beyond India"], "cons": ["Currency risk", "No ₹1.25L exemption", "Conversion and brokerage costs", "US-hours trading"]}, "intl_mf": {"what": "Indian mutual funds that invest abroad for you — global exposure without the paperwork of investing directly.", "works": "You buy units in rupees; the fund invests in global markets (often via a feeder into an overseas fund). Its value moves with foreign markets and the rupee.", "returns": "Tracks the underlying global market, about 10–13%/yr historically, plus or minus currency moves.", "risk": "Market plus currency risk; some funds have had inflow caps due to regulatory limits.", "liquidity": "Open-ended; redeems in a few working days.", "tax": "Taxed as a mixed/non-equity asset; long-term gains generally at 12.5% (check the specific fund's structure).", "costs": "An expense ratio (~0.5–1.5%), sometimes higher for feeder funds.", "forwhom": "Investors wanting easy global diversification from an Indian platform.", "pros": ["Global exposure, no paperwork", "Buy in rupees", "Diversifies beyond India", "SIP-friendly"], "cons": ["Currency risk", "Higher fees (feeders)", "Possible inflow caps", "Complex taxation"]}, "ulip": {"what": "ULIP = Unit-Linked Insurance Plan: one policy that bundles life insurance WITH investing. Part of your premium pays for life cover; the rest is invested in equity/debt funds you pick, so its value moves with the market.", "works": "You pay a yearly premium. Several charges come off first (see Costs); whatever's left is invested in funds you choose, and you can switch funds later. It's locked for 5 years. If you die, your family gets the cover; otherwise you get the fund value at the end.", "returns": "Market-linked (like a mutual fund), but the front-loaded charges usually make it trail a plain index fund — so a term plan + index fund often beats it.", "risk": "Market risk on the investment part; the bigger issue is complexity and opaque charges.", "liquidity": "Low — a 5-year lock-in.", "tax": "80C on premiums; maturity is tax-free only if the annual premium stays within prescribed limits (₹2.5L).", "costs": "Several charges — premium allocation, policy admin, fund management, mortality — that eat into early returns.", "forwhom": "Rarely the best choice — usually better to buy term insurance and invest separately.", "pros": ["Insurance + investment in one", "80C deduction", "Tax-free maturity (within limits)", "Fund-switching allowed"], "cons": ["High, layered charges", "5-year lock-in", "Usually trails a simple fund", "Hard to compare costs"]}, "endowment": {"what": "A traditional life-insurance policy (the classic LIC-style plan) that doubles as savings. It pays your family a sum if you die during the term, and pays you a guaranteed maturity amount if you survive — a 'money-back' version returns bits along the way.", "works": "You pay a fixed premium for many years. The insurer guarantees a modest return (often via a 'sum assured + bonuses'). It's safe and predictable, but you can't pick where it's invested and you can't easily exit early without losing value.", "returns": "Low and guaranteed-ish — usually about 4–6%/yr, well below equity. The cost of bundling insurance with savings.", "risk": "Very low investment risk (guaranteed-style). The real 'risk' is opportunity cost — your money grows far slower than it could.", "liquidity": "Very low — long term (15–25 years); surrendering early usually means a loss.", "tax": "Premiums qualify for 80C; maturity is tax-free under 10(10D) if premiums stay within prescribed limits.", "costs": "Built-in commissions and charges keep returns low; surrender penalties if you quit early.", "forwhom": "People who value guaranteed safety + life cover in one and won't touch the money for decades. For most, term insurance + an index fund is better value.", "pros": ["Guaranteed, very safe", "Life cover included", "80C + tax-free maturity", "Forces long-term saving"], "cons": ["Low returns (4–6%)", "Very long lock-in", "Insurance + investing mixed (poor value)", "Costly to exit early"]}, "real_estate": {"what": "Buying physical property — a flat, house or land — to earn rent and hopefully sell higher later.", "works": "You buy property (often with a home loan), earn rent, and aim for price appreciation. It's big-ticket and slow to transact.", "returns": "Long-term roughly 7–10%/yr in many markets, plus a rental yield (~2–4%) — but highly location-dependent.", "risk": "Illiquidity, heavy concentration in one asset, plus maintenance, tenant and legal risks; prices can stagnate for years.", "liquidity": "Very low — selling takes weeks to months and carries large transaction costs.", "tax": "Rent taxed at slab (with some deductions); long-term capital gains are taxed, with indexation/exemption rules for property.", "costs": "Huge upfront — stamp duty + registration (often 5–8%), brokerage, maintenance and property tax.", "forwhom": "Investors with large capital and a long horizon who want a tangible asset and rental income.", "pros": ["Tangible asset + rental income", "Long-term appreciation", "Loan leverage possible", "Home-loan tax breaks"], "cons": ["Huge upfront costs", "Very illiquid", "Concentrated, location risk", "Maintenance and legal hassle"]}}, food:{"stocks": "buying ONE samosa from a single shop. If that shop becomes famous, yours is worth a lot — if it goes bad, you're stuck with it.", "equity_mf": "a thali — someone fills your plate with many dishes (lots of companies). If one dish is bad, the others still fill you up.", "index": "a buffet that automatically serves a little of EVERY popular dish in town. Cheap, and you never miss the famous ones.", "elss": "a tiffin you can't open for 3 years — but you get a bonus treat for waiting (a tax saving).", "hybrid": "curd-rice — spicy stocks mixed with cooling bonds. Less exciting, but it rarely upsets your tummy.", "reit": "owning a tiny share of a big restaurant — you get a little of the rent money every few months.", "fd": "putting ladoos in a locked steel dabba. Totally safe, and it magically adds one extra ladoo by the time you open it — slowly.", "rd": "adding one ladoo to the dabba every single month, so it's nicely full by year-end.", "savings": "a sweet box on the table — easy to grab anytime, but it barely refills on its own.", "corp_fd": "keeping your ladoos in a neighbour's dabba instead of the bank's — they promise MORE ladoos back, but what if they eat some?", "ppf": "a giant mithai jar the government locks for 15 years — it fills up slowly and nobody takes a single piece (no tax).", "epf": "a tiffin your office fills from your pocket money AND adds extra to — opened mostly when you're all grown up.", "nps": "saving snacks until you're old (60). Most you eat free; a little turns into a fixed daily snack (pension) for life.", "ssy": "a special sweet jar just for a daughter — locked till she's grown, and untouched by tax.", "scss": "a jar for grandparents (60+) that hands out a fixed plate of snacks every few months.", "apy": "paying a little tiffin money now so you're promised a small guaranteed snack every day when you're old.", "post_office": "the corner shop's super-safe sweet scheme — boring and slow, but it never cheats you.", "gsec": "lending your tiffin to the headmaster — the safest person in school — who returns it with one extra biscuit.", "corp_bond": "lending your tiffin to a classmate who promises two extra biscuits — more biscuits, but will they return it?", "rbi_frsb": "the headmaster's biscuit deal where the number of biscuits changes over time — and you can't ask for it back for 7 years.", "tax_free_bonds": "a biscuit deal where you keep EVERY biscuit (no tax bite) — but these old deals are only sold second-hand now.", "tbill_sdl": "lending lunch money to the headmaster for just a few months — a little extra back, quickly and very safely.", "gold_etf": "keeping your gold sweets in a phone app instead of a box — no locker, no melting, same gold.", "gold_physical": "real gold jewellery — pretty to wear, but the jeweller keeps a chunk as a 'making' charge.", "sgb": "government gold sweets that ALSO drop a few extra sweets each year while you hold them.", "debt_mf": "a tiffin-lending club run by an expert — calmer than the stock thali, steady small biscuits.", "crypto": "a mystery candy that could become 10 sweets… or vanish completely. Super exciting, super risky — and a big bite (30%) is taken from any winnings.", "foreign": "buying a famous foreign chocolate (like a US brand) — yummy, but its price also wobbles with the dollar.", "intl_mf": "an Indian shopkeeper who buys foreign chocolates for you — global taste, no need to travel abroad.", "ulip": "a combo meal of insurance + investment — looks like value, but lots of hidden charges nibble at it.", "endowment": "a tiffin that also promises a small fixed snack later — totally safe, but that snack is tiny next to what the same money could grow into.", "real_estate": "buying a whole sweet shop — it earns rent and may sell higher later, but it costs a LOT and is slow to sell."},
+  disc:"Educational simulation only — not investment or tax advice, and not a guarantee. Returns are illustrative defaults you can edit; real returns vary and carry risk. Tax buckets, SIP/SWP, the ₹1.25L equity exemption, 4% cess and 80C are applied in a simplified way (e.g. NPS gains shown tax-deferred; SWP taxes total growth). Tax reflects FY2026-27. Consult a qualified CA for real decisions."
+ },
+ hi:{
+  brand:"Learn Money", sim:"सिम्युलेशन",
+  heroH:["देखिए आपका पैसा ","असल में"," कहाँ जाता है"],
+  heroP:"खेल-खेल में निवेश सीखिए — चुनिए किसमें लगाना है, साल तय कीजिए, और पैसा बढ़ते देखिए — उस tax और charges के बाद जो tools छिपाते हैं।",
+  navInf:"Inflation", navHow:"सेटअप", navChoose:"चुनें", navResults:"नतीजे", next:"आगे →", seeResults:"नतीजे देखें →",
+  navHome:"होम", homeKick:"कहाँ से शुरू करना चाहेंगे?",
+  paths:[
+   {ic:'🌧️',t:'कुछ न करने की कीमत',d:'देखिए inflation कैसे cash में पड़े पैसे को चुपचाप घटाता है।',sec:'inflation'},
+   {ic:'💰',t:'एकमुश्त निवेश',d:'एक बार रकम लगाइए और सालों में compound होते देखिए।',sec:'how',mode:'lumpsum'},
+   {ic:'📅',t:'मासिक SIP शुरू करें',d:'हर महीने छोटे, स्थिर निवेश से दौलत बनाइए।',sec:'how',mode:'sip'},
+   {ic:'🏧',t:'पैसे से income पाइए',d:'SWP से corpus को स्थिर मासिक income में बदलिए।',sec:'how',mode:'swp'},
+   {ic:'🧭',t:'सभी 32 products देखें',d:'हर विकल्प — stocks, FD, सोना, bonds और भी — सरलता से समझाया।',sec:'choose'},
+   {ic:'📊',t:'अपने नतीजे देखें',d:'tax व charges के बाद असल में क्या बचता है, live growth chart के साथ।',sec:'results'}
+  ],
+  infH:"कुछ न करने की भी कीमत है", infHint:"पड़ा हुआ cash बढ़ता नहीं — पर दाम बढ़ते रहते हैं, तो हर साल आपका पैसा चुपचाप कम खरीदता है। यही inflation है, इसीलिए 'निवेश न करना' भी एक चुनाव है।",
+  infAmtL:"Cash में रखा पैसा (₹)", infRateL:"Inflation दर", infHorizonL:"कितने साल में", infRbi:"RBI inflation को ~4% रखने की कोशिश करता है, पर रोज़मर्रा के दाम अक्सर तेज़ बढ़ते हैं।",
+  infKeyHave:"कागज़ पर जो आपके पास है", infKeyWorth:"जो असल में खरीद सकता है",
+  infResult:(amt,real,loss,pct,n)=>`₹${amt} cash में रखिए, ${n} साल बाद दिखेगा तो ₹${amt} ही — पर खरीद पाएगा सिर्फ़ लगभग <b>₹${real}</b> का सामान। चुपचाप <b>₹${loss}</b> का नुकसान (इसकी ${pct}% कीमत)।`,
+  infSamosa:(f)=>` आज ₹100 की खाने की थाली तब लगभग ₹${fmtIN(f)} की होगी।`,
+  s1h:"आप कैसे निवेश करते हैं", s1hint:"Lump sum, SIP या SWP चुनिए। अपनी income (इससे tax तय), regime और परिस्थिति तय कीजिए। हर चीज़ का default है जिसे बदला जा सकता है।",
+  modeL:"निवेश का तरीका", mLump:"एकमुश्त", mSip:"मासिक SIP", mSwp:"मासिक SWP",
+  modeBox:{lumpsum:"<b>एकमुश्त:</b> पूरी रकम एक बार लगाइए और compound होने दीजिए।",sip:"<b>SIP:</b> हर महीने तय रकम। कम प्रतिबद्धता, अपने-आप अनुशासन, कई दामों पर खरीद।",swp:"<b>SWP:</b> एक corpus से शुरू कर हर महीने तय रकम निकालिए — खुद की income। हर withdrawal का सिर्फ़ <i>growth</i> हिस्सा tax होता है, मूल नहीं।"},
+  lumpL:"एकमुश्त रकम (₹)", sipL:"मासिक निवेश (₹)", swpCL:"शुरुआती corpus (₹)", swpWL:"मासिक निकासी (₹)",
+  incL:"आपकी सालाना income", regL:"Tax regime", regNew:"New regime", regOld:"Old regime", scnL:"परिस्थिति", scnWorst:"सबसे बुरा", scnBase:"अपेक्षित", scnBest:"सबसे अच्छा",
+  regDetailNew:"<b>New regime (default):</b> ₹4L tax-free, ₹75k standard deduction, ₹12L तक zero tax. पेच — 80C और 80TTA जैसी deductions allowed नहीं।",
+  regDetailOld:"<b>Old regime:</b> सिर्फ़ ₹2.5L tax-free और ऊँची दरें — पर deductions ले सकते हैं: 80C तक ₹1.5L, 80TTA, 80D, home-loan ब्याज़ वगैरह।",
+  marg:(r)=>{const su=surcharge(INCOME);return `₹${fmtIN(INCOME)} income पर top tax slab <b>${(r*100).toFixed(0)}%</b> है (${REGIME==='old'?'old regime':'new regime'})`+(su>0?` साथ में बहुत ऊँची income पर <b>${(su*100).toFixed(0)}% surcharge</b>`:'')+`। यह rate "slab-taxed" investments पर लगता है — flat या tax-free पर नहीं।`;},
+  ded80c:(s)=>`💡 Old-regime बोनस: आपके 80C निवेश (PPF, ELSS, SSY, SCSS, ULIP) लगभग <b>₹${fmtIN(s)}</b> tax upfront बचाते हैं (₹1.5L सीमा में) — नीचे के अतिरिक्त।`,
+  s2h:"अपने investments चुनिए", s2hint:"tabs बदलकर सभी 32 products देखिए। जो चाहिए toggle कीजिए, फिर हर एक का हिस्सा, साल और return तय कीजिए। 'यह क्या है?' पर tap कीजिए। घूमने पर आपके चुनाव बने रहते हैं।",
+  totalL:"कुल आवंटित", resetBtn:"डिफ़ॉल्ट पर रीसेट",
+  presetKick:"या तैयार मिश्रण से शुरू कीजिए:",
+  presets:[
+   {key:'safe',ic:'🛡️',t:'सुरक्षित व स्थिर'},
+   {key:'aggressive',ic:'🚀',t:'युवा व आक्रामक'},
+   {key:'balanced',ic:'⚖️',t:'संतुलित'}
+  ],
+  allocWarn:(t)=>`⚠️ आपके आवंटन का योग <b>${t}%</b> है, 100% नहीं। नतीजे मानते हैं कि आप वाकई ये हिस्से लगाते हैं — sliders खींचकर योग 100% कीजिए ताकि तस्वीर सही हो।`,
+  swpDry:(n)=>`⚠️ इस परिस्थिति में आपके <b>${n}</b> चुनाव अंत से पहले खत्म हो जाते हैं — मासिक निकासी growth से तेज़ है। निकासी घटाइए, corpus बढ़ाइए, या अवधि छोटी कीजिए।`,
+  growthYou:"आपका पैसा", growthInf:"अगर सिर्फ़ inflation बराबर बढ़ता",
+  s3h:"आपके पास कितना बचेगा", keyNet:"आपके पास", keyChg:"Charges", keyTax:"Tax",
+  caps:{keep:"आपके पास",leak:"Tax+charges में गया",cagr:"असली post-tax return",invested:"कुल लगाया",corpus:"अंत में बचा corpus"},
+  resSummary:{lumpsum:(inv,fv)=>`आपकी mock ${fmtShort(inv)} रकम लगभग ${fmtShort(fv)} बनती है, पैसा निकलने से पहले।`,sip:(inv,fv)=>`हर महीने लगाकर कुल ${fmtShort(inv)} डाला, जो लगभग ${fmtShort(fv)} बनता है।`,swp:(inv,fv,d)=>`${fmtShort(inv)} corpus से ${fmtShort(d)} income निकाली, अंत में लगभग ${fmtShort(fv)} बचा।`},
+  fdPen:"FD जल्दी तोड़ी — 1% penalty", ppfLock:"PPF 15 साल lock",
+  bnames:{slab:"आपके slab पर",flat:"Flat 12.5% (LTCG)",exempt:"Tax-free",mixed:"मिश्रित",crypto:"Flat 30%"},
+  yrsL:"साल", retL:"Return %", whatis:"यह क्या है?",
+  pcInv:"लगाया", pcNet:"बचा", pcTax:"Tax", pcChg:"Charges",
+  names:{stocks:"Direct stocks",equity_mf:"Equity mutual fund",index:"Index fund / ETF",elss:"ELSS (tax-saver fund)",hybrid:"Hybrid / balanced fund",reit:"REIT",fd:"Fixed Deposit",rd:"Recurring Deposit",savings:"Savings account",corp_fd:"Corporate / NBFC FD",ppf:"PPF",epf:"EPF / VPF",nps:"NPS",ssy:"Sukanya Samriddhi (SSY)",scss:"Senior Citizens Scheme (SCSS)",apy:"Atal Pension Yojana",post_office:"Post Office (NSC/KVP/POMIS)",gsec:"Government bonds (G-Sec)",corp_bond:"Corporate bonds / NCDs",rbi_frsb:"RBI Floating Rate Bond",tax_free_bonds:"Tax-free bonds",tbill_sdl:"T-Bills / SDLs",gold_etf:"Gold ETF",gold_physical:"Physical gold",sgb:"Sovereign Gold Bond",debt_mf:"Debt mutual fund",crypto:"Crypto",foreign:"Foreign stocks (US)",intl_mf:"International funds",ulip:"ULIP (Unit-Linked Insurance Plan)",endowment:"Endowment / money-back (LIC जैसी)",real_estate:"Real estate"}, eli5:{stocks:"जिस एक company पर भरोसा हो उसका हिस्सा खरीदिए। जीते तो बड़ा, गिरे तो चोट भी।",equity_mf:"एक expert आपके लिए stocks की टोकरी चुनता है — single stocks से कम मेहनत।",index:"पूरे market की अपने-आप नकल, fee लगभग शून्य। सरल और सस्ता।",elss:"equity fund जो tax भी घटाता है — पर 3 साल lock।",hybrid:"stocks और bonds का मेल — pure stocks से नरम सवारी।",reit:"किराया कमाने वाली बड़ी इमारतों का हिस्सा, share की तरह।",fd:"एक बड़े सुरक्षित गुल्लक को पैसा देने जैसा। थोड़ा extra (interest) देता है। पेच: वो extra आपकी salary दर पर tax होता है।",rd:"हर महीने भरने वाला FD — बचत की आदत के लिए बढ़िया।",savings:"रोज़मर्रा का खाता। बहुत काम का, पर मुश्किल से बढ़ता है।",corp_fd:"बैंक FD जैसा पर company से — ज़्यादा देता है, पर जोखिम और बिना insurance।",ppf:"15 साल lock वाला सरकारी गुल्लक। सुरक्षित बढ़ता है और सरकार एक रुपया भी tax नहीं लेती।",epf:"salary से अपने-आप कटने वाली retirement बचत; employer बराबर हिस्सा जोड़ता है।",nps:"60 की उम्र तक बढ़ने वाला retirement पॉट; आगे चलकर हिस्सा मासिक pension बनता है।",ssy:"बेटी के भविष्य के लिए खास tax-free खाता। बड़ी होने तक lock।",scss:"60+ के लिए सुरक्षित योजना, हर तिमाही स्थिर ब्याज़।",apy:"सबके लिए सरकारी pension — अभी थोड़ा दीजिए, आगे तय pension पाइए।",post_office:"डाकघर की सरकारी बचत — ऊबाऊ हद तक सुरक्षित।",gsec:"खुद सरकार को उधार — रुपये में सबसे सुरक्षित निवेश।",corp_bond:"company को उधार, तय ब्याज़ — बैंक से ज़्यादा, पर जोखिम देखिए।",rbi_frsb:"सरकारी बॉन्ड जिसका ब्याज़ market के साथ बदलता है — 7 साल lock।",tax_free_bonds:"पुराने सरकारी समर्थित बॉन्ड जिनका ब्याज़ पूरी तरह tax-free है।",tbill_sdl:"बहुत छोटी अवधि के सरकारी IOU — साल से कम के लिए सुरक्षित पार्किंग।",gold_etf:"चेन के बजाय फ़ोन में सोना। कोई locker नहीं, कोई जौहरी की fee नहीं।",gold_physical:"असली सोना — सिक्के या गहने। सुंदर, पर बनवाने-रखने का extra खर्च।",sgb:"सरकारी सोना-बॉन्ड जो 2.5% ब्याज़ भी देते थे। अब नए नहीं बिकते।",debt_mf:"आपका पैसा उधार देकर स्थिर ब्याज़ कमाने वाला fund। stocks से शांत।",crypto:"Bitcoin जैसे digital सिक्के — ज़बरदस्त उतार-चढ़ाव, और India में gains पर flat 30% tax।",foreign:"India से Apple जैसे US shares खरीदिए। currency का असर भी पड़ता है।",intl_mf:"आपके लिए विदेश में निवेश करने वाला Indian fund — कोई कागज़ी झंझट नहीं।",ulip:"एक पॉलिसी, दो काम: life insurance भी और आपका पैसा chosen funds में निवेश भी। हर premium का एक हिस्सा cover के लिए, बाकी निवेश — return market के साथ बदलता है। 5 साल lock, और कई charges पहले कटते हैं।",endowment:"पारंपरिक insurance+बचत पॉलिसी। आपको कुछ हो तो परिवार को भुगतान, और term पूरा होने पर तय lump sum (या बीच-बीच में 'money-back')। बहुत सुरक्षित, पर return कम — आम तौर पर 4–6%।",real_estate:"किराये और (उम्मीद से) ऊँचे दाम पर बेचने के लिए property। बड़ा पैसा, बेचना धीमा।"}, examples:{stocks:"<b>उदाहरण:</b> 15%/साल बढ़ने वाले stock में ₹10,000 → 5 साल में लगभग <b>₹20,100</b> — पर तेज़ गिर भी सकता है।",equity_mf:"<b>उदाहरण:</b> ~12%/साल पर ₹10,000 → 5 साल में लगभग <b>₹17,600</b>, ~1.5% सालाना fee घटाकर।",index:"<b>उदाहरण:</b> ~11.5%/साल पर ₹10,000 → 5 साल में लगभग <b>₹17,200</b>, बहुत कम fee के साथ।",elss:"<b>उदाहरण:</b> ₹10,000 equity की तरह बढ़ता है, और old regime में 80C से tax भी बचाता है।",hybrid:"<b>उदाहरण:</b> ~10%/साल पर ₹10,000 → 5 साल में लगभग <b>₹16,100</b>, कम उतार-चढ़ाव के साथ।",reit:"<b>उदाहरण:</b> ₹10,000 नियमित rent income दे सकता है और ~9%/साल बढ़ भी सकता है।",fd:"<b>उदाहरण:</b> 7% पर 1 साल FD में ₹10,000 → <b>₹10,700</b>। ₹700 interest (थोड़ा tax में)।",rd:"<b>उदाहरण:</b> ₹2,000/माह ~6.5% पर → 5 साल में लगभग <b>₹1.42L</b>।",savings:"<b>उदाहरण:</b> 3% पर ₹10,000 → साल बाद सिर्फ़ ₹10,300; ज़्यादातर inflation खा जाता है।",corp_fd:"<b>उदाहरण:</b> 8% पर ₹10,000 → साल में ₹10,800, अगर company ठीक रहे।",ppf:"<b>उदाहरण:</b> 15 साल हर साल ₹10,000 (कुल ₹1.5L) → 7.1% पर लगभग <b>₹2.7L</b>, <b>₹0 tax</b>।",epf:"<b>उदाहरण:</b> आपके ₹5,000/माह + employer का हिस्सा ~8.25% पर बढ़ता है, ज़्यादातर tax-free।",nps:"<b>उदाहरण:</b> 60 पर corpus का 60% tax-free मिलता है; 40% से pension बनती है जिस पर tax लगता है।",ssy:"<b>उदाहरण:</b> बेटी के लिए ₹10,000/साल ~8.2% पर tax-free बढ़ता है, 21 साल तक।",scss:"<b>उदाहरण:</b> ~8.2% पर ₹10L सालाना लगभग ₹82,000 देता है (आपके slab पर tax)।",apy:"<b>उदाहरण:</b> अभी छोटे मासिक भुगतान → 60 के बाद तय ₹1,000–₹5,000/माह pension।",post_office:"<b>उदाहरण:</b> ~7.5% पर NSC में ₹10,000 → 5 साल में लगभग ₹14,400।",gsec:"<b>उदाहरण:</b> ~7% पर ₹10,000 सालाना ₹700 ब्याज़ देता है (आपके slab पर tax)।",corp_bond:"<b>उदाहरण:</b> ~8.5% पर ₹10,000 सालाना ₹850 देता है, अगर company default न करे।",rbi_frsb:"<b>उदाहरण:</b> ~8.05% पर ₹10,000 सालाना लगभग ₹805 देता है (आपके slab पर tax)।",tax_free_bonds:"<b>उदाहरण:</b> 5.5% tax-free ≈ 30% slab वाले के लिए लगभग 8% pre-tax जैसा।",tbill_sdl:"<b>उदाहरण:</b> ₹9,650 का T-Bill लीजिए, साल बाद ₹10,000 — ₹350 आपका return।",gold_etf:"<b>उदाहरण:</b> ₹10,000 का सोना → 5 साल में लगभग ₹15,000 अगर सोना ~9%/साल बढ़े (गिर भी सकता है)।",gold_physical:"<b>उदाहरण:</b> ₹10,000 के गहने बढ़ने से पहले 10–25% making charge में गँवा देते हैं।",sgb:"<b>उदाहरण:</b> पहले खरीदार द्वारा maturity तक रखने पर भाव का फ़ायदा पूरी तरह tax-free मिला।",debt_mf:"<b>उदाहरण:</b> ~7.5% पर ₹10,000 → 5 साल में लगभग ₹14,400, अब सब आपके slab पर tax।",crypto:"<b>उदाहरण:</b> ₹10,000 दोगुना… या आधा हो सकता है। मुनाफ़े पर <b>30%</b> tax, और नुकसान set-off नहीं होते।",foreign:"<b>उदाहरण:</b> US stocks में ₹10,000; 2 साल से ऊपर के gains पर 12.5% tax — कोई ₹1.25L छूट नहीं।",intl_mf:"<b>उदाहरण:</b> global markets पर ₹10,000; 2 साल से ऊपर रखने पर gains 12.5% tax।",ulip:"<b>उदाहरण:</b> ₹10,000/साल — कुछ cover में, कुछ charges में, बाकी निवेश। charges के कारण आम index fund + अलग term plan से पीछे रहता है।",endowment:"<b>उदाहरण:</b> 20 साल ₹50,000/साल → लगभग ₹15–18L (~4–6%)। वही पैसा index fund में कहीं ज़्यादा बढ़ सकता है — insurance और निवेश मिलाने की यही कीमत है।",real_estate:"<b>उदाहरण:</b> ₹50L का flat: सिर्फ़ stamp duty + registration ही ₹3L+ शुरू में।"}, cats:[{k:'equity',l:"शेयर व funds"},{k:'safe',l:"सुरक्षित व गारंटीड"},{k:'govt',l:"सरकारी योजनाएँ"},{k:'bonds',l:"बॉन्ड"},{k:'gold',l:"सोना"},{k:'advanced',l:"एडवांस व जोखिम"}], behav:{steady:"धीरे और स्थिर बढ़ता है। बहुत सुरक्षित — कम झटके।",bumpy:"काफ़ी ऊपर-नीचे होता है। कई सालों में अच्छा बढ़ सकता है, पर बीच में गिरावट आती है।",wild:"ज़बरदस्त उतार-चढ़ाव — तेज़ी से बढ़ या गिर सकता है। सिर्फ़ वही पैसा लगाइए जो खोने का जोखिम ले सकें।",locked:"आपका पैसा कई साल lock रहता है। बदले में सुरक्षित रहता है और चुपचाप बढ़ता है।",floaty:"सोने के भाव के साथ चलता है — market के साथ ऊपर-नीचे होता रहता है।"}, behavCap:"यह कैसा चलता है",
+  disc:"सिर्फ़ शैक्षिक सिम्युलेशन — निवेश/tax सलाह नहीं, गारंटी नहीं। Returns editable default हैं; असली returns बदलते व जोखिम रखते हैं। Tax buckets, SIP/SWP, ₹1.25L छूट, 4% cess व 80C सरल रूप में (NPS gains tax-deferred; SWP कुल growth पर tax)। Tax FY2026-27 अनुसार। असली फैसलों हेतु CA से सलाह लें।"
+ }
+};
+
+/* ===== HELPERS ===== */
+function S(){return STR[LANG];}
+function noAnim(){try{return !!(window.__noAnim||(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches));}catch(e){return false;}}
+const INC_MIN=300000, INC_MAX=500000000, INC_LMIN=Math.log(INC_MIN), INC_LMAX=Math.log(INC_MAX);
+function sliderToIncome(v){return Math.round(Math.exp(INC_LMIN+(v/1000)*(INC_LMAX-INC_LMIN))/10000)*10000;}
+function incomeToSlider(inc){return Math.round(1000*(Math.log(inc)-INC_LMIN)/(INC_LMAX-INC_LMIN));}
+function surcharge(income){if(income<=5000000)return 0;if(income<=10000000)return 0.10;if(income<=20000000)return 0.15;return 0.25;}
+function animateNum(el,target,fmt){
+  if(!el)return; const start=(typeof el._cv==='number')?el._cv:target; el._cv=target;
+  el.textContent=fmt(target);                 // synchronous truth (final value)
+  if(noAnim())return;
+  if(start===target)return;
+  const dur=550, t0=(typeof performance!=='undefined'&&performance.now)?performance.now():Date.now();
+  function step(now){const p=Math.min(1,((now||Date.now())-t0)/dur);const e=1-Math.pow(1-p,3);el.textContent=fmt(start+(target-start)*e);if(p<1)requestAnimationFrame(step);}
+  requestAnimationFrame(step);
+}
+function fmtIN(n){n=Math.round(+n);return n.toLocaleString('en-IN');}
+function amountWords(n){n=Math.abs(Math.round(+n||0)); const t=v=>(Number.isInteger(v)?v:v.toFixed(2)).toString();
+  if(n>=1e7) return t(n/1e7)+' crore'; if(n>=1e5) return t(n/1e5)+' lakh'; if(n>=1e3) return t(n/1e3)+' thousand'; return String(n);}
+function updateAmtTexts(){ document.querySelectorAll('[data-amt-for]').forEach(el=>{
+  const inp=document.getElementById(el.dataset.amtFor); if(!inp) return;
+  const v=+inp.value; el.textContent=(inp.value===''||isNaN(v)||v<=0)?'' : '₹'+fmtIN(v)+' · '+amountWords(v); });}
+function fmtShort(n){n=+n;const neg=n<0;n=Math.abs(n);let o;if(n>=1e7)o=(n/1e7).toFixed(2)+' Cr';else if(n>=1e5)o=(n/1e5).toFixed(2)+' L';else if(n>=1e3)o=(n/1e3).toFixed(0)+'k';else o=Math.round(n);return (neg?'-₹':'₹')+o;}
+function rupee(n){return (n<0?'-₹':'₹')+fmtIN(Math.abs(n));}
+function marginalRate(income){const sl=REGIME==='old'?REGIME_OLD:REGIME_NEW;for(const[a,b,r]of sl){if(income>a&&income<=b)return r;}return 0.30;}
+function scenReturn(p,exp){return exp;} // market-scenario feature removed; use the expected return
+function amts(){return{lump:+document.getElementById('lumpAmt').value||0,sipM:+document.getElementById('sipAmt').value||0,swpC:+document.getElementById('swpCorpus').value||0,swpW:+document.getElementById('swpWd').value||0};}
+
+function pValueAt(p,st,A,y){
+  const r=scenReturn(p,st.ret/100), yy=Math.min(y,PLAN_YEARS), i=r/12;
+  if(MODE==='lumpsum')return (A.lump*st.pct/100)*Math.pow(1+r,yy);
+  if(MODE==='sip'){ const s=sipStep(); let m=A.sipM*st.pct/100, bal=0, M=Math.round(yy*12); for(let k=0;k<M;k++){ bal=bal*(1+i)+m; if((k+1)%12===0) m*=(1+s); } return bal; }
+  let c=A.swpC*st.pct/100, w=A.swpW*st.pct/100, M=Math.round(yy*12);
+  for(let k=0;k<M;k++){c=c*(1+i);c-=Math.min(w,Math.max(c,0));if(c<0)c=0;} return c;
+}
+function feeCharges(p,st,A){
+  // expense ratio accrues monthly on the actual balance, not on principal*years.
+  if(!p.charge) return 0;
+  const r=scenReturn(p,st.ret/100), i=r/12, months=Math.round(PLAN_YEARS*12), c=p.charge/12, s=sipStep();
+  let bal=0, fee=0, m=A.sipM*st.pct/100; const w=A.swpW*st.pct/100;
+  if(MODE==='lumpsum') bal=A.lump*st.pct/100;
+  else if(MODE==='swp') bal=A.swpC*st.pct/100;
+  for(let k=0;k<months;k++){
+    bal=bal*(1+i);
+    if(MODE==='sip'){ bal+=m; if((k+1)%12===0) m*=(1+s); }
+    else if(MODE==='swp'){bal-=Math.min(w,Math.max(bal,0)); if(bal<0)bal=0;}
+    fee+=Math.max(bal,0)*c;
+  }
+  return fee;
+}
+function outcome(p,st,A,exempt=EQ_EXEMPT,breakOn=(st.broke||EXIT_EARLY)){
+  const r=scenReturn(p,st.ret/100), years=PLAN_YEARS, i=r/12, months=years*12;
+  let invested=0,endVal=0,withdrawn=0,gain=0,ranDry=false;
+  if(MODE==='lumpsum'){invested=A.lump*st.pct/100; endVal=invested*Math.pow(1+r,years); gain=endVal-invested;}
+  else if(MODE==='sip'){ const s=sipStep(); let m=A.sipM*st.pct/100, bal=0, inv=0; for(let k=0;k<months;k++){ bal=bal*(1+i)+m; inv+=m; if((k+1)%12===0) m*=(1+s); } endVal=bal; invested=inv; gain=endVal-invested; }
+  else{let c=A.swpC*st.pct/100; const w=A.swpW*st.pct/100; invested=c; for(let k=0;k<months;k++){c=c*(1+i); const d=Math.min(w,Math.max(c,0)); c-=d; withdrawn+=d; if(c<=0){c=0; if(k<months-1)ranDry=true;}} endVal=c; gain=(withdrawn+endVal)-invested;}
+  let charges=feeCharges(p,st,A);
+  const taxable=Math.max(0,gain); let tax=0; const sur=surcharge(INCOME), surCG=Math.min(sur,0.15);
+  if(p.bucket==='slab') tax=taxable*marginalRate(INCOME)*(1+sur);
+  else if(p.bucket==='flat') tax=Math.max(0,taxable-exempt)*0.125*(1+surCG);
+  else if(p.bucket==='mixed') tax=(years>=1? taxable*0.125*(1+surCG) : taxable*marginalRate(INCOME)*(1+sur));
+  else if(p.bucket==='crypto') tax=taxable*0.30*(1+sur);
+  tax*=(1+CESS);
+  const grossValue=(MODE==='swp')?(withdrawn+endVal):(invested+gain);
+  let earlyPenalty=0;
+  if(breakOn){                                       // exit before the term (per-product or master toggle)
+    const rate=(p.bucket==='exempt'||p.early==='ppfLock')?0.05:0.01;  // illustrative exit cost
+    earlyPenalty=Math.max(0,grossValue)*rate;
+    if(p.bucket==='exempt'||p.bucket==='flat'||p.bucket==='mixed')     // breaking forfeits the tax perk
+      tax=taxable*marginalRate(INCOME)*(1+sur)*(1+CESS);
+  }
+  const net=grossValue-charges-tax-earlyPenalty;
+  return {invested,endVal,withdrawn,gain,charges,tax,net,grossValue,r,years,ranDry,earlyPenalty};
+}
+
+function heldNetTotal(A){   // total "you keep" if NO product is exited early (for the exit-cost comparison)
+  let rows=[],flatTaxable=0; const surCG=Math.min(surcharge(INCOME),0.15);
+  for(const p of PRODUCTS){const st=PS[p.id]; if(!st.active) continue; const o=outcome(p,st,A,0,false); rows.push({p,o}); if(p.bucket==='flat') flatTaxable+=Math.max(0,o.gain);}
+  const poolEx=Math.min(flatTaxable,EQ_EXEMPT); let net=0;
+  for(const {p,o} of rows){ let tax=o.tax; if(p.bucket==='flat'&&flatTaxable>0){const cut=poolEx*(Math.max(0,o.gain)/flatTaxable)*0.125*(1+surCG)*(1+CESS); tax=Math.max(0,tax-cut);} net+=o.grossValue-o.charges-tax; }
+  return net;
+}
+/* ===== RENDER RESULTS ===== */
+function render(){
+  updateAmtTexts();
+  INCOME=sliderToIncome(+document.getElementById('inc').value);
+  document.getElementById('incV').textContent=fmtShort(INCOME);
+  const A=amts(), mRate=marginalRate(INCOME);
+  document.getElementById('regBox').innerHTML=REGIME==='old'?S().regDetailOld:S().regDetailNew;
+  document.getElementById('margBox').innerHTML=S().marg(mRate);
+  document.getElementById('modeBox').innerHTML=S().modeBox[MODE];
+  { const eb=document.getElementById('exitBox'); if(eb) eb.innerHTML=S().exitBox[EXIT_EARLY?'exit':'hold']; }
+  let rows=[],tInv=0,tGross=0,tChg=0,tTax=0,tNet=0,tEnd=0,tWd=0,tPen=0,total=0,ded80cBase=0,maxY=1;
+  // Pass 1: outcomes with NO per-product LTCG exemption; tally total equity (flat) gain.
+  let flatTaxable=0; const surCG=Math.min(surcharge(INCOME),0.15);
+  for(const p of PRODUCTS){
+    const st=PS[p.id]; if(!st.active) continue;
+    const o=outcome(p,st,A,0); rows.push({p,st,o});
+    if(p.bucket==='flat' && !(st.broke||EXIT_EARLY)) flatTaxable+=Math.max(0,o.gain);  // exiting early forfeits the exemption
+  }
+  // The ₹1.25L LTCG exemption is per-taxpayer, not per-fund — pool it once across all equity,
+  // split proportionally by each fund's share of the total equity gain.
+  const poolEx=Math.min(flatTaxable,EQ_EXEMPT);
+  // Pass 2: apply the pooled exemption, then accumulate totals.
+  for(const {p,st,o} of rows){
+    if(p.bucket==='flat' && !(st.broke||EXIT_EARLY) && flatTaxable>0){
+      const cut=poolEx*(Math.max(0,o.gain)/flatTaxable)*0.125*(1+surCG)*(1+CESS);
+      o.tax=Math.max(0,o.tax-cut); o.net=o.grossValue-o.charges-o.tax-o.earlyPenalty;
+    }
+    total+=st.pct; maxY=PLAN_YEARS;
+    tInv+=o.invested;tGross+=o.gain;tChg+=o.charges;tTax+=o.tax;tNet+=o.net;tEnd+=o.endVal;tWd+=o.withdrawn;tPen+=o.earlyPenalty;
+    if(p.is80c) ded80cBase+=o.invested;
+  }
+  const tp=document.getElementById('totalPct'); tp.textContent=total+'%'; tp.className='t '+(total===100?'':'warn');
+  const aw=document.getElementById('allocWarn');
+  if(rows.length&&total!==100){aw.style.display='block';aw.innerHTML=S().allocWarn(total);}else{aw.style.display='none';}
+  { const okR=(rows.length>0&&total===100);   // gate: must have products totalling 100%
+    const tr=document.getElementById('toResults'); if(tr) tr.disabled=!okR;
+    const sr=document.querySelector('#simsteps [data-step="results"]'); if(sr) sr.disabled=!okR; }
+  const dryBox=document.getElementById('swpDryBox');
+  const dryN=(MODE==='swp')?rows.filter(r=>r.o.ranDry).length:0;
+  if(dryN>0){dryBox.style.display='block';dryBox.innerHTML=S().swpDry(dryN);}else{dryBox.style.display='none';}
+  const ded=REGIME==='old'? Math.min(ded80cBase,LIMIT_80C)*mRate : 0;
+  const dedBox=document.getElementById('dedBox');
+  if(ded>0){dedBox.style.display='block';dedBox.innerHTML=S().ded80c(Math.round(ded));}else{dedBox.style.display='none';}
+  const grossTotal=(MODE==='swp')?(tWd+tEnd):(tInv+tGross);
+  const inflEl2=document.getElementById('infRate'), inflR2=(inflEl2?(+inflEl2.value||0):5)/100;
+  const iyrs=INFL_YRS||maxY;   // inflation horizon: chosen years, or the portfolio's own horizon
+  const realKeep=(MODE==='swp'?Math.max(tEnd,0):Math.max(tNet,0))/Math.pow(1+inflR2,iyrs);
+  animateNum(document.getElementById('num1'),Math.round(INFL_ADJ?realKeep:tNet),rupee); document.getElementById('cap1').textContent=INFL_ADJ?S().caps.keepReal:S().caps.keep;
+  { const ab=document.getElementById('adjBox'); if(ab) ab.innerHTML = rows.length? S().adjBox(Math.round(inflR2*100), fmtIN(Math.round(realKeep)), iyrs) : ''; }
+  animateNum(document.getElementById('num2'),Math.round(tChg+tTax+tPen),rupee); document.getElementById('cap2').textContent=S().caps.leak;
+  if(MODE==='lumpsum'){const cagr=tInv>0?(Math.pow(Math.max(tNet,0)/tInv,1/maxY)-1)*100:0; animateNum(document.getElementById('num3'),cagr,v=>v.toFixed(1)+'%'); document.getElementById('cap3').textContent=S().caps.cagr;}
+  else if(MODE==='sip'){animateNum(document.getElementById('num3'),Math.round(tInv),rupee); document.getElementById('cap3').textContent=S().caps.invested;}
+  else{animateNum(document.getElementById('num3'),Math.round(tEnd),rupee); document.getElementById('cap3').textContent=S().caps.corpus;}
+  document.getElementById('resSummary').textContent=S().resSummary[MODE]((tInv||A.swpC),(MODE==='swp'?tEnd:grossTotal),tWd);
+  const base=Math.max(grossTotal,1);
+  const nW=Math.max(0,tNet)/base*100,cW=(tChg+tPen)/base*100,tW=tTax/base*100;
+  const sN=document.getElementById('segNet'),sC=document.getElementById('segChg'),sT=document.getElementById('segTax');
+  sN.style.width=nW+'%';sC.style.width=cW+'%';sT.style.width=tW+'%';
+  sN.textContent=nW>16?rupee(Math.round(tNet)):'';sC.textContent=cW>11?rupee(Math.round(tChg+tPen)):'';sT.textContent=tW>11?rupee(Math.round(tTax)):'';
+  const pc=document.getElementById('pcards');pc.innerHTML='';
+  for(const{p,st,o} of rows){
+    const broke = (st.broke||EXIT_EARLY) && o.earlyPenalty>0;
+    const penRow = broke ? `<div class="k">${S().pcPen}</div><div class="v red">${rupee(Math.round(o.earlyPenalty))}</div>` : '';
+    const exitTgl = `<span class="brk ${st.broke?'on':''}" data-rbrk="${p.id}" role="button" tabindex="0" title="Exit just this one early — penalty + lost tax break">💔 ${st.broke?'exited early':'exit early'}</span>`;
+    pc.insertAdjacentHTML('beforeend',`<div class="pcard${broke?' broke':''}"><div class="top">${p.icon} ${S().names[p.id]}<span class="bucket ${BCLS[p.bucket]}" style="margin-left:auto">${S().bnames[p.bucket]}</span></div><div class="g"><div class="k">${S().pcInv}</div><div class="v">${rupee(Math.round(o.invested))}</div><div class="k">${S().pcChg}</div><div class="v amber">${rupee(Math.round(o.charges))}</div>${penRow}<div class="k">${S().pcTax}</div><div class="v red">${rupee(Math.round(o.tax))}</div><div class="k">${S().pcNet}</div><div class="v green">${rupee(Math.round(o.net))}</div></div><div style="margin-top:10px">${exitTgl}</div></div>`);
+  }
+  pc.querySelectorAll('[data-rbrk]').forEach(el=>el.onclick=()=>{const id=el.dataset.rbrk;PS[id].broke=!PS[id].broke;render();});
+  document.getElementById('growthKey').style.display=(MODE!=='swp'&&rows.length)?'flex':'none';
+  const iv=document.getElementById('inflVerdict');
+  if(MODE!=='swp' && rows.length && tInv>0){
+    const inflEl=document.getElementById('infRate'), inflR=(inflEl?(+inflEl.value||0):5)/100;
+    const target=tInv*Math.pow(1+inflR,maxY), beat=Math.max(tNet,0)>target;
+    const realCagr=(Math.pow(Math.max(tNet,1)/tInv,1/maxY)-1)*100, gap=realCagr-inflR*100;
+    iv.style.display='block';
+    iv.style.borderColor=beat?'#9bcfae':'#f0b9b2'; iv.style.background=beat?'#eef8f1':'#fdeeec'; iv.style.color=beat?'var(--green-d)':'var(--red)';
+    iv.innerHTML=beat
+      ? `✅ <b>You beat inflation</b> — after tax &amp; charges your money grows about <b>${gap.toFixed(1)}%/yr</b> faster than prices. That's real wealth.`
+      : `⚠️ <b>This loses to inflation</b> — after tax &amp; charges, what you keep buys <b>less</b> than you started with. Try lower-tax or higher-return picks.`;
+  } else { iv.style.display='none'; }
+  // live "play" readout on the Choose screen
+  const lk=document.getElementById('liveKeep'), ll=document.getElementById('liveLost'), lv=document.getElementById('liveVerdict');
+  if(lk) lk.textContent=rupee(Math.round(tNet));
+  if(ll) ll.textContent=rupee(Math.round(tChg+tTax+tPen));
+  if(lv){
+    if(!rows.length) lv.innerHTML='Turn on a product above to see what you keep.';
+    else if(MODE==='swp') lv.innerHTML='Corpus left at the end: <b>'+rupee(Math.round(tEnd))+'</b>'+(dryN>0?' — ⚠️ some picks run dry':'');
+    else lv.innerHTML=iv.innerHTML;
+  }
+  { const ec=document.getElementById('exitCalc');
+    if(ec){ if(EXIT_EARLY && rows.length){ const held=heldNetTotal(A), cost=Math.max(0,held-tNet);
+        ec.style.display='block';
+        ec.innerHTML=S().exitCalc(rupee(Math.round(tPen)), rupee(Math.round(tTax)), rupee(Math.round(tNet)), rupee(Math.round(held)), rupee(Math.round(cost)));
+      } else ec.style.display='none'; } }
+  drawChart(rows,A,maxY,tInv);
+  saveState();
+}
+let gAnim;
+function drawChart(rows,A,maxY,investedTotal){
+  const cv=document.getElementById('growth');const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
+  cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const pad=8;
+  const series=[];let maxv=1;
+  for(let y=0;y<=maxY;y++){let v=0;for(const{p,st} of rows){v+=pValueAt(p,st,A,y);}series.push(v);maxv=Math.max(maxv,v);}
+  const inflEl=document.getElementById('infRate'), inflR=(inflEl?(+inflEl.value||0):5)/100;
+  const showInf=(MODE!=='swp')&&investedTotal>0;
+  let infSeries=null;
+  if(showInf){infSeries=[];for(let y=0;y<=maxY;y++){const v=investedTotal*Math.pow(1+inflR,y);infSeries.push(v);maxv=Math.max(maxv,v);}}
+  cancelAnimationFrame(gAnim);let t=noAnim()?1:0;
+  function frame(){
+    t=Math.min(1,t+0.05);ctx.clearRect(0,0,w,h);
+    const baseRef=(MODE==='swp')?A.swpC:investedTotal, baseY=h-pad-(baseRef/maxv)*(h-2*pad);
+    if(baseRef>0&&baseRef<=maxv){ctx.strokeStyle='#ddd2bd';ctx.setLineDash([5,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,baseY);ctx.lineTo(w-pad,baseY);ctx.stroke();ctx.setLineDash([]);}
+    const N=maxY*t, col=(MODE==='swp')?'#d98a1f':'#1f9d5f';
+    ctx.beginPath();ctx.moveTo(pad,h-pad);
+    for(let y=0;y<=N;y+=0.2){const v=interp(series,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);ctx.lineTo(x,yy);}
+    ctx.lineTo(pad+(N/maxY)*(w-2*pad),h-pad);ctx.closePath();
+    const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,col+'55');g.addColorStop(1,col+'08');ctx.fillStyle=g;ctx.fill();
+    ctx.beginPath();
+    for(let y=0;y<=N;y+=0.2){const v=interp(series,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
+    if(showInf){ctx.beginPath();ctx.setLineDash([6,5]);
+      for(let y=0;y<=N;y+=0.2){const v=interp(infSeries,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+      ctx.strokeStyle='#c98a1f';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);}
+    if(t<1)gAnim=requestAnimationFrame(frame);
+  }
+  frame();
+}
+function interp(a,x){const i=Math.floor(x);if(i>=a.length-1)return a[a.length-1];return a[i]+(a[i+1]-a[i])*(x-i);}
+
+/* ===== INFLATION ===== */
+let INF_H=10, infAnim=null;
+function renderInflation(){
+  updateAmtTexts();
+  const amt=+document.getElementById('infAmt').value||0, i=(+document.getElementById('infRate').value||0)/100;
+  document.getElementById('infRateV').textContent=(i*100).toFixed(1);
+  const real=amt/Math.pow(1+i,INF_H), loss=amt-real, pct=amt>0?(loss/amt*100):0, fut=100*Math.pow(1+i,INF_H);
+  document.getElementById('infResult').innerHTML=S().infResult(fmtIN(amt),fmtIN(Math.round(real)),fmtIN(Math.round(loss)),pct.toFixed(0),INF_H)+S().infSamosa(Math.round(fut));
+  const cv=document.getElementById('infChart');const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
+  cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pad=10, maxv=Math.max(amt,1)*1.06, topY=h-pad-(amt/maxv)*(h-2*pad);
+  cancelAnimationFrame(infAnim);let t=noAnim()?1:0;
+  function frame(){
+    t=Math.min(1,t+0.05);ctx.clearRect(0,0,w,h);const N=INF_H*t,lastX=pad+(N/INF_H)*(w-2*pad);
+    ctx.beginPath();ctx.moveTo(pad,topY);
+    for(let y=0;y<=N;y+=0.2){const v=amt/Math.pow(1+i,y);const x=pad+(y/INF_H)*(w-2*pad);const yy=h-pad-(v/maxv)*(h-2*pad);ctx.lineTo(x,yy);}
+    ctx.lineTo(lastX,topY);ctx.closePath();ctx.fillStyle='#d6513a22';ctx.fill();
+    ctx.strokeStyle='#b9ad95';ctx.setLineDash([6,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,topY);ctx.lineTo(w-pad,topY);ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();
+    for(let y=0;y<=N;y+=0.2){const v=amt/Math.pow(1+i,y);const x=pad+(y/INF_H)*(w-2*pad);const yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+    ctx.strokeStyle='#d6513a';ctx.lineWidth=2.5;ctx.stroke();
+    if(t<1)infAnim=requestAnimationFrame(frame);
+  }
+  frame();
+  saveState();
+}
+
+/* ===== PRODUCT LIST ===== */
+function rowHTML(p,st){
+  return `<div class="prow" data-row="${p.id}" data-pcat="${p.cat}">
+    <div class="main"><div class="tgl ${st.active?'on':''}" data-tgl="${p.id}"></div><div class="ic">${p.icon}</div>
+    <div class="nm"><span data-nm="${p.id}"></span><span class="bucket ${BCLS[p.bucket]}" data-bn="${p.bucket}"></span></div>
+    <div class="pcwrap"><input type="range" min="0" max="100" value="${st.pct}" data-pct="${p.id}" aria-label="Allocation percent" ${st.active?'':'disabled'}><span class="pc" data-pcv="${p.id}">${st.pct}%</span></div></div>
+    <div class="sub ${st.active?'':'off'}" data-sub="${p.id}"><div class="mini"><label data-rl></label><input type="number" min="0" max="40" step="0.1" value="${st.ret}" data-rt="${p.id}" aria-label="Return percent" onblur="clampNum(this)"></div>
+    <div class="elitog" data-elitog="${p.id}"></div></div>
+    <div class="eli5" data-eli-wrap="${p.id}"><div class="behav"><span class="bi" data-bi="${p.anim}"></span><span><span class="bcap" data-behavcap></span><span data-behav="${p.anim}"></span></span></div><div class="etext" data-eli="${p.id}"></div><div class="ex" data-ex="${p.id}"></div></div></div>`;
+}
+function distributeEqually(){
+  const act=PRODUCTS.filter(p=>PS[p.id].active); const n=act.length; if(!n) return;
+  const base=Math.floor(100/n), rem=100-base*n;
+  act.forEach((p,i)=>{PS[p.id].pct=base+(i<rem?1:0);});  // remainder spread to first few so sum=100
+}
+function syncRows(){
+  for(const p of PRODUCTS){const st=PS[p.id];
+    const tg=document.querySelector(`[data-tgl="${p.id}"]`); if(tg) tg.classList.toggle('on',st.active);
+    const sub=document.querySelector(`[data-sub="${p.id}"]`); if(sub) sub.classList.toggle('off',!st.active);
+    const sl=document.querySelector(`[data-pct="${p.id}"]`); if(sl){sl.value=st.pct;sl.disabled=!st.active;}
+    const pv=document.querySelector(`[data-pcv="${p.id}"]`); if(pv) pv.textContent=st.pct+'%';
+  }
+}
+function buildList(){
+  const cat=document.getElementById('cattabs');cat.innerHTML='';
+  S().cats.forEach((c,idx)=>{const btn=document.createElement('div');btn.className='cattab'+(idx===0?' on':'');btn.textContent=c.l;btn.dataset.cat=c.k;btn.onclick=()=>showCat(c.k);cat.appendChild(btn);});
+  const list=document.getElementById('plist');list.innerHTML='';
+  for(const p of PRODUCTS) list.insertAdjacentHTML('beforeend',rowHTML(p,PS[p.id]));
+  list.querySelectorAll('[data-tgl]').forEach(el=>el.onclick=()=>{const id=el.dataset.tgl;
+    PS[id].active=!PS[id].active;
+    if(!PS[id].active) PS[id].pct=0;
+    distributeEqually();   // split 100% evenly across whatever is now selected
+    syncRows();
+    render();
+  });
+  list.querySelectorAll('[data-pct]').forEach(el=>el.oninput=()=>{const id=el.dataset.pct;
+    let v=+el.value;
+    const others=PRODUCTS.reduce((s,p)=>s+((p.id!==id&&PS[p.id].active)?PS[p.id].pct:0),0);
+    const maxV=Math.max(0,100-others);                 // never let the total cross 100%
+    if(v>maxV){v=maxV; el.value=v;}
+    PS[id].pct=v; document.querySelector(`[data-pcv="${id}"]`).textContent=v+'%';render();});
+    list.querySelectorAll('[data-rt]').forEach(el=>el.oninput=()=>{PS[el.dataset.rt].ret=+el.value||0;render();});
+  list.querySelectorAll('[data-elitog]').forEach(el=>el.onclick=()=>document.querySelector(`[data-eli-wrap="${el.dataset.elitog}"]`).classList.toggle('show'));
+  CURRENT_CAT=S().cats[0].k; showCat(CURRENT_CAT);
+}
+function showCat(k){
+  CURRENT_CAT=k;
+  document.querySelectorAll('.cattab').forEach(el=>el.classList.toggle('on',el.dataset.cat===k));
+  document.querySelectorAll('.prow').forEach(el=>el.classList.toggle('hidecat',el.dataset.pcat!==k));
+}
+
+/* ===== HOME PATHS ===== */
+function renderPaths(){
+  const g=document.getElementById('pathgrid');g.innerHTML='';
+  S().paths.forEach(p=>{const d=document.createElement('div');d.className='pathcard';
+    d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
+    d.onclick=()=>goPath(p.sec,p.mode||null);g.appendChild(d);});
+}
+function goPath(sec,mode){
+  if(mode){document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===mode));setMode(mode);}
+  showSec(sec);
+}
+function renderPresets(){
+  const r=document.getElementById('presetrow');if(!r)return;r.innerHTML='';
+  S().presets.forEach(p=>{const b=document.createElement('button');b.className='preset';b.dataset.preset=p.key;
+    b.innerHTML=`<span>${p.ic}</span><span>${p.t}</span>`;b.onclick=()=>applyPreset(p.key);r.appendChild(b);});
+}
+function applyPreset(key){
+  const ps=PRESETS[key];if(!ps)return;
+  for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}
+  for(const id in ps.alloc){if(PS[id]){PS[id].active=true;PS[id].pct=ps.alloc[id];}}
+  document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===ps.mode));
+  setMode(ps.mode);
+  buildList();applyLang();showSec('choose');
+}
+function resetAll(){
+  try{localStorage.removeItem(LM_KEY);localStorage.removeItem('lm_seen');}catch(e){}   // clean reset — wipe saved state + re-arm the coachmark
+  document.body.classList.remove('kid'); { const kb=document.getElementById('kidBtn'); if(kb){kb.classList.remove('on');kb.textContent='🧒 Kid mode';} }
+  const d=PS_DEFAULTS;
+  for(const id in PS){PS[id].active=d[id].active;PS[id].pct=d[id].pct;PS[id].years=d[id].years;PS[id].ret=d[id].ret;PS[id].broke=d[id].broke;}
+  REGIME='new';INF_H=10;PLAN_YEARS=10;
+  { const py=document.getElementById('planYears'); if(py)py.value=10; const su=document.getElementById('sipStepup'); if(su)su.value=10; }
+  document.getElementById('lumpAmt').value=500000;
+  document.getElementById('sipAmt').value=10000;
+  document.getElementById('swpCorpus').value=2000000;
+  document.getElementById('swpWd').value=15000;
+  document.getElementById('inc').value=incomeToSlider(1500000);
+  document.getElementById('infAmt').value=500000;
+  document.getElementById('infRate').value=5;
+  EXIT_EARLY=false; INFL_ADJ=false; INFL_YRS=0;
+  document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.exit==='0'));
+  document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.adj==='0'));
+  document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.iy==='0'));
+  document.querySelectorAll('#regChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.r==='new'));
+  document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.h==='10'));
+  document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m==='lumpsum'));
+  setMode('lumpsum');
+  buildList();applyLang();
+  showSec('home'); NAV_STACK=[];        // back to a clean home
+  showCoachIfFirst();                   // storage cleared → welcome shows again
+}
+
+/* ===== HOME PILLARS ===== */
+function renderPillars(){
+  const g=document.getElementById('pillargrid'), sc=document.getElementById('simcard');
+  if(g){ g.innerHTML='';
+    S().pillars.filter(p=>p.key!=='tryit').forEach(p=>{const d=document.createElement('div');d.className='pathcard';
+      d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
+      d.onclick=()=>showSec(p.key);g.appendChild(d);});
+  }
+  if(sc){ sc.innerHTML=''; const t=S().pillars.find(p=>p.key==='tryit');
+    if(t){const d=document.createElement('div');d.className='simcta';
+      d.innerHTML=`<span class="sim-sheen"></span><span class="sim-badge2">Interactive</span><div class="sim-ic">${t.ic}</div><div class="sim-body"><h3>${t.t}</h3><p>${t.d}</p><span class="sim-cta-btn"><span class="pbadge">▶</span>Start the simulator</span></div><div class="sim-arr">→</div>`;
+      d.onclick=()=>showSec('tryit'); sc.appendChild(d);}
+  }
+}
+
+/* ===== INVESTING LIBRARY (read-only lessons) ===== */
+let LIB_CAT='all';
+function behavBlock(p){return `<div class="behav"><span class="bi" data-lbi="${p.anim}"></span><span><span class="bcap" data-lbehavcap></span><span data-lbehav="${p.anim}"></span></span></div>`;}
+function foodBlock(p){return `<div class="foodie">🍱 <b>Like…</b> ${S().food[p.id]}</div>`;}
+function taxLine(p){return `<div class="ltax kidhide">💰 Tax: <span data-ltaxb="${p.bucket}"></span> · <span class="taxlink" data-taxlink>How tax works →</span></div>`;}
+function shallowLessonHTML(p){
+  return foodBlock(p)+behavBlock(p)+`<div class="etext" data-leli="${p.id}"></div><div class="ex" data-lex="${p.id}"></div><div class="ltip" data-ltip="${p.id}"></div>`+taxLine(p);
+}
+function deepLessonHTML(p,L){
+  // keep=true → still shown in Kid mode; otherwise hidden behind the "grown-up details" toggle
+  const sec=(label,val,keep)=> val?`<div class="lsec${keep?'':' kidhide'}"><div class="lsech">${label}</div><div class="lsecb">${val}</div></div>`:'';
+  const list=(arr)=> (arr&&arr.length)?('<ul class="proscons">'+arr.map(x=>`<li>${x}</li>`).join('')+'</ul>'):'';
+  return foodBlock(p)+behavBlock(p)
+   + sec('What it is',L.what)+sec('How it works',L.works)+sec('Returns &amp; what drives them',L.returns)
+   + sec('Example',S().examples[p.id],true)
+   + sec('Risks',L.risk)+sec('Liquidity / lock-in',L.liquidity)+sec('Taxation',L.tax)+sec('Costs',L.costs)+sec("Who it's for",L.forwhom)
+   + `<div class="pcwrap2 kidhide"><div class="pccol"><div class="lsech" style="color:var(--green-d)">👍 Pros</div>${list(L.pros)}</div><div class="pccol"><div class="lsech" style="color:var(--red)">👎 Cons</div>${list(L.cons)}</div></div>`
+   + taxLine(p);
+}
+function buildLibrary(){
+  const tabs=document.getElementById('invtabs');if(!tabs)return;tabs.innerHTML='';
+  [{k:'all',l:S().libAll}].concat(S().cats).forEach(c=>{const b=document.createElement('div');
+    b.className='cattab'+(c.k==='all'?' on':'');b.textContent=c.l;b.dataset.lcat=c.k;b.onclick=()=>showLibCat(c.k);tabs.appendChild(b);});
+  const list=document.getElementById('invlist');list.innerHTML='';
+  S().cats.forEach(c=>{
+    list.insertAdjacentHTML('beforeend',`<div class="invcat" data-lcathdr="${c.k}">${c.l}</div>`);
+    for(const p of PRODUCTS.filter(x=>x.cat===c.k)){
+      const L=S().lessons&&S().lessons[p.id];
+      const lbody=L?deepLessonHTML(p,L):shallowLessonHTML(p);
+      list.insertAdjacentHTML('beforeend',`<div class="lrow" data-lrow="${p.id}" data-lcatrow="${p.cat}" data-deep="${L?1:0}">
+        <div class="lhead" data-lhead="${p.id}"><div class="lic">${p.icon}</div><div class="lnm" data-lnm="${p.id}"></div><span class="bucket ${BCLS[p.bucket]}" data-lbn="${p.bucket}"></span><span class="lchev">›</span></div>
+        <div class="lbody">${lbody}</div></div>`);
+    }
+  });
+  list.querySelectorAll('[data-lhead]').forEach(el=>el.onclick=()=>el.closest('.lrow').classList.toggle('open'));
+  list.querySelectorAll('[data-taxlink]').forEach(el=>el.onclick=(e)=>{e.stopPropagation();showSec('tax');});
+  showLibCat('all');
+}
+function showLibCat(k){
+  LIB_CAT=k;
+  document.querySelectorAll('#invtabs .cattab').forEach(el=>el.classList.toggle('on',el.dataset.lcat===k));
+  document.querySelectorAll('#invlist .lrow').forEach(el=>el.style.display=(k==='all'||el.dataset.lcatrow===k)?'':'none');
+  document.querySelectorAll('#invlist .invcat').forEach(el=>el.style.display=(k==='all'||el.dataset.lcathdr===k)?'':'none');
+}
+
+/* ===== TAKE-HOME (salary) CALCULATOR ===== */
+function slabTaxOf(taxable, slabs){ let t=0; for(const [lo,hi,r] of slabs){ if(taxable>lo) t+=(Math.min(taxable,hi)-lo)*r; } return t; }
+function oldSlabs(age){ const ex = age==='80'?500000 : age==='60'?300000 : 250000;   // senior-citizen exemption
+  return [[0,ex,0],[ex,500000,0.05],[500000,1000000,0.20],[1000000,Infinity,0.30]]; }
+function surchargeRate(income, regime){
+  if(income<=5000000) return 0; if(income<=10000000) return 0.10; if(income<=20000000) return 0.15;
+  if(regime==='new') return 0.25;                                  // new regime caps at 25%
+  return income<=50000000?0.25:0.37;                               // old: 25% (2–5Cr), 37% (>5Cr)
+}
+function incomeTaxOn(taxable, regime, age){       // slabs + 87A + marginal relief + surcharge + cess
+  const slabs = regime==='old'? oldSlabs(age) : REGIME_NEW;
+  let base = slabTaxOf(taxable, slabs);
+  if(regime==='new'){ if(taxable<=1200000) base=0; else base=Math.min(base, taxable-1200000); }  // 87A + marginal relief
+  else if(taxable<=500000) base=0;
+  const sr=surchargeRate(taxable,regime); let withSur=base*(1+sr);
+  if(sr>0){                                                        // surcharge marginal relief
+    const thr = taxable<=10000000?5000000 : taxable<=20000000?10000000 : taxable<=50000000?20000000 : 50000000;
+    const cap = slabTaxOf(thr,slabs)*(1+surchargeRate(thr-1,regime)) + (taxable-thr);
+    if(withSur>cap) withSur=cap;
+  }
+  return Math.max(0, withSur*(1+CESS));
+}
+function salaryCalc(regime){
+  const gv=id=>{const e=document.getElementById(id);return e?(+e.value||0):0;};
+  const ctc=Math.max(0,gv('thCtc')), basic=ctc*(gv('thBasic')||40)/100;
+  const epfRate=Math.max(0,gv('thEpfRate'))/100;                 // editable EPF % of basic
+  const employerPF=basic*epfRate, employeePF=basic*epfRate;
+  const gratuity=basic*Math.max(0,gv('thGrat'))/100;             // employer gratuity (in CTC, exempt, not in-hand)
+  const employerNPS=Math.min(basic*Math.max(0,gv('thEmpNps'))/100, basic*0.10); // 80CCD(2), capped 10% basic, both regimes
+  const metro=(document.querySelector('#thMetroChips .chip.on')||{dataset:{metro:'1'}}).dataset.metro==='1';
+  const age=(document.querySelector('#thAgeChips .chip.on')||{dataset:{age:'lt60'}}).dataset.age;
+  const hraComp=basic*(gv('thHraPct')/100);                      // editable HRA % of basic
+  const special=Math.max(0, ctc - basic - hraComp - employerPF - gratuity - employerNPS); // balancing special allowance
+  const gross=Math.max(0, ctc - employerPF - gratuity - employerNPS), std=regime==='new'?75000:50000;
+  const pt=Math.max(0,gv('thPt'));
+  let ded=0,hraEx=0,c80=0;
+  if(regime==='old'){
+    const rent=gv('thRent');
+    hraEx=Math.max(0, Math.min(hraComp, rent-0.1*basic, (metro?0.5:0.4)*basic)); // HRA exemption (capped)
+    c80=Math.min(gv('thC')+employeePF, 150000);                  // your EPF auto-counts toward 80C
+    ded=c80 + gv('thD') + Math.min(gv('thNps'),50000) + Math.min(gv('thHome'),200000) + hraEx;
+  }
+  const taxable=Math.max(0, gross - std - pt - ded);             // professional tax deductible (both regimes)
+  const tax=incomeTaxOn(taxable, regime, age);
+  const net=Math.max(0, gross - tax - employeePF - pt);
+  return {regime,ctc,gross,basic,hraComp,special,gratuity,employerPF,employeePF,employerNPS,std,pt,ded,hraEx,c80,taxable,tax,net,age};
+}
+function renderTakehome(){
+  if(!document.getElementById('thCtc')) return;
+  updateAmtTexts();
+  document.getElementById('thBasicV').textContent=document.getElementById('thBasic').value;
+  const mode=(document.querySelector('#thRegChips .chip.on')||{dataset:{thr:'compare'}}).dataset.thr;
+  document.getElementById('thOldGrp').style.display=(mode==='new')?'none':'block';
+  const nw=salaryCalc('new'), od=salaryCalc('old');
+  const best=(mode==='old')?od:(mode==='new')?nw:(od.net>=nw.net?od:nw);
+  animateNum(document.getElementById('thNet'),Math.round(best.net/12),rupee);
+  document.getElementById('thNetYr').textContent=rupee(Math.round(best.net));
+  const v=document.getElementById('thVerdict');
+  if(mode==='compare'){ const diff=Math.round(Math.abs(od.net-nw.net)); const win=od.net>=nw.net?'Old':'New';
+    v.innerHTML=diff<1?'Both regimes give the same take-home.':`<b>${win} regime</b> gives about <b>${rupee(diff)}</b>/yr more — showing it.`;
+  } else v.innerHTML=`Showing the <b>${mode} regime</b>.`;
+  const pc=document.getElementById('thCompare');
+  if(mode==='compare'){ pc.style.display='grid';
+    const card=(c,label)=>`<div class="pcard${best.regime===c.regime?' broke':''}"><div class="top">${label}${best.regime===c.regime?' <span class="bucket b-exempt">better</span>':''}</div><div class="g"><div class="k">Income tax</div><div class="v red">${rupee(Math.round(c.tax))}</div><div class="k">In-hand/mo</div><div class="v green">${rupee(Math.round(c.net/12))}</div></div></div>`;
+    pc.innerHTML=card(nw,'New regime')+card(od,'Old regime');
+  } else pc.style.display='none';
+  const b=best, R=x=>rupee(Math.round(x));
+  const row=(k,v,bold)=>`<tr><td>${bold?'<b>'+k+'</b>':k}</td><td style="text-align:right">${bold?'<b>'+v+'</b>':v}</td></tr>`;
+  document.getElementById('thBreak').innerHTML=
+    `<div class="lsech">Salary structure — per year (${b.regime} regime)</div>`
+   +`<table class="slab"><tbody>`
+   + row('Basic',R(b.basic)) + row('HRA',R(b.hraComp)) + row('Special allowance',R(b.special))
+   + row('Employer PF (in CTC, not paid to you)','−'+R(b.employerPF))
+   + (b.gratuity>0?row('Gratuity (in CTC, exempt)','−'+R(b.gratuity)):'')
+   + (b.employerNPS>0?row('Employer NPS 80CCD(2) (in CTC, exempt)','−'+R(b.employerNPS)):'')
+   + row('Gross (taxable salary)',R(b.gross),1)
+   + row('− Income tax','−'+R(b.tax)) + row('− Your EPF','−'+R(b.employeePF)) + row('− Professional tax','−'+R(b.pt))
+   + row('In-hand (take-home)',R(b.net),1)
+   + `</tbody></table>`
+   + (b.regime==='old' ? `<div class="hint" style="margin-top:8px">HRA exemption: <b>${R(b.hraEx)}</b> · 80C used (incl your EPF): <b>${R(b.c80)}</b> · plus 80D/NPS(1B)/home-loan. Professional tax is also deducted before tax.</div>` : `<div class="hint" style="margin-top:8px">New regime: ₹75k standard deduction + professional tax; employer NPS (80CCD2) still exempt. No 80C/HRA.</div>`);
+}
+
+/* ===== GLOSSARY (tap-to-define jargon) ===== */
+const GLOSS_TERMS=Object.keys(GLOSS).sort((a,b)=>b.length-a.length); // longest first so multi-word wins
+function glossify(root){
+  if(!root) return;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+  const nodes=[]; let n; while(n=walker.nextNode()) nodes.push(n);
+  const done=new Set();
+  for(const node of nodes){
+    if(!node.nodeValue.trim()) continue;
+    if(node.parentElement && node.parentElement.closest('.gloss')) continue;
+    for(const t of GLOSS_TERMS){
+      if(done.has(t)) continue;
+      const re=new RegExp('\\b'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b');
+      const m=node.nodeValue.match(re);
+      if(m){
+        const i=m.index, before=node.nodeValue.slice(0,i), after=node.nodeValue.slice(i+m[0].length);
+        const span=document.createElement('span'); span.className='gloss'; span.dataset.term=t; span.textContent=m[0];
+        const frag=document.createDocumentFragment();
+        if(before) frag.appendChild(document.createTextNode(before));
+        frag.appendChild(span);
+        if(after) frag.appendChild(document.createTextNode(after));
+        node.parentNode.replaceChild(frag,node);
+        done.add(t); break; // this node is consumed
+      }
+    }
+  }
+  root.querySelectorAll('.gloss').forEach(el=>{ if(!el._b){el._b=1; el.onclick=(e)=>{e.stopPropagation(); toggleGloss(el);}; }});
+}
+function toggleGloss(el){
+  if(el._open){ if(el._def){el._def.remove(); el._def=null;} el._open=false; el.classList.remove('on'); return; }
+  const d=document.createElement('span'); d.className='glossdef'; d.textContent=' — '+GLOSS[el.dataset.term];
+  el.parentNode.insertBefore(d, el.nextSibling); el._def=d; el._open=true; el.classList.add('on');
+}
+function glossifyAll(){
+  document.querySelectorAll('#invlist .lbody').forEach(glossify);
+  document.querySelectorAll('#sec-tax .card, #sec-credit .card').forEach(glossify);
+  a11yify();
+}
+/* ===== A11Y: make click-only divs keyboard-operable ===== */
+function a11yify(){
+  document.querySelectorAll('.chip,.cattab,.tgl,.brk,.elitog,.pathcard,.simcta,.preset,.lhead,.gloss,.taxlink,[data-step]').forEach(el=>{
+    if(!el.hasAttribute('role')) el.setAttribute('role','button');
+    if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
+  });
+}
+document.addEventListener('keydown',e=>{
+  const t=e.target;
+  if((e.key==='Enter'||e.key===' ')&&t&&t.getAttribute&&t.getAttribute('role')==='button'){e.preventDefault();t.click();}
+});
+/* ===== Input hardening: clamp to min/max on blur ===== */
+function clampNum(el){
+  const min=el.min!==''?+el.min:-Infinity, max=el.max!==''?+el.max:Infinity;
+  let v=+el.value;
+  if(el.value===''||isNaN(v)) v=(min>-Infinity)?min:0;
+  v=Math.max(min,Math.min(max,v));
+  if(String(v)!==el.value){el.value=v; el.dispatchEvent(new Event('input',{bubbles:true}));}
+}
+function confirmReset(){ if(typeof confirm!=='function'||confirm('Reset everything back to the starting example?')) resetAll(); }
+function toggleKid(){ const on=document.body.classList.toggle('kid'); const b=document.getElementById('kidBtn'); if(b){b.classList.toggle('on',on); b.textContent=on?'🧒 Kid mode: ON':'🧒 Kid mode';} saveState(); }
+
+/* ===== FIRST-TIME COACHMARK ===== */
+function showCoachIfFirst(){ let seen=true; try{seen=!!localStorage.getItem('lm_seen');}catch(e){seen=true;} if(!seen){const c=document.getElementById('coach'); if(c)c.style.display='flex';} }
+function dismissCoach(){ const c=document.getElementById('coach'); if(c)c.style.display='none'; try{localStorage.setItem('lm_seen','1');}catch(e){} }
+const TOUR=[
+ {sel:'#simcard .simcta',t:'Build & see',b:'Tap here to build a pretend portfolio and watch what you actually keep after tax, charges & inflation.'},
+ {sel:'.secnav [data-sec="invest"]',t:'Learn any product',b:'Browse all 32 — each explained with a 🍱 food analogy, in plain words.'},
+ {sel:'.secnav [data-sec="takehome"]',t:'Your take-home pay',b:'Curious about your real monthly in-hand? It’s here, pre-filled — just tweak.'},
+ {sel:'#kidBtn',t:'New to money?',b:'Turn on Kid mode anytime for the simple, food-style version of everything.'}
+];
+let tourI=0;
+function startTour(){ const c=document.getElementById('coach'); if(c)c.style.display='none'; showSec('home'); tourI=0; tourStep(); }
+function tourStep(){
+  document.querySelectorAll('.tour-spot').forEach(e=>e.classList.remove('tour-spot'));
+  const tip=document.getElementById('tourtip'), step=TOUR[tourI];
+  if(!step){ endTour(); return; }
+  const el=document.querySelector(step.sel); if(!el){ tourI++; return tourStep(); }
+  el.classList.add('tour-spot'); if(el.scrollIntoView) el.scrollIntoView({block:'center'});
+  tip.innerHTML=`<h4>${step.t}</h4>${step.b}<div class="trow"><span class="tdot">${tourI+1}/${TOUR.length}</span><span><button class="tskip" onclick="endTour()">Skip</button> <button class="tnext" onclick="nextTour()">${tourI===TOUR.length-1?'Done 👍':'Next →'}</button></span></div>`;
+  tip.style.display='block';
+  const r=el.getBoundingClientRect(), tw=Math.min(300, (window.innerWidth||400)-24);
+  let top=r.bottom+12, left=Math.min((window.innerWidth||400)-tw-12, Math.max(12, r.left));
+  if(top+170>(window.innerHeight||700)) top=Math.max(12, r.top-180);
+  tip.style.top=top+'px'; tip.style.left=left+'px'; tip.style.maxWidth=tw+'px';
+}
+function nextTour(){ tourI++; tourStep(); }
+function endTour(){ document.querySelectorAll('.tour-spot').forEach(e=>e.classList.remove('tour-spot')); const t=document.getElementById('tourtip'); if(t)t.style.display='none'; try{localStorage.setItem('lm_seen','1');}catch(e){} }
+
+/* ===== PERSISTENCE (localStorage) ===== */
+const LM_KEY='lm_state';
+function saveState(){ try{
+  const ps={}; for(const id in PS){const s=PS[id]; ps[id]={active:s.active,pct:s.pct,years:s.years,ret:s.ret,broke:s.broke};}
+  const g=id=>{const e=document.getElementById(id);return e?e.value:null;};
+  localStorage.setItem(LM_KEY, JSON.stringify({
+    ps, mode:MODE, regime:REGIME, exit:EXIT_EARLY, adj:INFL_ADJ, adjYrs:INFL_YRS, infH:INF_H,
+    kid:document.body.classList.contains('kid'),
+    lump:g('lumpAmt'),sip:g('sipAmt'),swpC:g('swpCorpus'),swpW:g('swpWd'),
+    infAmt:g('infAmt'),infRate:g('infRate'),incSlider:g('inc'),
+    planYears:PLAN_YEARS, sipStepup:g('sipStepup')
+  }));
+}catch(e){} }
+function loadState(){ let s; try{s=JSON.parse(localStorage.getItem(LM_KEY));}catch(e){} if(!s) return false;
+  try{
+    if(s.ps) for(const id in PS){ if(s.ps[id]) Object.assign(PS[id], s.ps[id]); }
+    if(s.mode) MODE=s.mode; if(s.regime) REGIME=s.regime;
+    EXIT_EARLY=!!s.exit; INFL_ADJ=!!s.adj; INFL_YRS=s.adjYrs||0; INF_H=s.infH||10;
+    const setv=(id,v)=>{const e=document.getElementById(id); if(e&&v!=null)e.value=v;};
+    setv('lumpAmt',s.lump);setv('sipAmt',s.sip);setv('swpCorpus',s.swpC);setv('swpWd',s.swpW);
+    setv('infAmt',s.infAmt);setv('infRate',s.infRate);setv('inc',s.incSlider);
+    setv('planYears',s.planYears);setv('sipStepup',s.sipStepup); PLAN_YEARS=Math.max(1,Math.min(40,Math.round(+s.planYears||10)));
+    document.querySelectorAll('#regChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.r===REGIME));
+    document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.toggle('on',(x.dataset.exit==='1')===EXIT_EARLY));
+    document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.toggle('on',(x.dataset.adj==='1')===INFL_ADJ));
+    document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.iy===INFL_YRS));
+    document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.h===INF_H));
+    if(s.kid){document.body.classList.add('kid'); const b=document.getElementById('kidBtn'); if(b){b.classList.add('on');b.textContent='🧒 Kid mode: ON';}}
+    return true;
+  }catch(e){return false;}
+}
+
+/* ===== TAX SECTION ===== */
+function slabAmt(v){const L=v/100000;return '₹'+(Number.isInteger(L)?L:L.toFixed(1))+'L';}
+function slabRows(slabs){return slabs.map(([lo,hi,r])=>{
+  const range=lo===0?('Up to '+slabAmt(hi)):(hi===Infinity?('Above '+slabAmt(lo)):(slabAmt(lo)+'–'+slabAmt(hi)));
+  return `<tr><td>${range}</td><td>${(r*100).toFixed(0)}%</td></tr>`;}).join('');}
+function renderTax(){
+  const sn=document.getElementById('slabNewBody'),so=document.getElementById('slabOldBody');
+  if(sn) sn.innerHTML=slabRows(REGIME_NEW);
+  if(so) so.innerHTML=slabRows(REGIME_OLD);
+}
+
+/* ===== CREDIT: cost-of-carrying-a-balance ===== */
+let CC_MODE='min';
+function renderCredit(){
+  updateAmtTexts();
+  const balEl=document.getElementById('ccBal'); if(!balEl) return;
+  const bal=Math.max(0,+balEl.value||0), apr=+document.getElementById('ccApr').value||0, i=apr/100/12;
+  const fixedPay=Math.max(0,+document.getElementById('ccPay').value||0);
+  document.getElementById('ccAprV').textContent=apr;
+  let B=bal, months=0, totalInt=0, totalPaid=0, never=false; const cap=1200;
+  if(bal>0){
+    while(B>0.5 && months<cap){
+      const interest=B*i;
+      let pay = CC_MODE==='min' ? Math.max(B*0.05, 500) : fixedPay;
+      if(pay<=interest+1e-9){never=true;break;}          // payment never beats interest → grows forever
+      pay=Math.min(pay, B+interest);                      // final month tops out at the remaining balance
+      B=B+interest-pay; totalInt+=interest; totalPaid+=pay; months++; if(B<0)B=0;
+    }
+    if(months>=cap) never=true;
+  }
+  const base=Math.max(bal+totalInt,1);
+  const sP=document.getElementById('ccSegP'), sI=document.getElementById('ccSegI');
+  sP.style.width=(bal/base*100)+'%'; sI.style.width=(totalInt/base*100)+'%';
+  sP.textContent=(bal/base>0.16)?rupee(Math.round(bal)):''; sI.textContent=(totalInt/base>0.12)?rupee(Math.round(totalInt)):'';
+  const r=document.getElementById('ccResult');
+  if(bal<=0){r.innerHTML='Enter a balance to see the cost.';return;}
+  if(never){
+    r.innerHTML=`⚠️ Paying this way <b>never clears the balance</b> — interest alone is about <b>₹${fmtIN(Math.round(bal*i))}/month</b>, so the debt only grows. You must pay more than the monthly interest to make progress.`;
+  }else{
+    const yrTxt = months>=12 ? ` (≈ ${(months/12).toFixed(1)} years)` : '';
+    r.innerHTML=`At ${apr}% a year, clearing ₹${fmtIN(bal)} takes <b>${months} months</b>${yrTxt}. You repay about <b>${rupee(Math.round(totalPaid))}</b> — of which <b>${rupee(Math.round(totalInt))}</b> is pure interest.`+(CC_MODE==='min'?` Paying only the minimum is the slowest, costliest way out.`:``);
+  }
+}
+
+/* ===== SECTION NAV (history-aware) ===== */
+let CURRENT_SEC='home', NAV_STACK=[];
+const SIM_STEPS=['inflation','how','choose','results'];
+function updateStepper(name){
+  const ss=document.getElementById('simsteps'); if(!ss) return;
+  const idx=SIM_STEPS.indexOf(name);
+  if(idx<0){ ss.style.display='none'; return; }
+  ss.style.display='flex';
+  ss.querySelectorAll('[data-step]').forEach((b,i)=>{ b.classList.toggle('active',i===idx); b.classList.toggle('done',i<idx); });
+}
+function updateBackBar(){
+  const bb=document.getElementById('backbar');
+  if(bb) bb.style.display=(CURRENT_SEC!=='home' && NAV_STACK.length)?'block':'none';
+}
+function applySec(name){          // pure switch — no history mutation
+  document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+name));
+  const navName=SIM_STEPS.includes(name)?'tryit':name;
+  document.querySelectorAll('.secnav button').forEach(b=>b.classList.toggle('on',b.dataset.sec===navName));
+  CURRENT_SEC=name; updateBackBar(); updateStepper(name);
+  if(name==='results') render();
+  if(name==='inflation') renderInflation();
+  if(name==='credit') renderCredit();
+  if(name==='takehome') renderTakehome();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showSec(name){
+  if(name===CURRENT_SEC) return;
+  NAV_STACK.push(CURRENT_SEC);
+  applySec(name);
+  try{history.pushState({sec:name},'');}catch(e){}
+}
+function goBack(){
+  const prev=NAV_STACK.length?NAV_STACK.pop():'home';
+  applySec(prev);
+}
+function canSeeResults(){ let act=0,tot=0; for(const p of PRODUCTS){const st=PS[p.id]; if(st.active){act++;tot+=st.pct;}} return act>0 && tot===100; }
+function proceedToResults(){ if(canSeeResults()) showSec('results'); }
+window.addEventListener('popstate',()=>{ if(NAV_STACK.length) goBack(); });
+
+/* ===== LANG ===== */
+function applyLang(){
+  const s=S();
+  document.querySelectorAll('[data-i]').forEach(el=>{const k=el.dataset.i,v=s[k];if(k==='heroH')el.innerHTML=`${v[0]}<em>${v[1]}</em>${v[2]}`;else if(typeof v==='string')el.textContent=v;});
+  document.querySelectorAll('[data-nm]').forEach(el=>el.textContent=s.names[el.dataset.nm]);
+  document.querySelectorAll('[data-bn]').forEach(el=>el.textContent=s.bnames[el.dataset.bn]);
+  document.querySelectorAll('[data-eli]').forEach(el=>el.textContent=s.eli5[el.dataset.eli]);
+  document.querySelectorAll('[data-behav]').forEach(el=>el.textContent=s.behav[el.dataset.behav]);
+  document.querySelectorAll('[data-bi]').forEach(el=>el.textContent=BEHAV_IC[el.dataset.bi]);
+  document.querySelectorAll('[data-behavcap]').forEach(el=>el.textContent=s.behavCap);
+  document.querySelectorAll('[data-ex]').forEach(el=>el.innerHTML=s.examples[el.dataset.ex]);
+  document.querySelectorAll('[data-yl]').forEach(el=>el.textContent=s.yrsL);
+  document.querySelectorAll('[data-rl]').forEach(el=>el.textContent=s.retL);
+  document.querySelectorAll('[data-elitog]').forEach(el=>el.textContent=s.whatis);
+  document.querySelectorAll('.cattab').forEach(el=>{const c=s.cats.find(x=>x.k===el.dataset.cat);if(c)el.textContent=c.l;});
+  document.querySelectorAll('[data-lnm]').forEach(el=>el.textContent=s.names[el.dataset.lnm]);
+  document.querySelectorAll('[data-lbn]').forEach(el=>el.textContent=s.bnames[el.dataset.lbn]);
+  document.querySelectorAll('[data-lbehav]').forEach(el=>el.textContent=s.behav[el.dataset.lbehav]);
+  document.querySelectorAll('[data-lbi]').forEach(el=>el.textContent=BEHAV_IC[el.dataset.lbi]);
+  document.querySelectorAll('[data-lbehavcap]').forEach(el=>el.textContent=s.behavCap);
+  document.querySelectorAll('[data-leli]').forEach(el=>el.textContent=s.eli5[el.dataset.leli]);
+  document.querySelectorAll('[data-lex]').forEach(el=>el.innerHTML=s.examples[el.dataset.lex]);
+  document.querySelectorAll('[data-ltaxb]').forEach(el=>el.textContent=s.bnames[el.dataset.ltaxb]);
+  document.querySelectorAll('[data-ltip]').forEach(el=>el.textContent=s.tips[el.dataset.ltip]);
+  renderPaths(); renderPresets(); renderPillars();
+  render(); renderInflation(); a11yify();
+}
+function setLang(l){LANG=l;document.getElementById('enBtn').classList.toggle('on',l==='en');document.getElementById('hiBtn').classList.toggle('on',l==='hi');document.documentElement.lang=l;applyLang();}
+function setMode(m){MODE=m;document.getElementById('grpLump').classList.toggle('on',m==='lumpsum');document.getElementById('grpSip').classList.toggle('on',m==='sip');document.getElementById('grpSwpC').classList.toggle('on',m==='swp');document.getElementById('grpSwpW').classList.toggle('on',m==='swp');document.getElementById('grpStepup').classList.toggle('on',m==='sip');render();}
+
+/* ===== HANDLERS ===== */
+document.getElementById('modeChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');setMode(c.dataset.m);});
+document.getElementById('exitChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');EXIT_EARLY=c.dataset.exit==='1';render();});
+document.getElementById('adjChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');INFL_ADJ=c.dataset.adj==='1';render();});
+document.getElementById('adjYrsChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');INFL_YRS=+c.dataset.iy;render();});
+document.querySelectorAll('#thRegChips .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#thRegChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');renderTakehome();});
+document.querySelectorAll('#thMetroChips .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#thMetroChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');renderTakehome();});
+document.querySelectorAll('#thAgeChips .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#thAgeChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');renderTakehome();});
+document.getElementById('regChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#regChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');REGIME=c.dataset.r;render();});
+document.getElementById('infChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');INF_H=+c.dataset.h;renderInflation();});
+document.querySelectorAll('.secnav button').forEach(b=>b.onclick=()=>showSec(b.dataset.sec));
+document.querySelectorAll('#simsteps [data-step]').forEach(b=>b.onclick=()=>{ if(b.dataset.step==='results'&&!canSeeResults())return; showSec(b.dataset.step); });
+const ccmc=document.getElementById('ccModeChips');
+if(ccmc) ccmc.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ccmc.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');CC_MODE=c.dataset.cm;document.getElementById('ccPayGrp').classList.toggle('on',CC_MODE==='fixed');renderCredit();});
+
+/* ===== INIT ===== */
+document.getElementById('inc').value=incomeToSlider(1500000);
+loadState();                 // restore saved portfolio/settings (if any) before building
+buildList();
+buildLibrary();
+renderTax();
+renderCredit();
+document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
+setMode(MODE);
+applyLang();
+renderTakehome();
+glossifyAll();
+showCoachIfFirst();
+try{history.replaceState({sec:'home'},'');}catch(e){}
+window.addEventListener('resize',()=>{render();renderInflation();});
+</script>
+</body>
+</html>
