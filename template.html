@@ -16,7 +16,7 @@
   html{scroll-behavior:smooth}
   body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
   .wrap{max-width:940px;margin:0 auto;padding:0 18px}
-  header{position:sticky;top:0;z-index:30;background:#f6f1e7e8;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  header{position:sticky;top:0;z-index:30;background:#f6f1e7e8;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .head-in{display:flex;align-items:center;gap:14px;max-width:940px;margin:0 auto;padding:13px 18px}
   .brand{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
   .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #7c4dff22}
@@ -342,7 +342,7 @@
   @keyframes auroraDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(2.5vmax,-2vmax,0) scale(1.06)}100%{transform:translate3d(-2vmax,2.5vmax,0) scale(1.03)}}
 
   /* glass chrome — modernised header for the purple theme */
-  header{background:#ffffffbf;backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid #ffffff00;box-shadow:0 1px 0 #1a103a0d,0 8px 24px -20px #1a103a40}
+  header{background:#ffffffbf;-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid #ffffff00;box-shadow:0 1px 0 #1a103a0d,0 8px 24px -20px #1a103a40}
   .brand .dot{background:var(--grad-purple);box-shadow:0 0 0 4px #7c4dff22,0 0 14px #7c4dff66;animation:dotGlow 3.4s ease-in-out infinite}
   @keyframes dotGlow{0%,100%{box-shadow:0 0 0 4px #7c4dff22,0 0 12px #7c4dff55}50%{box-shadow:0 0 0 5px #7c4dff2e,0 0 22px #7c4dff99}}
 
@@ -403,7 +403,7 @@
      ============================================================ */
   /* privacy reassurance */
   .privacy-pill{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:.8rem;font-weight:600;color:var(--green-d);max-width:100%;
-    background:#ffffffd9;border:1px solid #e3dafd;border-radius:16px;padding:8px 15px;box-shadow:0 6px 18px -10px #7c4dff80,inset 0 1px 0 #fff;backdrop-filter:blur(6px)}
+    background:#ffffffd9;border:1px solid #e3dafd;border-radius:16px;padding:8px 15px;box-shadow:0 6px 18px -10px #7c4dff80,inset 0 1px 0 #fff;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   .privacy-note{font-size:.84rem;color:var(--ink-soft);background:#f4f0ff;border:1px solid #e7defb;border-radius:14px;padding:12px 15px;margin-bottom:12px;line-height:1.5}
   .privacy-note::first-letter{font-size:1.05em}
 
