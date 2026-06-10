@@ -465,6 +465,19 @@
   .altbtn.solid{background:var(--green);color:#06120b;border-color:var(--green);box-shadow:0 4px 0 #4a25c0,0 12px 26px -10px #7c4dff8c}
   .altbtn.solid:hover{box-shadow:0 6px 0 #4a25c0,0 18px 36px -10px #7c4dffb0}
   @media(prefers-reduced-motion:reduce){.lr-break.show{animation:none}}
+
+  /* flex-gap polyfill for old iOS Safari (<14.5) — gated on `inset` support so modern
+     browsers (which have both inset + flex-gap) skip it entirely → no double-spacing */
+  @supports not (inset:0px){
+    .chips,.cattabs,.presetrow,.btnrow,.flow-key{margin:-4px}
+    .chips>*,.cattabs>*,.presetrow>*,.btnrow>*,.flow-key>*{margin:4px}
+    .row{margin:-9px}.row>.col{margin:9px}
+    .head-in>*+*{margin-left:14px}
+    .simsteps>*+*{margin-left:6px}
+    .simcta>*+*{margin-left:18px}
+    .lr-break-tog{margin-top:10px}
+    .privacy-pill .ad-ic,.privacy-pill>*+*{margin-left:8px}
+  }
 </style>
 </head>
 <body>
