@@ -33,7 +33,7 @@ function ck(name,ok,note){ results.push([ok?'PASS':'FAIL',name,note||'']); }
 
   // Cash-green applied to a primary CTA
   const btnBg = await page.evaluate(()=>{const b=document.querySelector('.nextbtn');return b?getComputedStyle(b).backgroundColor:'';});
-  ck('CTA button is Cash green', btnBg.replace(/\s/g,'')==='rgb(0,213,75)', btnBg);
+  ck('CTA button is Slice purple', btnBg.replace(/\s/g,'')==='rgb(124,77,255)', btnBg);
 
   // Path card arrow is NOT a green circle anymore
   const arrow = await page.evaluate(()=>{const a=document.querySelector('.pathcard .arr');const s=getComputedStyle(a);return{bg:s.backgroundColor,radius:s.borderRadius};});

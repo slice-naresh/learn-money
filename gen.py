@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import json, os
+import json, os, base64
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
@@ -672,9 +672,22 @@ lessons_en = jdump(LESSON)
 gloss_en = jdump(GLOSS)
 food_en = jdump(FOOD)
 
+# ----- embed fonts (base64 woff2) so the app is fully offline / no Google dependency -----
+def _font_b64(fn):
+    with open(os.path.join(BASE,'assets',fn),'rb') as f:
+        return base64.b64encode(f.read()).decode('ascii')
+_LATIN='U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD'
+fonts_css = (
+  "@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:300 700;font-display:swap;"
+  "src:url(data:font/woff2;base64,%s) format('woff2');unicode-range:%s}"
+  "@font-face{font-family:'Outfit';font-style:normal;font-weight:300 700;font-display:swap;"
+  "src:url(data:font/woff2;base64,%s) format('woff2');unicode-range:%s}"
+) % (_font_b64('spacegrotesk-latin.woff2'), _LATIN, _font_b64('outfit-latin.woff2'), _LATIN)
+
 # ----- read template, inject -----
 tpl = open(os.path.join(BASE,'template.html'),'r',encoding='utf-8').read()
 out = (tpl
+  .replace('/*FONTS_CSS*/', fonts_css)
   .replace('/*PRODUCTS*/', prod_js)
   .replace('/*PS*/', ps_js)
   .replace('/*NAMES_EN*/', names_en).replace('/*ELI5_EN*/', eli5_en).replace('/*EX_EN*/', ex_en)

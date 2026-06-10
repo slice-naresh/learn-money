@@ -60,9 +60,10 @@ $$('#pillargrid .pathcard').forEach((card,i)=>{
 });
 check('Simulator card has a clear "Start" button + navigates', ()=>{ win.showSec('home'); if(!$('#simcard .sim-cta-btn')) throw new Error('no visible Start button on sim card'); click($('#simcard .simcta')); if(activeSec()!=='sec-tryit') throw new Error('went to '+activeSec()); return '-> tryit'; });
 
-// top nav (5 pillars) switch sections
-['home','invest','tax','takehome','credit','tryit'].forEach(sec=>{
-  check('Nav pillar: '+sec, ()=>{ click($(`.secnav button[data-sec="${sec}"]`)); if(activeSec()!=='sec-'+sec) throw new Error('active='+activeSec()); return 'ok'; });
+// secnav removed — section nav is now via home pillar cards (above) + brand→home + back bar
+check('No section-nav top bar (removed by design)', ()=>{
+  if($('.secnav')) throw new Error('secnav still present');
+  return 'no secnav';
 });
 
 // history-aware back: returns to the PREVIOUS section, not just home
@@ -76,10 +77,11 @@ check('Back returns to PREVIOUS section (history stack)', ()=>{
   return 'tax → invest → home';
 });
 
-check('Ad slots present (bottom bar + rails in DOM)', ()=>{
-  if(!$('#adBar .adbox')) throw new Error('no bottom ad bar');
-  if(!$('#adLeft')||!$('#adRight')) throw new Error('missing side ad rails');
-  return 'ad slots present';
+check('No ads and no courtesy mention (fully removed)', ()=>{
+  if($('#adBar')||$('#adLeft')||$('#adRight')) throw new Error('ad slots not removed');
+  if($('.courtesy')) throw new Error('courtesy mention not removed');
+  if(/courtesy of slice/i.test(doc.body.textContent)) throw new Error('courtesy text still present');
+  return 'no ads, no courtesy';
 });
 
 // ===== Investing library =====
@@ -152,9 +154,10 @@ check('Results unreachable until valid — button + stepper both gated', ()=>{
   const fd=$('[data-tgl="fd"]'); if(!fd.classList.contains('on')) click(fd); setInput($('[data-pct="fd"]'),'50');
   win.proceedToResults(); if(activeSec()==='sec-results') throw new Error('reached results at 50%');
   win.showSec('how'); const sr=$('#simsteps [data-step="results"]'); if(sr&&!sr.disabled) throw new Error('stepper Results enabled at <100%');
-  win.showSec('choose'); setInput($('[data-pct="fd"]'),'100'); win.proceedToResults();
-  if(activeSec()!=='sec-results') throw new Error('blocked even at 100%');
-  return 'gated <100, opens at 100';
+  win.showSec('choose'); setInput($('[data-pct="fd"]'),'100');
+  win.proceedToResults();   // walkthrough optional — Show results skips straight through at 100%
+  if(activeSec()!=='sec-results') throw new Error('blocked at 100% (Show results should skip walkthrough)');
+  return 'gated <100 on alloc; Show results opens at 100%';
 });
 
 // ===== Tax & take-home (Phase 2) =====
@@ -279,10 +282,12 @@ check('Results: inflation / today-money toggle works', ()=>{
   const future=$('#num1').textContent;
   click($('#adjChips [data-adj="1"]'));
   if(!/today/i.test($('#cap1').textContent)) throw new Error('caption not switched to today');
-  if(!/Inflation check/i.test($('#adjBox').innerHTML)) throw new Error('no inflation note');
+  const box=$('#adjBox').innerHTML;
+  if(!/How inflation changes/i.test(box)) throw new Error('no inflation breakdown');
+  ['Inflation assumed','Prices rise by','today','Lost to inflation'].forEach(t=>{ if(!new RegExp(t,'i').test(box)) throw new Error('breakdown missing: '+t); });
   if($('#num1').textContent===future) throw new Error('value did not adjust for inflation');
   click($('#adjChips [data-adj="0"]'));
-  return 'future ↔ today’s money';
+  return 'breakdown: future ↔ today’s, lost-to-inflation';
 });
 
 check('Choose renders all 32 product rows', ()=>{ win.showSec('choose'); const n=$$('#plist .prow').length; if(n!==32) throw new Error('rows='+n); return n+' rows'; });

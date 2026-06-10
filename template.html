@@ -3,12 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Learn Money — Investment Sandbox</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@300..700&display=swap" rel="stylesheet">
+<title>Learn Money — see what your investments really earn</title>
+<meta name="description" content="Learn how money actually works — investing, tax, salary and credit explained simply, then try a mock portfolio and see what you keep after tax, charges and inflation.">
+<meta property="og:title" content="Learn Money — see what your investments really earn">
+<meta property="og:description" content="Investing, tax, salary and credit, explained simply. Build a pretend portfolio and watch what you actually keep after tax, charges and inflation.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>/*FONTS_CSS*/</style>
 <style>
-  :root{--paper:#f3f4f3;--paper-2:#e9ebe9;--ink:#0a0f0c;--ink-soft:#6b746e;--green:#00d54b;--green-d:#009a39;--amber:#ff9f1c;--amber-l:#ffbf57;--red:#ff463c;--violet:#8a63ff;--line:#e6e8e6;--card:#ffffff;--display:"Space Grotesk",sans-serif;--body:"Outfit",sans-serif;--spring:cubic-bezier(.34,1.56,.64,1);}
+  :root{--paper:#f3f4f3;--paper-2:#e9ebe9;--ink:#0a0f0c;--ink-soft:#6b746e;--green:#7c4dff;--green-d:#5b2ee6;--amber:#ff9f1c;--amber-l:#ffbf57;--red:#ff463c;--violet:#8a63ff;--line:#e6e8e6;--card:#ffffff;--display:"Space Grotesk",sans-serif;--body:"Outfit",sans-serif;--spring:cubic-bezier(.34,1.56,.64,1);}
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -16,16 +19,12 @@
   header{position:sticky;top:0;z-index:30;background:#f6f1e7e8;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
   .head-in{display:flex;align-items:center;gap:14px;max-width:940px;margin:0 auto;padding:13px 18px}
   .brand{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
-  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #1f9d5f22}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #7c4dff22}
   .head-sp{flex:1}
   .sim-badge{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);border:1px solid #e6c98a;background:#fbf3df;padding:5px 11px;border-radius:999px;font-weight:600}
   .lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;font-weight:600;font-size:.85rem}
   .lang button{border:none;background:transparent;padding:6px 13px;cursor:pointer;font-family:var(--body);color:var(--ink-soft)}
   .lang button.on{background:var(--ink);color:var(--paper)}
-  .secnav{position:sticky;top:52px;z-index:20;background:#f6f1e7f2;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  .secnav .wrapn{display:flex;gap:6px;max-width:940px;margin:0 auto;padding:8px 18px;overflow-x:auto}
-  .secnav button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 15px;cursor:pointer;font-weight:600;font-size:.88rem;color:var(--ink-soft);font-family:var(--body);white-space:nowrap}
-  .secnav button.on{background:var(--green);color:#fff;border-color:var(--green)}
   .hero{padding:34px 0 8px}
   .hero h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,5vw,3rem);line-height:1.02;letter-spacing:-.02em;max-width:18ch}
   .hero h1 em{font-style:italic;color:var(--green)}
@@ -41,7 +40,7 @@
   label.l{display:block;font-size:.82rem;color:var(--ink-soft);font-weight:600;margin-bottom:6px}
   .val{font-family:var(--display);font-weight:700;color:var(--ink)}
   input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:99px;background:var(--paper-2);border:1px solid var(--line);outline:none;margin-top:4px}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--green);cursor:pointer;box-shadow:0 0 0 4px #1f9d5f22;border:2px solid #fff}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--green);cursor:pointer;box-shadow:0 0 0 4px #7c4dff22;border:2px solid #fff}
   input[type=range]::-moz-range-thumb{width:20px;height:20px;border:2px solid #fff;border-radius:50%;background:var(--green);cursor:pointer}
   input[type=number]{font-family:var(--body);font-size:1rem;font-weight:600;border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:100%;background:var(--paper);color:var(--ink)}
   .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
@@ -55,6 +54,9 @@
   .cattabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
   .cattab{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 13px;cursor:pointer;font-weight:600;font-size:.82rem;color:var(--ink-soft);font-family:var(--body)}
   .cattab.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .cattab.seen:not(.on){border-color:var(--green);color:var(--green-d)}
+  .cattab.seen::before{content:'✓ ';font-weight:800;color:var(--green-d)}
+  .cattab.on.seen::before{color:currentColor}
   .prow{border-top:1px solid var(--line);padding:12px 0}
   .prow.hidecat{display:none}
   .prow .main{display:flex;align-items:center;gap:11px}
@@ -88,7 +90,7 @@
   .flow{margin:20px 0 6px}
   .flow-track{display:flex;height:52px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
   .seg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.8rem;transition:width .6s cubic-bezier(.2,.8,.2,1);min-width:0;white-space:nowrap;overflow:hidden}
-  .seg.net{background:linear-gradient(135deg,var(--green),var(--green-d))}.seg.chg{background:linear-gradient(135deg,var(--amber-l),var(--amber))}.seg.tax{background:linear-gradient(135deg,#e8715c,var(--red))}
+  .seg.net{background:linear-gradient(135deg,var(--green),var(--green-d))}.seg.chg{background:linear-gradient(135deg,var(--amber-l),var(--amber))}.seg.tax{background:linear-gradient(135deg,#e8715c,var(--red))}.seg.pen{background:linear-gradient(135deg,#8e1b3d,#5e0f29)}
   .flow-key{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:.82rem;color:var(--ink-soft)}
   .flow-key span{display:flex;align-items:center;gap:6px}.sw{width:11px;height:11px;border-radius:3px}
   canvas{width:100%;display:block;margin-top:8px;height:200px}
@@ -112,9 +114,8 @@
   .pathcard .arr{margin-left:auto;color:var(--green);font-weight:700;align-self:center;font-size:1.2rem}
   /* ===== Cash App-style language ===== */
   header{background:#f3f4f3e6}
-  .secnav{background:#f3f4f3f2}
   .brand{font-weight:700;letter-spacing:-.02em}
-  .brand .dot{background:var(--green);box-shadow:0 0 0 4px #00d54b22}
+  .brand .dot{background:var(--green);box-shadow:0 0 0 4px #7c4dff22}
   .sim-badge{background:#eafced;border-color:#bff0cd;color:var(--green-d)}
   .card{border:none;border-radius:26px;box-shadow:0 2px 14px #0a0f0c0a;padding:24px}
   .card h2{font-weight:700;letter-spacing:-.025em}
@@ -124,13 +125,13 @@
   button:active,.chip:active,.cattab:active,.pathcard:active{transform:scale(.96)}
   .chip{border-radius:999px;font-weight:600}
   .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-  .secnav button.on,.cattab.on{background:var(--green);color:#06120b;border-color:var(--green)}
-  .nextbtn{border-radius:999px;background:var(--green);color:#06120b;font-weight:700;padding:15px 26px;box-shadow:0 4px 0 #00a93b}
+  .cattab.on{background:var(--green);color:#06120b;border-color:var(--green)}
+  .nextbtn{border-radius:999px;background:var(--green);color:#06120b;font-weight:700;padding:15px 26px;box-shadow:0 4px 0 #4a25c0}
   .nextbtn:hover{filter:brightness(1.04)}
   .nextbtn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none;filter:none}
-  .nextbtn:active{box-shadow:0 1px 0 #00a93b;transform:translateY(3px) scale(.99)}
+  .nextbtn:active{box-shadow:0 1px 0 #4a25c0;transform:translateY(3px) scale(.99)}
   .lang button.on{background:var(--ink)}
-  input[type=range]::-webkit-slider-thumb{background:var(--green);box-shadow:0 0 0 4px #00d54b33}
+  input[type=range]::-webkit-slider-thumb{background:var(--green);box-shadow:0 0 0 4px #7c4dff33}
   input[type=range]::-moz-range-thumb{background:var(--green)}
   .tgl.on{background:var(--green);border-color:var(--green)}
   .hl-num{font-weight:700;letter-spacing:-.045em;font-size:clamp(1.7rem,5.4vw,2.8rem)}
@@ -146,19 +147,19 @@
   .pathcard:hover .arr{color:var(--green-d);transform:translateX(4px)}
   .pcard{border-radius:18px;border:none;background:var(--paper)}
   /* ===== Unique "Try it" simulator CTA (interactive, vs the reading pillars) ===== */
-  .simcta{margin-top:16px;background:linear-gradient(135deg,#00e052,var(--green-d));border-radius:26px;padding:26px;color:#06120b;cursor:pointer;display:flex;align-items:center;gap:18px;box-shadow:0 12px 34px #00d54b3a;position:relative;overflow:hidden;transition:transform .18s var(--spring),box-shadow .18s}
+  .simcta{margin-top:16px;background:linear-gradient(135deg,#9b6bff,var(--green-d));border-radius:26px;padding:26px;color:#06120b;cursor:pointer;display:flex;align-items:center;gap:18px;box-shadow:0 12px 34px #7c4dff3a;position:relative;overflow:hidden;transition:transform .18s var(--spring),box-shadow .18s}
   .simcta:before{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:#ffffff22}
   .simcta:after{content:"";position:absolute;right:30px;bottom:-50px;width:120px;height:120px;border-radius:50%;background:#ffffff14}
-  .simcta:hover{transform:translateY(-3px);box-shadow:0 18px 44px #00d54b4d}
+  .simcta:hover{transform:translateY(-3px);box-shadow:0 18px 44px #7c4dff4d}
   .simcta:active{transform:scale(.99)}
   .simcta .sim-ic{font-size:2.7rem;flex-shrink:0;filter:drop-shadow(0 2px 4px #0003);z-index:1}
   .simcta .sim-body{flex:1;z-index:1}
   .simcta h3{font-family:var(--display);font-weight:700;font-size:1.45rem;letter-spacing:-.025em;margin-bottom:4px;color:#06120b}
   .simcta p{font-size:.93rem;color:#06351b;line-height:1.45}
-  .simcta .sim-badge2{position:absolute;top:16px;right:18px;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;background:#06120b;color:#00e052;padding:5px 11px;border-radius:999px;z-index:1}
+  .simcta .sim-badge2{position:absolute;top:16px;right:18px;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:800;background:#06120b;color:#9b6bff;padding:5px 11px;border-radius:999px;z-index:1}
   .simcta .sim-arr{font-size:1.7rem;font-weight:700;color:#06120b;z-index:1}
   .sim-cta-btn{display:inline-flex;align-items:center;gap:9px;margin-top:14px;background:#fff;color:#06120b;font-family:var(--display);font-weight:800;font-size:.95rem;padding:10px 20px 10px 12px;border-radius:999px;z-index:1;position:relative;box-shadow:0 4px 14px #0003;animation:ctaBreathe 2.6s ease-in-out infinite}
-  .sim-cta-btn .pbadge{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#06120b;color:#00e052;font-size:.72rem;padding-left:2px;animation:ctaPulse 2.2s infinite}
+  .sim-cta-btn .pbadge{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#06120b;color:#9b6bff;font-size:.72rem;padding-left:2px;animation:ctaPulse 2.2s infinite}
   .simcta:hover .sim-cta-btn{filter:brightness(1.04);transform:translateY(-1px)}
   .simcta:active .sim-cta-btn{transform:scale(.97)}
   @keyframes ctaPulse{0%{box-shadow:0 0 0 0 #06120b66}70%{box-shadow:0 0 0 13px #06120b00}100%{box-shadow:0 0 0 0 #06120b00}}
@@ -284,21 +285,14 @@
   .kidtgl:active{transform:scale(.96)}
   .kidtgl.on{background:var(--green);color:#06120b;border-color:var(--green)}
   @media(max-width:560px){ .sim-badge{display:none} .head-in{gap:7px;padding:11px 12px} .kidtgl{padding:6px 9px;font-size:.72rem} .brand{font-size:1.1rem} }
-  /* ===== Ad slots (POC placeholders) ===== */
-  body{padding-bottom:92px}
-  .adbox{border:1px dashed #c7ccc8;border-radius:12px;background:#fafbfa;color:#9aa39d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:.78rem;font-weight:600;text-align:center;position:relative;line-height:1.4}
-  .adbox .adtag{position:absolute;top:6px;left:9px;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#bcc2bd}
-  .adbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;padding:8px 10px;background:#f3f4f3f0;backdrop-filter:blur(8px);border-top:1px solid var(--line)}
-  .adbar .adbox{width:100%;max-width:728px;height:64px}
-  .adrail{display:none}
-  .liveres{bottom:104px}
-  @media(min-width:1300px){
-    .adrail{display:block;position:fixed;top:118px;width:160px;z-index:35}
-    .adrail .adbox{width:160px;height:600px}
-    .adleft{left:calc((100vw - 940px)/2 - 178px)}
-    .adright{right:calc((100vw - 940px)/2 - 178px)}
-  }
-  @media(max-width:560px){ body{padding-bottom:66px} .adbar .adbox{height:46px;font-size:.7rem} .liveres{bottom:78px} }
+  .ibrk{font-size:.87rem}
+  .ibrk .ih{font-weight:700;font-family:var(--display);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .ibrk .ir{display:flex;justify-content:space-between;gap:14px;padding:4px 0;border-bottom:1px dashed var(--line)}
+  .ibrk .ir .rv{font-weight:700;white-space:nowrap}
+  .ibrk .ir.tot{border-top:2px solid var(--line);border-bottom:0;margin-top:3px;padding-top:7px}
+  .ibrk .ir.last{border-bottom:0}
+  .ibrk .rv.red{color:var(--red)} .ibrk .rv.green{color:var(--green-d)} .ibrk .rv.soft{font-weight:400;color:var(--ink-soft)}
+  .ibrk .note{margin-top:9px;color:var(--ink-soft);line-height:1.5}
   body.kid .kidhide{display:none}
   body.kid .foodie{font-size:1.05rem}
   .kidonly{display:none}
@@ -321,6 +315,156 @@
   .tourtip .tdot{font-size:.8rem;color:var(--ink-soft);font-weight:600}
   .lbody .etext{margin-top:8px}
   .lrow:active{transform:none}
+
+  /* ============================================================
+     VISUAL POLISH v2 — ambient depth, glass, glow, smooth motion
+     (cohesive slice-purple; respects prefers-reduced-motion;
+      does NOT alter .nextbtn background — CTA colour is tested)
+     ============================================================ */
+  :root{
+    --grad-purple:linear-gradient(135deg,#9b6bff 0%,#7c4dff 45%,#5b2ee6 100%);
+    --shadow-sm:0 2px 8px -2px #1a103a14;
+    --shadow-md:0 10px 30px -14px #1a103a2e,0 2px 8px -3px #0a0f0c0f;
+    --shadow-lg:0 26px 60px -22px #2a1a6640,0 8px 22px -12px #1a103a24;
+  }
+  body{position:relative;z-index:0;background:#f5f4fb}
+  /* ambient aurora — fixed, behind everything, never adds scroll width */
+  body::before{content:"";position:fixed;inset:-20vmax;z-index:-2;pointer-events:none;
+    background:
+      radial-gradient(38vmax 38vmax at 12% 8%, #b79bff4d, transparent 60%),
+      radial-gradient(34vmax 34vmax at 92% 12%, #7c4dff3a, transparent 62%),
+      radial-gradient(42vmax 42vmax at 78% 96%, #9b6bff33, transparent 60%),
+      radial-gradient(30vmax 30vmax at 8% 92%, #6ab8ff26, transparent 60%);
+    filter:blur(8px);animation:auroraDrift 26s ease-in-out infinite alternate}
+  /* faint film-grain for richness */
+  body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  @keyframes auroraDrift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(2.5vmax,-2vmax,0) scale(1.06)}100%{transform:translate3d(-2vmax,2.5vmax,0) scale(1.03)}}
+
+  /* glass chrome — modernised header for the purple theme */
+  header{background:#ffffffbf;backdrop-filter:blur(16px) saturate(1.4);border-bottom:1px solid #ffffff00;box-shadow:0 1px 0 #1a103a0d,0 8px 24px -20px #1a103a40}
+  .brand .dot{background:var(--grad-purple);box-shadow:0 0 0 4px #7c4dff22,0 0 14px #7c4dff66;animation:dotGlow 3.4s ease-in-out infinite}
+  @keyframes dotGlow{0%,100%{box-shadow:0 0 0 4px #7c4dff22,0 0 12px #7c4dff55}50%{box-shadow:0 0 0 5px #7c4dff2e,0 0 22px #7c4dff99}}
+
+  /* hero — gradient wordmark + soft glow halo behind the headline */
+  .hero{position:relative}
+  .hero::before{content:"";position:absolute;left:-6%;top:-10%;width:62%;height:150%;z-index:-1;pointer-events:none;
+    background:radial-gradient(closest-side,#7c4dff22,transparent 70%);filter:blur(12px)}
+  .hero h1 em{background:var(--grad-purple);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+  /* cards — layered soft elevation + crisp top highlight */
+  .card{border:1px solid #ece8fa;box-shadow:var(--shadow-md);background:linear-gradient(#ffffff,#ffffff) padding-box;position:relative}
+  .card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 #ffffffcc}
+
+  /* primary CTA — keep solid bg (tested) but add glow + sheen sweep */
+  .nextbtn{position:relative;overflow:hidden;box-shadow:0 4px 0 #4a25c0,0 12px 26px -10px #7c4dff8c}
+  .nextbtn::after{content:"";position:absolute;top:0;left:-130%;width:60%;height:100%;
+    background:linear-gradient(100deg,transparent,#ffffff66,transparent);transform:skewX(-18deg);transition:left .6s ease}
+  .nextbtn:hover{box-shadow:0 6px 0 #4a25c0,0 18px 36px -10px #7c4dffb0;transform:translateY(-1px)}
+  .nextbtn:hover::after{left:140%}
+  .nextbtn:disabled{box-shadow:none}
+  .nextbtn:disabled::after{display:none}
+
+  /* chips / nav / cat tabs — smoother, with on-state glow */
+  .chip,.cattab{transition:transform .16s var(--spring),background .2s,color .2s,border-color .2s,box-shadow .2s}
+  .chip:hover,.cattab:hover{transform:translateY(-1px)}
+  .chip.on{box-shadow:0 6px 16px -8px #0a0f0c80}
+  .cattab.on{box-shadow:0 8px 18px -8px #7c4dff8c}
+
+  /* the keep-number pops in gradient ink */
+  .hl-num.green{background:var(--grad-purple);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+
+  /* live "terminal" readout — richer dark glass */
+  .liveres{background:linear-gradient(155deg,#15131f,#0a0f0c);box-shadow:0 18px 40px -18px #1a103a73,inset 0 1px 0 #ffffff14;border:1px solid #ffffff10}
+
+  /* range fill + glow thumb */
+  input[type=range]{background:linear-gradient(90deg,#cdbcf5,#e9ebe9)}
+  input[type=range]::-webkit-slider-thumb{box-shadow:0 0 0 4px #7c4dff2e,0 2px 8px #7c4dff66;transition:box-shadow .15s,transform .12s}
+  input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.12)}
+  input:focus-visible,select:focus-visible{outline:none;box-shadow:0 0 0 3px #7c4dff4d;border-color:var(--green)}
+
+  /* premium scrollbar + selection */
+  ::selection{background:#7c4dff33}
+  *::-webkit-scrollbar{width:11px;height:11px}
+  *::-webkit-scrollbar-thumb{background:#bca9f0;border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  *::-webkit-scrollbar-thumb:hover{background:#9b6bff;background-clip:content-box}
+
+  /* section entrance — add a touch of blur-in for smoothness */
+  @keyframes secin{from{opacity:0;transform:translateY(16px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+
+  @media(prefers-reduced-motion:reduce){
+    body::before{animation:none}
+    .brand .dot{animation:none}
+    .nextbtn::after{display:none}
+  }
+
+  /* ============================================================
+     MOTION MAX — Cash-App-grade kinetics (all reduced-motion-safe)
+     ============================================================ */
+  /* privacy reassurance */
+  .privacy-pill{display:inline-flex;align-items:center;gap:8px;margin-top:18px;font-size:.8rem;font-weight:600;color:var(--green-d);max-width:100%;
+    background:#ffffffd9;border:1px solid #e3dafd;border-radius:16px;padding:8px 15px;box-shadow:0 6px 18px -10px #7c4dff80,inset 0 1px 0 #fff;backdrop-filter:blur(6px)}
+  .privacy-note{font-size:.84rem;color:var(--ink-soft);background:#f4f0ff;border:1px solid #e7defb;border-radius:14px;padding:12px 15px;margin-bottom:12px;line-height:1.5}
+  .privacy-note::first-letter{font-size:1.05em}
+
+  /* kinetic hero — word rises in on load, wordmark shimmers forever */
+  .hero h1{animation:heroRise .75s var(--spring) both}
+  .hero p{animation:heroRise .75s var(--spring) .08s both}
+  .privacy-pill{animation:heroRise .75s var(--spring) .16s both}
+  @keyframes heroRise{from{opacity:0;transform:translateY(22px) scale(.985);filter:blur(8px)}to{opacity:1;transform:none;filter:blur(0)}}
+  .hero h1 em{background:linear-gradient(100deg,#9b6bff,#7c4dff 35%,#c9b4ff 50%,#7c4dff 65%,#5b2ee6);background-size:240% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:shimmer 4.5s linear infinite}
+  @keyframes shimmer{to{background-position:240% 0}}
+
+  /* scroll-reveal — content springs up as it enters the viewport */
+  .reveal{opacity:0;transform:translateY(26px) scale(.985);transition:opacity .6s ease,transform .65s var(--spring);transition-delay:var(--rd,0ms);will-change:opacity,transform}
+  .reveal.in{opacity:1;transform:none}
+
+  /* tap ripple */
+  .rippleable{position:relative;overflow:hidden}
+  .ripple{position:absolute;border-radius:50%;transform:translate(-50%,-50%) scale(0);background:#ffffff5c;pointer-events:none;animation:ripple .6s ease-out forwards;mix-blend-mode:overlay}
+  @keyframes ripple{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+
+  /* sticky header gains depth once the page scrolls */
+  header{transition:box-shadow .3s,background .3s}
+  header.scrolled{box-shadow:0 6px 28px -16px #1a103a59,0 1px 0 #1a103a14}
+
+  /* pillar cards: gradient sweep + lift on hover (Cash-App playfulness) */
+  .pathcard{position:relative;overflow:hidden;transition:transform .22s var(--spring),box-shadow .22s}
+  .pathcard::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,transparent 30%,#7c4dff14 50%,transparent 70%);background-size:240% 100%;background-position:140% 0;transition:background-position .7s ease;pointer-events:none}
+  .pathcard:hover{transform:translateY(-4px) scale(1.012)}
+  .pathcard:hover::after{background-position:-40% 0}
+
+  /* headline numbers gently pop when they settle */
+  .hl-box{animation:none}
+
+  @media(prefers-reduced-motion:reduce){
+    .hero h1,.hero p,.privacy-pill{animation:none}
+    .hero h1 em{animation:none;background-position:0 0}
+    .reveal{opacity:1!important;transform:none!important;transition:none}
+    .ripple{display:none}
+    .pathcard::after{display:none}
+  }
+
+  /* live-panel breakdown (inside the dark terminal card) */
+  .lr-break-tog{margin-top:10px;background:#ffffff14;border:1px solid #ffffff24;color:#dfe4e1;font-family:var(--body);font-weight:600;font-size:.8rem;border-radius:999px;padding:6px 13px;cursor:pointer;transition:background .15s,transform .12s}
+  .lr-break-tog:hover{background:#ffffff24}
+  .lr-break-tog:active{transform:scale(.96)}
+  .lr-break{overflow:hidden;margin-top:10px;border-top:1px solid #ffffff1f;padding-top:10px}
+  .lr-break .br{display:flex;justify-content:space-between;gap:14px;font-size:.86rem;padding:4px 0;color:#cfd6d1}
+  .lr-break .br .bv{font-family:var(--display);font-weight:700;white-space:nowrap}
+  .lr-break .br.tot{border-top:1px solid #ffffff26;margin-top:4px;padding-top:7px;color:#fff;font-size:.95rem}
+  .lr-break .bv.amber{color:#ffbf57}.lr-break .bv.red{color:#ff8a7a}.lr-break .bv.pen{color:#ff9bbf}.lr-break .bv.green{color:#7fe6a1}.lr-break .bv.soft{color:#aeb6b0;font-weight:600}
+  @keyframes brIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .lr-break.show{animation:brIn .28s var(--spring)}
+
+  /* secondary / ghost action button (e.g. "Show results" while still browsing) */
+  .altbtn{margin-top:8px;background:#fff;color:var(--green-d);border:1.6px solid #c9b6f7;border-radius:999px;padding:13px 24px;font-weight:700;font-size:1rem;cursor:pointer;font-family:var(--body);position:relative;overflow:hidden;transition:transform .16s var(--spring),background .15s,box-shadow .2s,border-color .15s}
+  .altbtn:hover{background:#f3eeff;transform:translateY(-1px);box-shadow:0 10px 24px -12px #7c4dff8c}
+  .altbtn:active{transform:scale(.97)}
+  .altbtn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
+  .altbtn.solid{background:var(--green);color:#06120b;border-color:var(--green);box-shadow:0 4px 0 #4a25c0,0 12px 26px -10px #7c4dff8c}
+  .altbtn.solid:hover{box-shadow:0 6px 0 #4a25c0,0 18px 36px -10px #7c4dffb0}
+  @media(prefers-reduced-motion:reduce){.lr-break.show{animation:none}}
 </style>
 </head>
 <body>
@@ -334,14 +478,6 @@
     <div class="lang" style="display:none"><button id="enBtn" class="on" onclick="setLang('en')">EN</button><button id="hiBtn" onclick="setLang('hi')">हिं</button></div>
   </div>
 </header>
-<div class="secnav" role="navigation" aria-label="Sections"><div class="wrapn">
-  <button class="on" data-sec="home" data-i="navHome"></button>
-  <button data-sec="tryit" data-i="navTry"></button>
-  <button data-sec="invest" data-i="navInvest"></button>
-  <button data-sec="tax" data-i="navTax"></button>
-  <button data-sec="takehome" data-i="navTake"></button>
-  <button data-sec="credit" data-i="navCredit"></button>
-</div></div>
 
 <div class="wrap" role="main">
   <div class="backbar" id="backbar" style="display:none"><button class="backbtn" onclick="goBack()">← <span data-i="backHome"></span></button></div>
@@ -352,7 +488,8 @@
     <button data-step="results"><span class="sn">4</span>Results</button>
   </div>
   <section id="sec-home" class="sec on">
-    <div class="hero"><h1 data-i="heroH"></h1><p data-i="heroP"></p></div>
+    <div class="hero"><h1 data-i="heroH"></h1><p data-i="heroP"></p>
+      <div class="privacy-pill" data-i="privacyShort"></div></div>
     <div id="simcard"></div>
     <div style="font-family:var(--display);font-weight:600;font-size:1.15rem;margin:24px 0 12px" data-i="homeKick"></div>
     <div class="pathgrid" id="pillargrid"></div>
@@ -627,10 +764,14 @@
       <div class="liveres" id="liveRes">
         <div class="lr-row"><span class="lr-cap" data-i="liveKeepL"></span><span class="lr-val green" id="liveKeep">₹0</span></div>
         <div class="lr-row"><span class="lr-cap" data-i="liveLostL"></span><span class="lr-val red" id="liveLost">₹0</span></div>
+        <button class="lr-break-tog" id="liveBreakTog" onclick="toggleLiveBreak()" aria-expanded="false" role="button" tabindex="0">▸ See breakdown</button>
+        <div class="lr-break" id="liveBreak" style="display:none"></div>
         <div class="lr-verdict" id="liveVerdict"></div>
       </div>
+      <div class="marg" id="catProg" style="margin-top:14px;border-color:#cdbcf5;background:#f3eeff;color:var(--green-d)"></div>
       <div class="btnrow">
-        <button class="nextbtn" id="toResults" onclick="proceedToResults()" data-i="seeResults"></button>
+        <button class="nextbtn" id="nextCat" onclick="nextCat()"></button>
+        <button class="altbtn" id="toResults" onclick="proceedToResults()" data-i="seeResults"></button>
       </div>
     </div>
   </section>
@@ -657,8 +798,8 @@
         <div class="hl-box"><div class="hl-cap" id="cap2"></div><div class="hl-num red" id="num2">₹0</div></div>
         <div class="hl-box"><div class="hl-cap" id="cap3"></div><div class="hl-num amber" id="num3">0</div></div>
       </div>
-      <div class="flow"><div class="flow-track"><div class="seg net" id="segNet"></div><div class="seg chg" id="segChg"></div><div class="seg tax" id="segTax"></div></div>
-        <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span><span data-i="keyNet"></span></span><span><span class="sw" style="background:var(--amber)"></span><span data-i="keyChg"></span></span><span><span class="sw" style="background:var(--red)"></span><span data-i="keyTax"></span></span></div>
+      <div class="flow"><div class="flow-track"><div class="seg net" id="segNet"></div><div class="seg chg" id="segChg"></div><div class="seg tax" id="segTax"></div><div class="seg pen" id="segPen"></div></div>
+        <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span><span data-i="keyNet"></span></span><span><span class="sw" style="background:var(--amber)"></span><span data-i="keyChg"></span></span><span><span class="sw" style="background:var(--red)"></span><span data-i="keyTax"></span></span><span id="keyPenWrap" style="display:none"><span class="sw" style="background:#8e1b3d"></span><span data-i="keyPen"></span></span></div>
       </div>
       <canvas id="growth" height="200"></canvas>
       <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
@@ -667,7 +808,7 @@
     </div>
   </section>
 
-  <footer><div class="disc" data-i="disc"></div></footer>
+  <footer><div class="privacy-note" data-i="privacy"></div><div class="disc" data-i="disc"></div></footer>
 </div>
 
 <div id="coach" class="coach" style="display:none" onclick="if(event.target===this)dismissCoach()">
@@ -687,10 +828,6 @@
 </div>
 <div id="tourtip" class="tourtip" style="display:none"></div>
 
-<aside class="adrail adleft" id="adLeft"><div class="adbox"><span class="adtag">Ad</span>Advertisement<br>160 × 600</div></aside>
-<aside class="adrail adright" id="adRight"><div class="adbox"><span class="adtag">Ad</span>Advertisement<br>160 × 600</div></aside>
-<div class="adbar" id="adBar"><div class="adbox"><span class="adtag">Ad</span>Advertisement — 728 × 90</div></div>
-
 <script>
 /* ===== ENGINE ===== */
 const REGIME_NEW=[[0,400000,0],[400000,800000,0.05],[800000,1200000,0.10],[1200000,1600000,0.15],[1600000,2000000,0.20],[2000000,2400000,0.25],[2400000,Infinity,0.30]];
@@ -709,6 +846,7 @@ const BCLS={slab:'b-slab',flat:'b-flat',exempt:'b-exempt',mixed:'b-mixed',crypto
 const BEHAV_IC={steady:'📈',bumpy:'🎢',wild:'⚡',locked:'🔒',floaty:'🥇'};
 const GLOSS=/*GLOSS_EN*/;
 let LANG='en', REGIME='new', MODE='lumpsum', INCOME=1500000, CURRENT_CAT=null, EXIT_EARLY=false, INFL_ADJ=false, INFL_YRS=0, PLAN_YEARS=10;
+let SEEN_CATS=new Set();   // product categories the user has browsed (gate before Results)
 function sipStep(){ const e=document.getElementById('sipStepup'); return e?Math.max(0,+e.value||0)/100:0; } // yearly SIP increase
 function setPlanYears(){ const e=document.getElementById('planYears'); PLAN_YEARS=Math.max(1,Math.min(40,Math.round(+e.value||10))); render(); }
 
@@ -718,7 +856,9 @@ const STR={
   brand:"Learn Money", sim:"Simulation",
   heroH:["Learn how money ","actually"," works"],
   heroP:"Investing, tax and credit — explained simply. Understand what each product really earns you after tax, charges and inflation, then try it yourself.",
-  navInf:"Inflation", navHow:"Setup", navChoose:"Choose", navResults:"Results", next:"Next →", seeResults:"See full breakdown →",
+  privacy:"🔒 Fully private — everything runs right here in your browser. No login, no tracking, and nothing is ever sent to a server. Hit ↺ Reset any time to wipe it all.",
+  privacyShort:"🔒 100% private · runs in your browser · nothing sent anywhere",
+  navInf:"Inflation", navHow:"Setup", navChoose:"Choose", navResults:"Results", next:"Next →", seeResults:"Show results →",
   navHome:"Home", navInvest:"Investing", navTax:"Tax", navTake:"Salary", navCredit:"Credit", navTry:"Try it",
   thH:"Salary calculator", thP:"Enter your salary — everything's pre-filled, adjust anything. See your real monthly in-hand after tax, PF and professional tax, and which regime pays you more.",
   homeKick:"What would you like to learn?",
@@ -752,7 +892,16 @@ const STR={
   lensH:"🎛️ Play with it", exitL:"All your picks", exitHold:"Hold to term", exitEarly:"Exit all early", brkL:"💔 Exit this early?",
   adjL:"Show money as", adjFuture:"Future ₹", adjToday:"Today's ₹ (after inflation)",
   adjYrsL:"Inflation over how many years", adjYrsAuto:"Auto (your horizon)",
-  adjBox:(rate,real,yrs)=>`💸 Inflation check: at <b>${rate}%</b> a year, what you keep is worth about <b>₹${real}</b> in <b>today's</b> money after ${yrs} year${yrs===1?'':'s'} — that's its real spending power.`,
+  adjBox:(rate,yrs,nominal,real,lost,lostPct,factor)=>`<div class="ibrk">
+    <div class="ih">💸 How inflation changes what you keep</div>
+    <div class="ir"><span>What you keep (future ₹)</span><span class="rv">₹${nominal}</span></div>
+    <div class="ir"><span>Inflation assumed</span><span class="rv">${rate}% / year</span></div>
+    <div class="ir"><span>Over</span><span class="rv">${yrs} year${yrs===1?'':'s'}</span></div>
+    <div class="ir"><span>Prices rise by</span><span class="rv">${factor}× <span class="rv soft">(₹100→₹${Math.round(100*factor)})</span></span></div>
+    <div class="ir tot"><span>Worth in today's ₹</span><span class="rv green">₹${real}</span></div>
+    <div class="ir last"><span>Lost to inflation</span><span class="rv red">−₹${lost} (${lostPct}%)</span></div>
+    <div class="note">Same rupees, less stuff. In ${yrs} year${yrs===1?'':'s'}, <b>₹${nominal}</b> will only buy what <b>₹${real}</b> buys today — because prices climb about ${rate}% a year.</div>
+  </div>`,
   exitCalc:(pen,tax,keep,held,cost)=>`<b>💔 What exiting early costs you</b><br>• Early-exit penalties: <b>${pen}</b><br>• Tax now (tax-free / LTCG breaks forfeited, gains taxed at slab): <b>${tax}</b><br>• You keep <b>${keep}</b> — vs <b>${held}</b> if you held to term, i.e. about <b>${cost}</b> less. Per-product hits are on the cards below.`,
   exitBox:{
    hold:"<b>Hold to term</b> — you stay invested for each product's full period, so there are no early-exit penalties. The normal, intended way.",
@@ -773,8 +922,8 @@ const STR={
   allocWarn:(t)=>`⚠️ Your allocations add up to <b>${t}%</b>, not 100% — <b>${t>100?(t-100)+'% over':(100-t)+'% to go'}</b>. Results assume you actually invest these shares; drag the sliders so they total 100%.`,
   swpDry:(n)=>`⚠️ In this scenario, <b>${n}</b> of your picks run out of money before the end — the monthly withdrawal outpaces growth. Lower the withdrawal, raise the corpus, or shorten the horizon.`,
   growthYou:"Your money", growthInf:"If it only kept pace with inflation",
-  s3h:"What you'd keep", keyNet:"You keep", keyChg:"Charges & penalties", keyTax:"Tax",
-  caps:{keep:"You keep",keepReal:"You keep (today's ₹)",leak:"Lost to tax, charges & penalties",cagr:"Post-tax return %/yr",invested:"Total you put in",corpus:"Corpus left at end"},
+  s3h:"What you'd keep", keyNet:"You keep", keyChg:"Charges", keyTax:"Tax", keyPen:"Early-exit penalty",
+  caps:{keep:"You keep",keepReal:"You keep (today's ₹)",leak:"Lost (tax + charges + penalty)",cagr:"Post-tax return %/yr",invested:"Total you put in",corpus:"Corpus left at end"},
   resSummary:{lumpsum:(inv,fv)=>`Your mock ${fmtShort(inv)} grows to about ${fmtShort(fv)} before money leaks out.`,sip:(inv,fv)=>`Investing monthly, you put in ${fmtShort(inv)} total, which grows to about ${fmtShort(fv)}.`,swp:(inv,fv,d)=>`From a ${fmtShort(inv)} corpus you draw ${fmtShort(d)} as income, leaving about ${fmtShort(fv)} at the end.`},
   fdPen:"FD broken early — 1% penalty", ppfLock:"PPF locked 15 yrs",
   bnames:{slab:"Taxed at your slab",flat:"Flat 12.5% (LTCG)",exempt:"Tax-free",mixed:"Mixed",crypto:"Flat 30%"},
@@ -788,6 +937,8 @@ const STR={
   brand:"Learn Money", sim:"सिम्युलेशन",
   heroH:["देखिए आपका पैसा ","असल में"," कहाँ जाता है"],
   heroP:"खेल-खेल में निवेश सीखिए — चुनिए किसमें लगाना है, साल तय कीजिए, और पैसा बढ़ते देखिए — उस tax और charges के बाद जो tools छिपाते हैं।",
+  privacy:"🔒 पूरी तरह निजी — सब कुछ आपके browser में ही चलता है। न login, न tracking, और कुछ भी server पर नहीं जाता। कभी भी ↺ Reset दबाकर सब मिटाएँ।",
+  privacyShort:"🔒 100% निजी · browser में चलता है · कुछ भी कहीं नहीं भेजा जाता",
   navInf:"Inflation", navHow:"सेटअप", navChoose:"चुनें", navResults:"नतीजे", next:"आगे →", seeResults:"नतीजे देखें →",
   navHome:"होम", homeKick:"कहाँ से शुरू करना चाहेंगे?",
   paths:[
@@ -965,17 +1116,26 @@ function render(){
   const iyrs=INFL_YRS||maxY;   // inflation horizon: chosen years, or the portfolio's own horizon
   const realKeep=(MODE==='swp'?Math.max(tEnd,0):Math.max(tNet,0))/Math.pow(1+inflR2,iyrs);
   animateNum(document.getElementById('num1'),Math.round(INFL_ADJ?realKeep:tNet),rupee); document.getElementById('cap1').textContent=INFL_ADJ?S().caps.keepReal:S().caps.keep;
-  { const ab=document.getElementById('adjBox'); if(ab) ab.innerHTML = rows.length? S().adjBox(Math.round(inflR2*100), fmtIN(Math.round(realKeep)), iyrs) : ''; }
+  { const ab=document.getElementById('adjBox'); if(ab){
+      if(rows.length){
+        const nominalKeep=Math.round(MODE==='swp'?Math.max(tEnd,0):Math.max(tNet,0));
+        const realR=Math.round(realKeep), lost=Math.max(0,nominalKeep-realR);
+        const lostPct=nominalKeep>0?Math.round(lost/nominalKeep*100):0;
+        const factor=+(Math.pow(1+inflR2,iyrs).toFixed(2));
+        ab.innerHTML=S().adjBox(Math.round(inflR2*100), iyrs, fmtIN(nominalKeep), fmtIN(realR), fmtIN(lost), lostPct, factor);
+      } else ab.innerHTML='';
+    } }
   animateNum(document.getElementById('num2'),Math.round(tChg+tTax+tPen),rupee); document.getElementById('cap2').textContent=S().caps.leak;
   if(MODE==='lumpsum'){const cagr=tInv>0?(Math.pow(Math.max(tNet,0)/tInv,1/maxY)-1)*100:0; animateNum(document.getElementById('num3'),cagr,v=>v.toFixed(1)+'%'); document.getElementById('cap3').textContent=S().caps.cagr;}
   else if(MODE==='sip'){animateNum(document.getElementById('num3'),Math.round(tInv),rupee); document.getElementById('cap3').textContent=S().caps.invested;}
   else{animateNum(document.getElementById('num3'),Math.round(tEnd),rupee); document.getElementById('cap3').textContent=S().caps.corpus;}
   document.getElementById('resSummary').textContent=S().resSummary[MODE]((tInv||A.swpC),(MODE==='swp'?tEnd:grossTotal),tWd);
   const base=Math.max(grossTotal,1);
-  const nW=Math.max(0,tNet)/base*100,cW=(tChg+tPen)/base*100,tW=tTax/base*100;
-  const sN=document.getElementById('segNet'),sC=document.getElementById('segChg'),sT=document.getElementById('segTax');
-  sN.style.width=nW+'%';sC.style.width=cW+'%';sT.style.width=tW+'%';
-  sN.textContent=nW>16?rupee(Math.round(tNet)):'';sC.textContent=cW>11?rupee(Math.round(tChg+tPen)):'';sT.textContent=tW>11?rupee(Math.round(tTax)):'';
+  const nW=Math.max(0,tNet)/base*100,cW=tChg/base*100,tW=tTax/base*100,pW=tPen/base*100;
+  const sN=document.getElementById('segNet'),sC=document.getElementById('segChg'),sT=document.getElementById('segTax'),sP=document.getElementById('segPen');
+  sN.style.width=nW+'%';sC.style.width=cW+'%';sT.style.width=tW+'%';if(sP)sP.style.width=pW+'%';
+  sN.textContent=nW>16?rupee(Math.round(tNet)):'';sC.textContent=cW>11?rupee(Math.round(tChg)):'';sT.textContent=tW>11?rupee(Math.round(tTax)):'';if(sP)sP.textContent=pW>11?rupee(Math.round(tPen)):'';
+  { const kpw=document.getElementById('keyPenWrap'); if(kpw) kpw.style.display=tPen>0?'':'none'; }
   const pc=document.getElementById('pcards');pc.innerHTML='';
   for(const{p,st,o} of rows){
     const broke = (st.broke||EXIT_EARLY) && o.earlyPenalty>0;
@@ -1000,6 +1160,18 @@ function render(){
   const lk=document.getElementById('liveKeep'), ll=document.getElementById('liveLost'), lv=document.getElementById('liveVerdict');
   if(lk) lk.textContent=rupee(Math.round(tNet));
   if(ll) ll.textContent=rupee(Math.round(tChg+tTax+tPen));
+  { const lb=document.getElementById('liveBreak'); if(lb){
+      if(rows.length){
+        const row=(c,v,cls,tot)=>`<div class="br${tot?' tot':''}"><span>${c}</span><span class="bv ${cls||''}">${v}</span></div>`;
+        let h=row('Total invested',rupee(Math.round(tInv)));
+        h+=row('Charges','−'+rupee(Math.round(tChg)),'amber');
+        h+=row('Tax','−'+rupee(Math.round(tTax)),'red');
+        if(tPen>0) h+=row('Early-exit penalty','−'+rupee(Math.round(tPen)),'pen');
+        h+=row(MODE==='swp'?'Corpus left':'You keep (net)',rupee(Math.round(MODE==='swp'?tEnd:tNet)),'green',true);
+        if(MODE!=='swp') h+=row("Worth in today's ₹ ("+iyrs+"y @ "+Math.round(inflR2*100)+"%)",rupee(Math.round(realKeep)),'soft');
+        lb.innerHTML=h;
+      } else lb.innerHTML='<div class="br"><span>Turn on a product to see the split.</span></div>';
+    } }
   if(lv){
     if(!rows.length) lv.innerHTML='Turn on a product above to see what you keep.';
     else if(MODE==='swp') lv.innerHTML='Corpus left at the end: <b>'+rupee(Math.round(tEnd))+'</b>'+(dryN>0?' — ⚠️ some picks run dry':'');
@@ -1028,7 +1200,7 @@ function drawChart(rows,A,maxY,investedTotal){
     t=Math.min(1,t+0.05);ctx.clearRect(0,0,w,h);
     const baseRef=(MODE==='swp')?A.swpC:investedTotal, baseY=h-pad-(baseRef/maxv)*(h-2*pad);
     if(baseRef>0&&baseRef<=maxv){ctx.strokeStyle='#ddd2bd';ctx.setLineDash([5,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,baseY);ctx.lineTo(w-pad,baseY);ctx.stroke();ctx.setLineDash([]);}
-    const N=maxY*t, col=(MODE==='swp')?'#d98a1f':'#1f9d5f';
+    const N=maxY*t, col=(MODE==='swp')?'#d98a1f':'#7c4dff';
     ctx.beginPath();ctx.moveTo(pad,h-pad);
     for(let y=0;y<=N;y+=0.2){const v=interp(series,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);ctx.lineTo(x,yy);}
     ctx.lineTo(pad+(N/maxY)*(w-2*pad),h-pad);ctx.closePath();
@@ -1119,8 +1291,24 @@ function buildList(){
 }
 function showCat(k){
   CURRENT_CAT=k;
+  SEEN_CATS.add(k);   // browsing a tab counts as "seen"
   document.querySelectorAll('.cattab').forEach(el=>el.classList.toggle('on',el.dataset.cat===k));
   document.querySelectorAll('.prow').forEach(el=>el.classList.toggle('hidecat',el.dataset.pcat!==k));
+  document.querySelectorAll('.cattab').forEach(el=>el.classList.toggle('seen',SEEN_CATS.has(el.dataset.cat)));
+  updateCatNav();
+}
+function allCatsSeen(){ return S().cats.every(c=>SEEN_CATS.has(c.k)); }
+function nextCat(){ const nx=S().cats.find(c=>!SEEN_CATS.has(c.k)); if(nx) showCat(nx.k); }
+function updateCatNav(){
+  const cats=S().cats, seen=cats.filter(c=>SEEN_CATS.has(c.k)).length, tot=cats.length, done=seen>=tot;
+  const prog=document.getElementById('catProg');
+  if(prog) prog.innerHTML = done
+    ? `✅ You've explored all <b>${tot}</b> product types. Set your split, then <b>Show results</b>.`
+    : `📚 <b>${seen}/${tot}</b> product types explored. Tap <b>Next</b> to learn each one — or skip ahead with <b>Show results</b>.`;
+  const nb=document.getElementById('nextCat'), rb=document.getElementById('toResults');
+  if(nb){ nb.style.display=done?'none':''; if(!done){ const nx=cats.find(c=>!SEEN_CATS.has(c.k)); nb.textContent='Next: '+(nx?nx.l:'')+' →'; } }
+  if(rb) rb.classList.toggle('solid', done);   // promote "Show results" to primary once browsing is done
+  render();   // refreshes toResults.disabled from the allocation gate
 }
 
 /* ===== HOME PATHS ===== */
@@ -1161,7 +1349,7 @@ function resetAll(){
   document.getElementById('inc').value=incomeToSlider(1500000);
   document.getElementById('infAmt').value=500000;
   document.getElementById('infRate').value=5;
-  EXIT_EARLY=false; INFL_ADJ=false; INFL_YRS=0;
+  EXIT_EARLY=false; INFL_ADJ=false; INFL_YRS=0; SEEN_CATS=new Set();   // re-arm the mandatory product-type walkthrough
   document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.exit==='0'));
   document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.adj==='0'));
   document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.iy==='0'));
@@ -1179,6 +1367,7 @@ function renderPillars(){
   const g=document.getElementById('pillargrid'), sc=document.getElementById('simcard');
   if(g){ g.innerHTML='';
     S().pillars.filter(p=>p.key!=='tryit').forEach(p=>{const d=document.createElement('div');d.className='pathcard';
+      d.dataset.key=p.key;
       d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
       d.onclick=()=>showSec(p.key);g.appendChild(d);});
   }
@@ -1381,8 +1570,8 @@ function showCoachIfFirst(){ let seen=true; try{seen=!!localStorage.getItem('lm_
 function dismissCoach(){ const c=document.getElementById('coach'); if(c)c.style.display='none'; try{localStorage.setItem('lm_seen','1');}catch(e){} }
 const TOUR=[
  {sel:'#simcard .simcta',t:'Build & see',b:'Tap here to build a pretend portfolio and watch what you actually keep after tax, charges & inflation.'},
- {sel:'.secnav [data-sec="invest"]',t:'Learn any product',b:'Browse all 32 — each explained with a 🍱 food analogy, in plain words.'},
- {sel:'.secnav [data-sec="takehome"]',t:'Your take-home pay',b:'Curious about your real monthly in-hand? It’s here, pre-filled — just tweak.'},
+ {sel:'#pillargrid [data-key="invest"]',t:'Learn any product',b:'Browse all 32 — each explained with a 🍱 food analogy, in plain words.'},
+ {sel:'#pillargrid [data-key="takehome"]',t:'Your take-home pay',b:'Curious about your real monthly in-hand? It’s here, pre-filled — just tweak.'},
  {sel:'#kidBtn',t:'New to money?',b:'Turn on Kid mode anytime for the simple, food-style version of everything.'}
 ];
 let tourI=0;
@@ -1495,14 +1684,43 @@ function updateBackBar(){
 }
 function applySec(name){          // pure switch — no history mutation
   document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+name));
-  const navName=SIM_STEPS.includes(name)?'tryit':name;
-  document.querySelectorAll('.secnav button').forEach(b=>b.classList.toggle('on',b.dataset.sec===navName));
   CURRENT_SEC=name; updateBackBar(); updateStepper(name);
   if(name==='results') render();
   if(name==='inflation') renderInflation();
   if(name==='credit') renderCredit();
   if(name==='takehome') renderTakehome();
   window.scrollTo({top:0,behavior:'smooth'});
+  observeReveals();   // animate in whatever the new section reveals
+}
+/* ===== MOTION: scroll-reveal + tap ripple ===== */
+function prefersReduce(){ try{return window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;}catch(e){return false;} }
+let _revObs=null;
+function observeReveals(){
+  const els=[...document.querySelectorAll('#simcard, #pillargrid .pathcard, #invlist .lrow, #pcards .pcard, .lens, .liveres')].filter(e=>!e.dataset.rev);
+  if(!els.length) return;
+  if(prefersReduce()||typeof IntersectionObserver==='undefined'){ els.forEach(e=>{e.dataset.rev='1';e.classList.add('reveal','in');}); return; }
+  if(!_revObs) _revObs=new IntersectionObserver(ents=>ents.forEach(en=>{ if(en.isIntersecting){en.target.classList.add('in');_revObs.unobserve(en.target);} }),{rootMargin:'0px 0px -7% 0px',threshold:.08});
+  els.forEach((e,i)=>{ e.dataset.rev='1'; e.classList.add('reveal'); e.style.setProperty('--rd',(i%6)*55+'ms'); _revObs.observe(e); });
+  // safety net: never leave near-viewport content stuck hidden
+  setTimeout(()=>document.querySelectorAll('.reveal:not(.in)').forEach(e=>{ try{ if(e.getBoundingClientRect().top<innerHeight*1.15) e.classList.add('in'); }catch(_){} }),1500);
+}
+function initMotion(){
+  // tap ripple on the playful controls
+  if(!prefersReduce()){
+    document.addEventListener('pointerdown',ev=>{
+      const t=ev.target.closest('.nextbtn,.altbtn,.chip,.cattab,.pathcard,.preset,.simcta,.resetbtn,.backbtn');
+      if(!t) return; t.classList.add('rippleable');
+      const r=t.getBoundingClientRect(), d=Math.max(r.width,r.height)*2.2;
+      const s=document.createElement('span'); s.className='ripple';
+      s.style.width=s.style.height=d+'px'; s.style.left=(ev.clientX-r.left)+'px'; s.style.top=(ev.clientY-r.top)+'px';
+      t.appendChild(s); setTimeout(()=>s.remove(),650);
+    },{passive:true});
+  }
+  // header depth on scroll
+  const hd=document.querySelector('header');
+  const onScroll=()=>{ if(hd) hd.classList.toggle('scrolled',(window.scrollY||0)>8); };
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+  observeReveals();
 }
 function showSec(name){
   if(name===CURRENT_SEC) return;
@@ -1514,7 +1732,10 @@ function goBack(){
   const prev=NAV_STACK.length?NAV_STACK.pop():'home';
   applySec(prev);
 }
-function canSeeResults(){ let act=0,tot=0; for(const p of PRODUCTS){const st=PS[p.id]; if(st.active){act++;tot+=st.pct;}} return act>0 && tot===100; }
+function canSeeResults(){ let act=0,tot=0; for(const p of PRODUCTS){const st=PS[p.id]; if(st.active){act++;tot+=st.pct;}} return act>0 && tot===100; }   // walkthrough is now optional — "Show results" can skip it
+function toggleLiveBreak(){ const b=document.getElementById('liveBreak'), t=document.getElementById('liveBreakTog'); if(!b||!t) return;
+  const open=b.style.display!=='none'; b.style.display=open?'none':'block'; b.classList.toggle('show',!open);
+  t.setAttribute('aria-expanded',String(!open)); t.textContent=(open?'▸':'▾')+' '+(open?'See breakdown':'Hide breakdown'); }
 function proceedToResults(){ if(canSeeResults()) showSec('results'); }
 window.addEventListener('popstate',()=>{ if(NAV_STACK.length) goBack(); });
 
@@ -1558,7 +1779,6 @@ document.querySelectorAll('#thMetroChips .chip').forEach(c=>c.onclick=()=>{docum
 document.querySelectorAll('#thAgeChips .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#thAgeChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');renderTakehome();});
 document.getElementById('regChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#regChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');REGIME=c.dataset.r;render();});
 document.getElementById('infChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');INF_H=+c.dataset.h;renderInflation();});
-document.querySelectorAll('.secnav button').forEach(b=>b.onclick=()=>showSec(b.dataset.sec));
 document.querySelectorAll('#simsteps [data-step]').forEach(b=>b.onclick=()=>{ if(b.dataset.step==='results'&&!canSeeResults())return; showSec(b.dataset.step); });
 const ccmc=document.getElementById('ccModeChips');
 if(ccmc) ccmc.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{ccmc.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');CC_MODE=c.dataset.cm;document.getElementById('ccPayGrp').classList.toggle('on',CC_MODE==='fixed');renderCredit();});
@@ -1576,6 +1796,7 @@ applyLang();
 renderTakehome();
 glossifyAll();
 showCoachIfFirst();
+initMotion();
 try{history.replaceState({sec:'home'},'');}catch(e){}
 window.addEventListener('resize',()=>{render();renderInflation();});
 </script>

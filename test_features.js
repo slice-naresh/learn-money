@@ -59,18 +59,41 @@ check('Bottom Next: setup -> choose', ()=>{
   if(activeSec()!=='sec-choose') throw new Error('went to '+activeSec());
   return 'ok';
 });
-check('Proceed gated: 0 products & <100% disabled, 100% enabled', ()=>{
+check('Show-results gated on allocation; skips walkthrough at 100%', ()=>{
   win.resetAll(); win.showSec('choose');
   const btn=$('#toResults');
-  if(!btn.disabled) throw new Error('proceed enabled with 0 products');
+  if(!btn.disabled) throw new Error('Show results enabled with 0 products');
   click($('[data-tgl="fd"]'));                 // 1 product → equal split = 100%
-  if(btn.disabled) throw new Error('disabled at exactly 100%');
+  if(btn.disabled) throw new Error('Show results disabled at exactly 100%');
   setInput($('[data-pct="fd"]'),'50');         // drag below 100
   if(!btn.disabled) throw new Error('enabled at 50%');
   setInput($('[data-pct="fd"]'),'100');
+  // walkthrough NOT completed — "Show results" must still skip straight to results
   click(btn);
-  if(activeSec()!=='sec-results') throw new Error('did not proceed at 100%: '+activeSec());
-  return 'gated <100, opens at 100';
+  if(activeSec()!=='sec-results') throw new Error('Show results did not skip to results at 100%: '+activeSec());
+  return 'gated <100; Show results skips walkthrough at 100%';
+});
+check('Choose: Next steps through product types, Show results always present', ()=>{
+  win.resetAll(); win.showSec('choose');
+  const nb=$('#nextCat'), rb=$('#toResults');
+  if(!nb||!rb) throw new Error('missing Next / Show-results buttons');
+  const cats=win.S().cats.length;
+  let guard=0; while($('#nextCat').style.display!=='none' && guard++<cats+2){ click($('#nextCat')); }
+  if($('#nextCat').style.display!=='none') throw new Error('Next never exhausts categories');
+  if(!rb.classList.contains('solid')) throw new Error('Show results not promoted after full walkthrough');
+  return 'Next walks all types; Show results promoted';
+});
+check('Live panel breakdown toggle reveals charges/tax/penalty split', ()=>{
+  win.resetAll(); win.showSec('choose');
+  click($('[data-tgl="fd"]')); win.render();
+  const tog=$('#liveBreakTog'), box=$('#liveBreak');
+  if(!tog||!box) throw new Error('breakdown toggle missing');
+  if(box.style.display!=='none') throw new Error('breakdown not collapsed by default');
+  win.toggleLiveBreak();
+  if(box.style.display==='none') throw new Error('breakdown did not open');
+  const txt=box.textContent;
+  ['invested','Charges','Tax','keep'].forEach(t=>{ if(!new RegExp(t,'i').test(txt)) throw new Error('breakdown missing: '+t); });
+  return 'breakdown splits invested/charges/tax/net';
 });
 check('Selecting products splits 100% equally; draggable to 0', ()=>{
   win.resetAll(); win.showSec('choose');
@@ -510,6 +533,7 @@ check('SIP step-up raises total invested', ()=>{
   if(!(inv10>inv0)) throw new Error('step-up did not raise invested: '+inv0+'→'+inv10);
   return inv0+'→'+inv10;
 });
+
 
 // ---- report ----
 const pass=results.filter(r=>r[0]==='PASS').length, fail=results.length-pass;
