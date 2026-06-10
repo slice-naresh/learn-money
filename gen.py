@@ -700,5 +700,6 @@ out = (tpl
   .replace('/*FOOD_EN*/', food_en))
 out_path = os.path.join(BASE,'learn-money.html')
 open(out_path,'w',encoding='utf-8').write(out)
+open(os.path.join(BASE,'index.html'),'w',encoding='utf-8').write(out)   # GitHub Pages entry (root URL)
 print("products:", len(P))
-print("written", out_path)
+print("written", out_path, "+ index.html")
