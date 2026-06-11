@@ -613,6 +613,26 @@ check('Goals: stress-test bridges plan into the simulator', ()=>{
   win.resetAll();
   return 'sip '+sa+'/mo across '+active+' products';
 });
+check('Choose: product "full explanation" link opens the lesson', ()=>{
+  win.resetAll(); win.showSec('choose');
+  const tog=$('[data-elitog="ppf"]'); if(!tog) throw new Error('no explainer toggle');
+  click(tog);
+  const more=$('[data-eli-wrap="ppf"] .eli-more'); if(!more) throw new Error('no full-explanation link');
+  click(more);
+  if(activeSec()!=='sec-invest') throw new Error('did not open lesson: '+activeSec());
+  return 'explainer → full lesson';
+});
+check('Results: income & regime toggle reveals controls + live slab note', ()=>{
+  win.resetAll(); win.showSec('choose'); const fd=$('[data-tgl="fd"]'); if(!fd.classList.contains('on'))click(fd); setInput($('[data-pct="fd"]'),'100');
+  win.showSec('results'); win.render();
+  win.toggleResSection('inc');
+  if($('#incPanel').style.display==='none') throw new Error('income panel did not open');
+  if(!$('#inc')) throw new Error('income slider missing');
+  if(!$('#regChips [data-r="old"]')) throw new Error('regime chips missing from results');
+  const note=$('#incTaxNote').textContent;
+  if(!/slab/i.test(note)||!/12\.5%/.test(note)) throw new Error('slab/LTCG note missing: '+note.slice(0,60));
+  return 'income+regime on results, slab note live';
+});
 check('Goals: odds-help expander toggles', ()=>{
   win.showSec('goals'); const box=$('#oddsHelp'); if(!box) throw new Error('no odds-help box');
   if(box.style.display!=='none') throw new Error('expander not collapsed by default');

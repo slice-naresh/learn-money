@@ -78,6 +78,9 @@
   .eli5{margin-top:8px;display:none}.eli5.show{display:block}
   .behav{margin:0 0 10px 49px;background:#eef3f0;border:1px solid var(--line);border-left:3px solid var(--ink-soft);border-radius:11px;padding:11px 14px;font-size:.92rem;color:var(--ink);line-height:1.5;display:flex;gap:9px;align-items:flex-start}
   .behav .bi{font-size:1.1rem;line-height:1.3;flex-shrink:0}
+  .eli-more{display:inline-block;margin:10px 0 2px 49px;font-weight:700;font-size:.85rem;color:var(--green-d);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .eli-more:hover{color:var(--green)}
+  @media(max-width:560px){.eli-more{margin-left:0}}
   .behav .bcap{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);font-weight:700;display:block;margin-bottom:2px}
   .etext{font-size:.92rem;color:var(--ink-soft);line-height:1.55;margin-left:49px}
   .ex{font-size:.9rem;color:var(--ink);background:#f3efe7;border:1px solid var(--line);border-left:3px solid var(--green);border-radius:8px;padding:10px 12px;margin:8px 0 0 49px;line-height:1.55}
@@ -882,6 +885,7 @@
       <div id="growthCap" style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5;display:none"><b>Reading it:</b> left→right is <b>years</b> (0 → your horizon); height is <b>total value (₹)</b>. Purple is your portfolio growing; the gold dashed line is where you'd be if money only kept pace with inflation.</div>
       <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
 
+      <div class="lsech" style="margin:20px 0 2px;display:flex;align-items:center;gap:8px">🔎 Dig deeper <span style="font-weight:400;font-size:.82rem;color:var(--ink-soft)">— tap any card to expand</span></div>
       <!-- OPTIONAL: how the user's income bracket changes the tax (the slab vs LTCG lesson) -->
       <button class="restog" id="incTog" onclick="toggleResSection('inc')" aria-expanded="false"><span class="rt-ic">🧾</span><span class="rt-tx"><b>How your income &amp; tax regime change what you keep</b><small>See your slab, switch new vs old regime</small></span></button>
       <div id="incPanel" style="display:none">
@@ -1442,7 +1446,7 @@ function rowHTML(p,st){
     <div class="pcwrap"><input type="range" min="0" max="100" value="${st.pct}" data-pct="${p.id}" aria-label="Allocation percent" ${st.active?'':'disabled'}><span class="pc" data-pcv="${p.id}">${st.pct}%</span></div></div>
     <div class="sub ${st.active?'':'off'}" data-sub="${p.id}"><div class="mini"><label data-rl></label><input type="number" min="0" max="40" step="0.1" value="${st.ret}" data-rt="${p.id}" aria-label="Return percent" onblur="clampNum(this)"></div>
     <div class="elitog" data-elitog="${p.id}"></div></div>
-    <div class="eli5" data-eli-wrap="${p.id}"><div class="behav"><span class="bi" data-bi="${p.anim}"></span><span><span class="bcap" data-behavcap></span><span data-behav="${p.anim}"></span></span></div><div class="etext" data-eli="${p.id}"></div><div class="ex" data-ex="${p.id}"></div></div></div>`;
+    <div class="eli5" data-eli-wrap="${p.id}"><div class="behav"><span class="bi" data-bi="${p.anim}"></span><span><span class="bcap" data-behavcap></span><span data-behav="${p.anim}"></span></span></div><div class="etext" data-eli="${p.id}"></div><div class="ex" data-ex="${p.id}"></div><a class="eli-more" role="button" tabindex="0" onclick="openLesson('${p.id}')" onkeydown="if(event.key==='Enter')openLesson('${p.id}')">📖 Read the full explanation →</a></div></div>`;
 }
 function distributeEqually(){
   const act=PRODUCTS.filter(p=>PS[p.id].active); const n=act.length; if(!n) return;
