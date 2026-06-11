@@ -831,7 +831,6 @@
         <div class="col amtgrp" id="grpSip"><label class="l" for="sipAmt" data-i="sipL"></label><input type="number" id="sipAmt" value="10000" min="500" max="10000000" step="500" aria-label="Monthly investment in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="sipAmt"></div></div>
         <div class="col amtgrp" id="grpSwpC"><label class="l" for="swpCorpus" data-i="swpCL"></label><input type="number" id="swpCorpus" value="2000000" min="10000" max="10000000000" step="50000" aria-label="Starting corpus in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpCorpus"></div></div>
         <div class="col amtgrp" id="grpSwpW"><label class="l" for="swpWd" data-i="swpWL"></label><input type="number" id="swpWd" value="15000" min="500" max="100000000" step="500" aria-label="Monthly withdrawal in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpWd"></div></div>
-        <div class="col"><label class="l" for="inc"><span data-i="incL"></span> <span class="val"><span id="incV"></span></span></label><input type="range" id="inc" min="0" max="1000" step="1" value="0" aria-label="Your annual income" oninput="render()"></div>
       </div>
       <div class="row" style="margin-top:14px">
         <div class="col"><label class="l" for="planYears">Invest for (years)</label><input type="number" id="planYears" value="10" min="1" max="40" step="1" aria-label="Years to invest" oninput="setPlanYears()" onblur="clampNum(this)"></div>
@@ -879,6 +878,16 @@
       <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
       <div id="growthCap" style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5;display:none"><b>Reading it:</b> left→right is <b>years</b> (0 → your horizon); height is <b>total value (₹)</b>. Purple is your portfolio growing; the gold dashed line is where you'd be if money only kept pace with inflation.</div>
       <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
+
+      <!-- OPTIONAL: how the user's income bracket changes the tax (the slab vs LTCG lesson) -->
+      <button class="lr-break-tog restog" id="incTog" onclick="toggleResSection('inc')" aria-expanded="false" role="button" tabindex="0">▸ 🧾 How your income changes the tax</button>
+      <div id="incPanel" style="display:none">
+        <div class="lens" style="margin-top:10px">
+          <label class="l" for="inc"><span data-i="incL"></span> <span class="val"><span id="incV"></span></span></label>
+          <input type="range" id="inc" min="0" max="1000" step="1" value="0" aria-label="Your annual income" oninput="render()">
+          <div class="marg" id="incTaxNote" style="margin-top:10px;border-color:#cdbcf5;background:#f3eeff"></div>
+        </div>
+      </div>
 
       <!-- OPTIONAL: inflation horizon + exit-early what-ifs (collapsed) -->
       <button class="lr-break-tog restog" id="whatifTog" onclick="toggleResSection('whatif')" aria-expanded="false" role="button" tabindex="0">▸ Play with it — inflation horizon &amp; exit early</button>
@@ -1333,6 +1342,14 @@ function render(){
         +r("Worth in today's ₹ (after inflation)", rupee(Math.round(realKeep)), 'soft')
         +'</div>';
     } else rt.innerHTML='<div class="ibrk" style="color:var(--ink-soft)">Pick at least one product (totalling 100%) to see the result.</div>'; } }
+  // income → tax bracket lesson (slab-taxed picks vs flat-LTCG)
+  { const itn=document.getElementById('incTaxNote');
+    if(itn){ const mr=Math.round(marginalRate(INCOME)*100);
+      const slab=rows.filter(r=>r.p.bucket==='slab').map(r=>S().names[r.p.id]);
+      itn.innerHTML=`At about <b>${fmtShort(INCOME)}</b>/yr you're in the <b>${mr}% tax slab</b>.<br>`
+        +`<span style="color:var(--ink-soft)">Returns from <b>FD, debt &amp; savings-type</b> picks are taxed at your slab (<b>${mr}%</b>)`
+        +`${slab.length?` — here that's <b>${slab.join(', ')}</b>`:''}. Equity &amp; most funds pay a flat <b>12.5%</b> (LTCG) <b>no matter your income</b>. Drag your income above to watch the tax — and what you keep — change.</span>`;
+    } }
   const base=Math.max(grossTotal,1);
   const nW=Math.max(0,tNet)/base*100,cW=tChg/base*100,tW=tTax/base*100,pW=tPen/base*100;
   const sN=document.getElementById('segNet'),sC=document.getElementById('segChg'),sT=document.getElementById('segTax'),sP=document.getElementById('segPen');
@@ -2036,10 +2053,12 @@ function drawGoalChart(path,target,yrs){
   ctx.textAlign='right';ctx.fillText('Yr '+yrs,w-mR,h-6);
 }
 function toggleResSection(which){
-  const P={whatif:'whatifPanel',bdown:'bdownPanel'}, T={whatif:'whatifTog',bdown:'bdownTog'};
+  const P={inc:'incPanel',whatif:'whatifPanel',bdown:'bdownPanel'}, T={inc:'incTog',whatif:'whatifTog',bdown:'bdownTog'};
   const p=document.getElementById(P[which]), t=document.getElementById(T[which]); if(!p||!t)return;
   const open=p.style.display!=='none'; p.style.display=open?'none':'block';
-  t.setAttribute('aria-expanded',String(!open)); t.textContent=(open?'▸':'▾')+t.textContent.slice(1);
+  if(!open){ p.classList.add('in'); p.querySelectorAll('.reveal').forEach(e=>e.classList.add('in')); }  // scroll-reveal can't fire inside a hidden panel
+  t.setAttribute('aria-expanded',String(!open));
+  t.textContent=(open?'▸ ':'▾ ')+t.textContent.replace(/^[▸▾]\s*/,'');   // emoji-safe arrow swap
 }
 function toggleOddsHelp(){ const b=document.getElementById('oddsHelp'), t=document.getElementById('oddsHelpTog'); if(!b||!t)return;
   const open=b.style.display!=='none'; b.style.display=open?'none':'block'; t.setAttribute('aria-expanded',String(!open));
