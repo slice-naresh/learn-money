@@ -541,6 +541,8 @@ LESSON = {
 # Tap-to-define glossary (English, ~12-yo plain). First occurrence of each term in a
 # lesson/card gets a dotted underline; tapping reveals the definition inline.
 GLOSS = {
+ "NPS":"National Pension System — a government retirement account you pay into while working and draw from after 60",
+ "EPF":"Employees' Provident Fund — retirement savings cut from your salary each month, matched by your employer",
  "NAV":"the price of one unit of a mutual fund, updated once a day",
  "demat account":"an online locker that holds your shares and fund units — like a bank account for investments",
  "demat":"an online locker that holds your shares and fund units",

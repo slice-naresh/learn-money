@@ -13,7 +13,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>/*FONTS_CSS*/</style>
 <style>
-  :root{--paper:#f3f4f3;--paper-2:#e9ebe9;--ink:#0a0f0c;--ink-soft:#6b746e;--green:#7c4dff;--green-d:#5b2ee6;--amber:#ff9f1c;--amber-l:#ffbf57;--red:#ff463c;--violet:#8a63ff;--line:#e6e8e6;--card:#ffffff;--display:"Space Grotesk",sans-serif;--body:"Outfit",sans-serif;--spring:cubic-bezier(.34,1.56,.64,1);}
+  :root{--paper:#f3f4f3;--paper-2:#e9ebe9;--ink:#0a0f0c;--ink-soft:#5b625d;--green:#7c4dff;--green-d:#5b2ee6;--amber:#ff9f1c;--amber-l:#ffbf57;--red:#ff463c;--violet:#8a63ff;--line:#e6e8e6;--card:#ffffff;--display:"Space Grotesk",sans-serif;--body:"Outfit",sans-serif;--spring:cubic-bezier(.34,1.56,.64,1);}
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -804,6 +804,7 @@
 
   <section id="sec-how" class="sec">
     <div class="card">
+      <div class="marg" id="howCtx" style="display:none;margin:0 0 14px;border-color:#cdbcf5;background:#f3eeff;color:var(--green-d)"></div>
       <h2 data-i="s1h"></h2><div class="hint" data-i="s1hint"></div>
       <label class="l" data-i="modeL"></label>
       <div class="chips" id="modeChips"><div class="chip on" data-m="lumpsum" data-i="mLump"></div><div class="chip" data-m="sip" data-i="mSip"></div><div class="chip" data-m="swp" data-i="mSwp"></div></div>
@@ -948,9 +949,9 @@ const STR={
   tryH:"Try the simulator", tryP:"Pick how you'd invest, choose products, and see what you keep after tax, charges and inflation.", tryKick:"Where would you like to start?", libAll:"All", backHome:"Back",
   paths:[
    {ic:'🌧️',t:'What doing nothing costs',d:'See how inflation quietly shrinks money left lying around as cash.',sec:'inflation'},
-   {ic:'💰',t:'Invest a lump sum',d:'Put a one-time amount to work and watch it compound over the years.',sec:'how',mode:'lumpsum'},
-   {ic:'📅',t:'Start a monthly SIP',d:'Build wealth with small, steady investments every month.',sec:'how',mode:'sip'},
-   {ic:'🏧',t:'Make your money pay you',d:'Turn a corpus into a steady monthly income with an SWP.',sec:'how',mode:'swp'},
+   {ic:'💰',t:'Invest a lump sum',d:'Have a one-time amount (a bonus, a gift)? Watch it compound over the years.',sec:'how',mode:'lumpsum',ctx:'💰 Journey: <b>Invest a lump sum</b> — a one-time amount that grows.'},
+   {ic:'📅',t:'Start a monthly SIP',d:'Invest a small amount every month and let it build up.',sec:'how',mode:'sip',ctx:'📅 Journey: <b>Monthly SIP</b> — you put in a fixed amount every month.'},
+   {ic:'🏧',t:'Get a monthly income',d:'Already have savings? Withdraw a fixed amount every month and see how long it lasts (an SWP).',sec:'how',mode:'swp',ctx:'🏧 Journey: <b>Monthly income (SWP)</b> — your savings pay you a fixed amount each month; we check it doesn\'t run dry.'},
   ],
   infH:"Doing nothing has a cost", infHint:"Cash lying around doesn't grow — but prices keep rising, so every year your money quietly buys less. That's inflation, and it's why 'not investing' is also a choice.",
   infAmtL:"Money kept as cash (₹)", infRateL:"Inflation rate", infHorizonL:"Over how many years", infRbi:"The RBI tries to keep inflation near 4%, but everyday prices often rise faster.",
@@ -1356,7 +1357,7 @@ function renderInflation(){
 /* ===== PRODUCT LIST ===== */
 function rowHTML(p,st){
   return `<div class="prow" data-row="${p.id}" data-pcat="${p.cat}">
-    <div class="main"><div class="tgl ${st.active?'on':''}" data-tgl="${p.id}"></div><div class="ic">${p.icon}</div>
+    <div class="main"><div class="tgl ${st.active?'on':''}" data-tgl="${p.id}" aria-label="Include ${p.id} in your mix"></div><div class="ic">${p.icon}</div>
     <div class="nm"><span data-nm="${p.id}"></span><span class="bucket ${BCLS[p.bucket]}" data-bn="${p.bucket}"></span></div>
     <div class="pcwrap"><input type="range" min="0" max="100" value="${st.pct}" data-pct="${p.id}" aria-label="Allocation percent" ${st.active?'':'disabled'}><span class="pc" data-pcv="${p.id}">${st.pct}%</span></div></div>
     <div class="sub ${st.active?'':'off'}" data-sub="${p.id}"><div class="mini"><label data-rl></label><input type="number" min="0" max="40" step="0.1" value="${st.ret}" data-rt="${p.id}" aria-label="Return percent" onblur="clampNum(this)"></div>
@@ -1425,10 +1426,14 @@ function renderPaths(){
   const g=document.getElementById('pathgrid');g.innerHTML='';
   S().paths.forEach(p=>{const d=document.createElement('div');d.className='pathcard';
     d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
-    d.onclick=()=>goPath(p.sec,p.mode||null);g.appendChild(d);});
+    d.onclick=()=>goPath(p.sec,p.mode||null,p.ctx||null);g.appendChild(d);});
 }
-function goPath(sec,mode){
+function goPath(sec,mode,ctx){
   if(mode){document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===mode));setMode(mode);}
+  // all three investing journeys share ONE simulator — the banner says which journey
+  // you arrived from and that only the pre-selected mode below differs
+  const hc=document.getElementById('howCtx');
+  if(hc){ if(ctx){ hc.style.display='block'; hc.innerHTML=ctx+'<br><span style="font-weight:400;color:var(--ink-soft)">All three journeys use this same simulator — we\'ve pre-selected the right mode below. You can switch any time.</span>'; } else hc.style.display='none'; }
   showSec(sec);
 }
 function renderPresets(){
@@ -1999,6 +2004,7 @@ function applyLang(){
   const s=S();
   document.querySelectorAll('[data-i]').forEach(el=>{const k=el.dataset.i,v=s[k];if(k==='heroH')el.innerHTML=`${v[0]}<em>${v[1]}</em>${v[2]}`;else if(typeof v==='string')el.textContent=v;});
   document.querySelectorAll('[data-nm]').forEach(el=>el.textContent=s.names[el.dataset.nm]);
+  document.querySelectorAll('[data-tgl]').forEach(el=>el.setAttribute('aria-label','Include '+(s.names[el.dataset.tgl]||el.dataset.tgl)+' in your mix'));
   document.querySelectorAll('[data-bn]').forEach(el=>el.textContent=s.bnames[el.dataset.bn]);
   document.querySelectorAll('[data-eli]').forEach(el=>el.textContent=s.eli5[el.dataset.eli]);
   document.querySelectorAll('[data-behav]').forEach(el=>el.textContent=s.behav[el.dataset.behav]);
