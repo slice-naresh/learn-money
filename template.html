@@ -1268,29 +1268,45 @@ function render(){
 let gAnim;
 function drawChart(rows,A,maxY,investedTotal){
   const cv=document.getElementById('growth');const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
-  cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);const pad=8;
+  cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  const mL=46,mR=12,mT=10,mB=22, pw=w-mL-mR, ph=h-mT-mB;   // margins: left=₹ labels, bottom=year labels
   const series=[];let maxv=1;
   for(let y=0;y<=maxY;y++){let v=0;for(const{p,st} of rows){v+=pValueAt(p,st,A,y);}series.push(v);maxv=Math.max(maxv,v);}
   const inflEl=document.getElementById('infRate'), inflR=(inflEl?(+inflEl.value||0):5)/100;
   const showInf=(MODE!=='swp')&&investedTotal>0;
   let infSeries=null;
   if(showInf){infSeries=[];for(let y=0;y<=maxY;y++){const v=investedTotal*Math.pow(1+inflR,y);infSeries.push(v);maxv=Math.max(maxv,v);}}
+  const X=y=>mL+(y/maxY)*pw, Y=v=>mT+ph-(v/maxv)*ph;
   cancelAnimationFrame(gAnim);let t=noAnim()?1:0;
   function frame(){
     t=Math.min(1,t+0.05);ctx.clearRect(0,0,w,h);
-    const baseRef=(MODE==='swp')?A.swpC:investedTotal, baseY=h-pad-(baseRef/maxv)*(h-2*pad);
-    if(baseRef>0&&baseRef<=maxv){ctx.strokeStyle='#ddd2bd';ctx.setLineDash([5,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,baseY);ctx.lineTo(w-pad,baseY);ctx.stroke();ctx.setLineDash([]);}
+    ctx.font='10px Outfit, sans-serif';
+    // Y-axis ₹ gridlines (0 / mid / max)
+    ctx.textAlign='right';ctx.textBaseline='middle';
+    [0,maxv/2,maxv].forEach(v=>{const yy=Y(v);ctx.strokeStyle='#eceaf6';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(w-mR,yy);ctx.stroke();ctx.fillStyle='#9aa39d';ctx.fillText(fmtShort(v),mL-5,yy);});
+    // invested/corpus reference line + label
+    const baseRef=(MODE==='swp')?A.swpC:investedTotal;
+    if(baseRef>0&&baseRef<=maxv){const by=Y(baseRef);ctx.strokeStyle='#ddd2bd';ctx.setLineDash([5,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(mL,by);ctx.lineTo(w-mR,by);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle='#9a8a64';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.fillText((MODE==='swp'?'Start ':'Put in ')+fmtShort(baseRef),mL+3,Math.max(mT+9,by-4));ctx.textBaseline='middle';}
     const N=maxY*t, col=(MODE==='swp')?'#d98a1f':'#7c4dff';
-    ctx.beginPath();ctx.moveTo(pad,h-pad);
-    for(let y=0;y<=N;y+=0.2){const v=interp(series,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);ctx.lineTo(x,yy);}
-    ctx.lineTo(pad+(N/maxY)*(w-2*pad),h-pad);ctx.closePath();
+    ctx.beginPath();ctx.moveTo(X(0),mT+ph);
+    for(let y=0;y<=N;y+=0.2){ctx.lineTo(X(y),Y(interp(series,y)));}
+    ctx.lineTo(X(N),mT+ph);ctx.closePath();
     const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,col+'55');g.addColorStop(1,col+'08');ctx.fillStyle=g;ctx.fill();
     ctx.beginPath();
-    for(let y=0;y<=N;y+=0.2){const v=interp(series,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+    for(let y=0;y<=N;y+=0.2){const x=X(y),yy=Y(interp(series,y));y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
     ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
     if(showInf){ctx.beginPath();ctx.setLineDash([6,5]);
-      for(let y=0;y<=N;y+=0.2){const v=interp(infSeries,y),x=pad+(y/maxY)*(w-2*pad),yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+      for(let y=0;y<=N;y+=0.2){const x=X(y),yy=Y(interp(infSeries,y));y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
       ctx.strokeStyle='#c98a1f';ctx.lineWidth=2;ctx.stroke();ctx.setLineDash([]);}
+    if(t>=1){ // end-value marker once the animation settles
+      const fx=X(maxY),fy=Y(series[maxY]);ctx.fillStyle=col;ctx.beginPath();ctx.arc(fx,fy,3.5,0,7);ctx.fill();
+      ctx.fillStyle=(MODE==='swp')?'#9a6a17':'#5b2ee6';ctx.textAlign='right';ctx.textBaseline='alphabetic';ctx.fillText(fmtShort(series[maxY]),fx-7,fy<mT+16?fy+15:fy-7);}
+    // X-axis year labels
+    ctx.fillStyle='#6b746e';ctx.textBaseline='alphabetic';
+    ctx.textAlign='left';ctx.fillText('Now',mL,h-6);
+    if(maxY>=4){ctx.textAlign='center';ctx.fillText('Yr '+Math.round(maxY/2),mL+pw/2,h-6);}
+    ctx.textAlign='right';ctx.fillText('Yr '+maxY,w-mR,h-6);
     if(t<1)gAnim=requestAnimationFrame(frame);
   }
   frame();
@@ -1307,17 +1323,31 @@ function renderInflation(){
   document.getElementById('infResult').innerHTML=S().infResult(fmtIN(amt),fmtIN(Math.round(real)),fmtIN(Math.round(loss)),pct.toFixed(0),INF_H)+S().infSamosa(Math.round(fut));
   const cv=document.getElementById('infChart');const dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;
   cv.width=w*dpr;cv.height=h*dpr;const ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
-  const pad=10, maxv=Math.max(amt,1)*1.06, topY=h-pad-(amt/maxv)*(h-2*pad);
+  const mL=46,mR=12,mT=14,mB=22, pw=w-mL-mR, ph=h-mT-mB, maxv=Math.max(amt,1)*1.06;
+  const X=y=>mL+(y/INF_H)*pw, Y=v=>mT+ph-(v/maxv)*ph, topY=Y(amt);
   cancelAnimationFrame(infAnim);let t=noAnim()?1:0;
   function frame(){
-    t=Math.min(1,t+0.05);ctx.clearRect(0,0,w,h);const N=INF_H*t,lastX=pad+(N/INF_H)*(w-2*pad);
-    ctx.beginPath();ctx.moveTo(pad,topY);
-    for(let y=0;y<=N;y+=0.2){const v=amt/Math.pow(1+i,y);const x=pad+(y/INF_H)*(w-2*pad);const yy=h-pad-(v/maxv)*(h-2*pad);ctx.lineTo(x,yy);}
-    ctx.lineTo(lastX,topY);ctx.closePath();ctx.fillStyle='#d6513a22';ctx.fill();
-    ctx.strokeStyle='#b9ad95';ctx.setLineDash([6,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad,topY);ctx.lineTo(w-pad,topY);ctx.stroke();ctx.setLineDash([]);
+    t=Math.min(1,t+0.05);ctx.clearRect(0,0,w,h);const N=INF_H*t;
+    ctx.font='10px Outfit, sans-serif';
+    // Y-axis ₹ gridlines (0 / half / full amount)
+    ctx.textAlign='right';ctx.textBaseline='middle';
+    [0,amt/2,amt].forEach(v=>{const yy=Y(v);ctx.strokeStyle='#f0e9e2';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(w-mR,yy);ctx.stroke();ctx.fillStyle='#9aa39d';ctx.fillText(fmtShort(v),mL-5,yy);});
+    // gap between dashed line (rupees you hold) and red curve (what they buy)
+    ctx.beginPath();ctx.moveTo(X(0),topY);
+    for(let y=0;y<=N;y+=0.2){ctx.lineTo(X(y),Y(amt/Math.pow(1+i,y)));}
+    ctx.lineTo(X(N),topY);ctx.closePath();ctx.fillStyle='#d6513a22';ctx.fill();
+    ctx.strokeStyle='#b9ad95';ctx.setLineDash([6,5]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(mL,topY);ctx.lineTo(w-mR,topY);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#9a8a64';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.fillText('Rupees you hold',mL+3,Math.max(mT+9,topY-4));
     ctx.beginPath();
-    for(let y=0;y<=N;y+=0.2){const v=amt/Math.pow(1+i,y);const x=pad+(y/INF_H)*(w-2*pad);const yy=h-pad-(v/maxv)*(h-2*pad);y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
+    for(let y=0;y<=N;y+=0.2){const x=X(y),yy=Y(amt/Math.pow(1+i,y));y===0?ctx.moveTo(x,yy):ctx.lineTo(x,yy);}
     ctx.strokeStyle='#d6513a';ctx.lineWidth=2.5;ctx.stroke();
+    if(t>=1){const fy=Y(amt/Math.pow(1+i,INF_H));ctx.fillStyle='#d6513a';ctx.beginPath();ctx.arc(X(INF_H),fy,3.5,0,7);ctx.fill();
+      ctx.textAlign='right';ctx.fillText('Buys '+fmtShort(amt/Math.pow(1+i,INF_H)),X(INF_H)-4,fy+(fy<h-30?14:-7));}
+    // X-axis year labels
+    ctx.fillStyle='#6b746e';ctx.textBaseline='alphabetic';
+    ctx.textAlign='left';ctx.fillText('Now',mL,h-6);
+    ctx.textAlign='center';ctx.fillText('Yr '+Math.round(INF_H/2),mL+pw/2,h-6);
+    ctx.textAlign='right';ctx.fillText('Yr '+INF_H,w-mR,h-6);
     if(t<1)infAnim=requestAnimationFrame(frame);
   }
   frame();
