@@ -501,13 +501,13 @@
   .restog:hover::after{background-color:#e2d8fb}
   .restog.open::after{transform:rotate(0deg)}
   .restog.open{border-left-color:var(--green);background:#faf8ff}
-  /* periodic sheen sweep — same energy as the home Try-it / Goal tool cards */
+  /* sheen sweep on hover only (continuous loop on 3 stacked cards looked like the whole page shimmered) */
   .restog{overflow:hidden}
-  .restog::before{content:"";position:absolute;top:0;left:-65%;width:45%;height:100%;background:linear-gradient(100deg,transparent,#7c4dff26,transparent);transform:skewX(-18deg);animation:restogSheen 4.8s ease-in-out infinite;pointer-events:none;z-index:0}
+  .restog::before{content:"";position:absolute;top:0;left:-65%;width:45%;height:100%;background:linear-gradient(100deg,transparent,#7c4dff26,transparent);transform:skewX(-18deg);pointer-events:none;z-index:0}
   .restog .rt-ic,.restog .rt-tx{position:relative;z-index:1}
-  .restog:nth-of-type(2)::before{animation-delay:1.2s}
-  @keyframes restogSheen{0%{left:-65%}55%,100%{left:140%}}
-  @media(prefers-reduced-motion:reduce){.restog::before{animation:none;display:none}}
+  .restog:hover::before{animation:restogSheen .85s ease-out 1}
+  @keyframes restogSheen{0%{left:-65%}100%{left:140%}}
+  @media(prefers-reduced-motion:reduce){.restog::before{display:none}}
   .lr-break-tog:active{transform:scale(.96)}
   .lr-break{overflow:hidden;margin-top:10px;border-top:1px solid #ffffff1f;padding-top:10px}
   .lr-break .br{display:flex;justify-content:space-between;gap:14px;font-size:.86rem;padding:4px 0;color:#cfd6d1}
@@ -806,6 +806,8 @@
         <div class="lr-row"><span class="lr-cap">For ~90% confidence, save</span><span class="lr-val" id="goalSip90" style="font-size:1.15rem">₹0</span></div>
         <div class="lr-verdict" id="goalVerdict"></div>
       </div>
+      <div class="lsech" style="margin:18px 0 6px">🌧️ How inflation inflates your goal</div>
+      <div class="marg" id="goalInflBox" style="border-color:#cdbcf5;background:#f3eeff"></div>
       <div class="lsech" style="margin:18px 0 6px">Your odds, once returns wobble</div>
       <div class="marg" id="goalProbBox" style="border-color:#cdbcf5;background:#f3eeff"></div>
       <div class="marg" id="goalTaxNote" style="margin-top:10px;border-color:#f0c98a;background:#fdf6e8;color:#9a6a17">⚠️ These numbers are <b>before tax &amp; charges</b> — what you actually keep is lower. Press <b>Stress-test</b> to run this exact plan through the simulator with tax and charges included.</div>
@@ -2053,6 +2055,19 @@ function renderGoals(){
   GOAL_LAST={reqSip,yrs,stepPct:Math.round(step*100)};   // for the stress-test bridge
   animateNum(document.getElementById('goalFuture'),Math.round(future),rupee);
   animateNum(document.getElementById('goalSip'),Math.round(reqSip),rupee);
+  // detailed inflation breakdown — show the goal-cost inflation explicitly, not folded into one number
+  { const gib=document.getElementById('goalInflBox');
+    if(gib){ const factor=+(Math.pow(1+infl,yrs).toFixed(2)), extra=Math.max(0,future-amt);
+      const r=(c,v,cls,tot)=>`<div class="ir${tot?' tot':''}"><span>${c}</span><span class="rv ${cls||''}">${v}</span></div>`;
+      gib.innerHTML='<div class="ibrk">'
+        +r('Goal cost today', rupee(Math.round(amt)))
+        +r('Inflation assumed', (infl*100).toFixed(1)+'% / year')
+        +r('Over', yrs+' year'+(yrs>1?'s':''))
+        +r('Prices rise by', factor+'× <span class="rv soft">(₹100→₹'+Math.round(100*factor)+')</span>')
+        +r('Goal cost in '+yrs+'y', rupee(Math.round(future)), 'red', true)
+        +`<div class="note">Same goal, bigger price tag. Because things cost about <b>${(infl*100).toFixed(1)}%</b> more each year, your <b>${rupee(Math.round(amt))}</b> goal will actually cost <b>${rupee(Math.round(future))}</b> in ${yrs} years — that's <b>${rupee(Math.round(extra))}</b> extra you must save for, purely from inflation. That future figure is what every number below aims at.</div>`
+        +'</div>';
+    } }
   const prob=gProb(reqSip,ret,vol,yrs,have,step,future,1200), pc=Math.round(prob*100);
   const sip90=gSipForConfidence(future,ret,vol,yrs,have,step,0.9,reqSip);
   animateNum(document.getElementById('goalSip90'),Math.round(sip90),rupee);

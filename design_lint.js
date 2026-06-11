@@ -110,6 +110,28 @@ const px=s=>{const m=String(s).match(/rgba?\(([\d.]+), ?([\d.]+), ?([\d.]+)(?:, 
   });
   ck('All jargon on the page is covered by the glossary', jargonMiss.length===0, jargonMiss.join(', '));
 
+  // -------- 7) Collapsible result panels: opening reveals VISIBLE content (catch scroll-reveal stuck at opacity:0) --------
+  await page.setViewport({width:1120,height:900,deviceScaleFactor:1});
+  await page.goto(URL,{waitUntil:'networkidle0'});
+  await page.evaluate(()=>{var c=document.getElementById('coach');if(c)c.style.display='none';
+    setMode('lumpsum');showSec('choose');const t=document.querySelector('[data-tgl="index"]');if(t&&!t.classList.contains('on'))t.click();const s=document.querySelector('[data-pct="index"]');if(s){s.value=100;s.dispatchEvent(new Event('input',{bubbles:true}));}
+    showSec('results');render();});
+  const stuck=await page.evaluate(()=>{
+    const bad=[];
+    ['inc','whatif','bdown'].forEach(w=>{ toggleResSection(w);
+      const p=document.getElementById({inc:'incPanel',whatif:'whatifPanel',bdown:'bdownPanel'}[w]);
+      if(!p) {bad.push(w+':no panel');return;}
+      // any child with measurable size but opacity 0 = stuck reveal
+      p.querySelectorAll('*').forEach(el=>{ const r=el.getBoundingClientRect(); if(r.height>4 && +getComputedStyle(el).opacity===0) bad.push(w+':'+(el.className||el.tagName)); });
+    });
+    return [...new Set(bad)];
+  });
+  ck('Expanded panels show visible content (no stuck opacity:0)', stuck.length===0, stuck.slice(0,4).join(' | '));
+
+  // -------- 8) Every expandable toggle exposes aria-expanded --------
+  const noAria=await page.evaluate(()=>[...document.querySelectorAll('.restog,.lr-break-tog')].filter(b=>b.offsetParent!==null && !b.hasAttribute('aria-expanded')).map(b=>b.id||b.textContent.slice(0,20)));
+  ck('Expandable toggles expose aria-expanded', noAria.length===0, noAria.slice(0,4).join(' | '));
+
   await browser.close();
   const pass=results.filter(r=>r[0]==='PASS').length, fail=results.length-pass;
   console.log('\n========== DESIGN / USABILITY LINT ==========');
