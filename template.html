@@ -435,6 +435,12 @@
   .pathcard::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(120deg,transparent 30%,#7c4dff14 50%,transparent 70%);background-size:240% 100%;background-position:140% 0;transition:background-position .7s ease;pointer-events:none}
   .pathcard:hover{transform:translateY(-4px) scale(1.012)}
   .pathcard:hover::after{background-position:-40% 0}
+  /* Goal planner pillar — highlighted as an interactive tool (not just reading) */
+  .pathcard.pillar-goal{background:linear-gradient(135deg,#f4efff,#fdfcff);border:1.5px solid #c9b6f7;box-shadow:0 12px 30px -14px #7c4dff80}
+  .pathcard.pillar-goal .pic{background:var(--grad-purple);color:#fff;box-shadow:0 6px 16px -6px #7c4dffcc}
+  .pathcard.pillar-goal h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pathcard.pillar-goal .arr{color:var(--green-d)}
+  .pill-tag{font-family:var(--body);font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--grad-purple);border-radius:999px;padding:3px 9px;white-space:nowrap;box-shadow:0 3px 10px -3px #7c4dffcc}
 
   /* headline numbers gently pop when they settle */
   .hl-box{animation:none}
@@ -991,7 +997,7 @@ const STR={
   bnames:{slab:"Taxed at your slab",flat:"Flat 12.5% (LTCG)",exempt:"Tax-free",mixed:"Mixed",crypto:"Flat 30%"},
   yrsL:"Years", retL:"Return %", whatis:"what is this?",
   pcInv:"Put in", pcNet:"You keep", pcTax:"Tax", pcChg:"Charges", pcPen:"Early-exit penalty",
-  liveKeepL:"You keep", liveLostL:"Lost to tax, charges & penalties",
+  liveKeepL:"You keep", liveLostL:"Lost to tax + charges + penalty",
   names:/*NAMES_EN*/, eli5:/*ELI5_EN*/, examples:/*EX_EN*/, cats:/*CATS_EN*/, behav:/*BEHAV_EN*/, behavCap:"How it behaves", tips:/*TIPS_EN*/, lessons:/*LESSONS_EN*/, food:/*FOOD_EN*/,
   disc:"Educational simulation only — not investment or tax advice, and not a guarantee. Returns are illustrative defaults you can edit; real returns vary and carry risk. Tax buckets, SIP/SWP, the ₹1.25L equity exemption, 4% cess and 80C are applied in a simplified way (e.g. NPS gains shown tax-deferred; SWP taxes total growth). Tax reflects FY2026-27. Consult a qualified CA for real decisions."
  },
@@ -1434,9 +1440,10 @@ function resetAll(){
 function renderPillars(){
   const g=document.getElementById('pillargrid'), sc=document.getElementById('simcard');
   if(g){ g.innerHTML='';
-    S().pillars.filter(p=>p.key!=='tryit').forEach(p=>{const d=document.createElement('div');d.className='pathcard';
+    S().pillars.filter(p=>p.key!=='tryit').forEach(p=>{const d=document.createElement('div');d.className='pathcard'+(p.key==='goals'?' pillar-goal':'');
       d.dataset.key=p.key;
-      d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
+      const badge=p.key==='goals'?'<span class="pill-tag">Interactive ✦</span>':'';
+      d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}${badge}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
       d.onclick=()=>showSec(p.key);g.appendChild(d);});
   }
   if(sc){ sc.innerHTML=''; const t=S().pillars.find(p=>p.key==='tryit');
