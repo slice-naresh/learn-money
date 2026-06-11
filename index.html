@@ -489,21 +489,21 @@
   .lr-break-tog:hover{background:#ffffff24}
   .hl-hero{text-align:center;margin:10px 0 2px}
   .hl-hero .hl-num{font-size:clamp(2rem,6.5vw,3.1rem)}
-  /* purple gradient tool buttons, like the home Try-it / Goal cards */
-  .restog{display:flex;align-items:center;gap:13px;width:100%;margin-top:12px;background:linear-gradient(135deg,#7c4dff,#5b2ee6);border:none;border-radius:16px;padding:16px 18px;cursor:pointer;font-family:var(--body);color:#fff;text-align:left;box-shadow:0 12px 30px -12px #7c4dff8c;position:relative;overflow:hidden;transition:transform .14s var(--spring),box-shadow .2s}
-  .restog:hover{transform:translateY(-2px);box-shadow:0 18px 40px -14px #7c4dffb3}
+  /* subtle soft-lavender tool buttons */
+  .restog{display:flex;align-items:center;gap:13px;width:100%;margin-top:12px;background:#f5f2fd;border:1px solid #e7e1f7;border-radius:16px;padding:15px 18px;cursor:pointer;font-family:var(--body);color:var(--ink);text-align:left;box-shadow:0 2px 10px -5px #1a103a1a;position:relative;overflow:hidden;transition:transform .14s var(--spring),box-shadow .2s,border-color .2s,background .2s}
+  .restog:hover{transform:translateY(-1px);box-shadow:0 10px 24px -12px #7c4dff5c;border-color:#cdbcf5;background:#f0ecfb}
   .restog:active{transform:scale(.99)}
-  .restog .rt-ic{font-size:1.45rem;flex-shrink:0;filter:drop-shadow(0 1px 2px #0003);position:relative;z-index:1}
+  .restog .rt-ic{font-size:1.4rem;flex-shrink:0;position:relative;z-index:1}
   .restog .rt-tx{display:flex;flex-direction:column;gap:2px;min-width:0;position:relative;z-index:1}
-  .restog .rt-tx b{font-family:var(--display);font-weight:700;font-size:1rem;line-height:1.25;color:#fff}
-  .restog .rt-tx small{font-weight:400;font-size:.8rem;color:#e9e3ff;line-height:1.35}
-  .restog::after{content:'';flex-shrink:0;margin-left:auto;position:relative;z-index:1;width:30px;height:30px;border-radius:50%;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%235b2ee6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/15px no-repeat;transform:rotate(-90deg);transition:transform .22s var(--spring)}
+  .restog .rt-tx b{font-family:var(--display);font-weight:700;font-size:.98rem;line-height:1.25;color:var(--ink)}
+  .restog .rt-tx small{font-weight:400;font-size:.8rem;color:var(--ink-soft);line-height:1.35}
+  .restog::after{content:'';flex-shrink:0;margin-left:auto;position:relative;z-index:1;width:28px;height:28px;border-radius:50%;background:#ebe5fa url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%235b2ee6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat;transform:rotate(-90deg);transition:transform .22s var(--spring)}
   .restog.open::after{transform:rotate(0deg)}
-  .restog.open{box-shadow:0 6px 18px -10px #5b2ee6,inset 0 0 0 100px #00000014}
-  /* continuous sheen sweep — same energy as the home tool cards (staggered so they don't pulse in unison) */
-  .restog::before{content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;background:linear-gradient(100deg,transparent,#ffffff55,transparent);transform:skewX(-18deg);pointer-events:none;z-index:0;animation:restogSheen 4.5s ease-in-out infinite}
-  #whatifTog::before{animation-delay:1.5s}
-  #bdownTog::before{animation-delay:3s}
+  .restog.open{border-color:#cdbcf5;background:#efeafb}
+  /* faint sheen sweep — staggered, very subtle */
+  .restog::before{content:"";position:absolute;top:0;left:-60%;width:45%;height:100%;background:linear-gradient(100deg,transparent,#7c4dff1a,transparent);transform:skewX(-18deg);pointer-events:none;z-index:0;animation:restogSheen 5s ease-in-out infinite}
+  #whatifTog::before{animation-delay:1.6s}
+  #bdownTog::before{animation-delay:3.2s}
   @keyframes restogSheen{0%{left:-60%}55%,100%{left:135%}}
   @media(prefers-reduced-motion:reduce){.restog::before{display:none}}
   .lr-break-tog:active{transform:scale(.96)}
