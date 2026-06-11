@@ -721,6 +721,43 @@
     </div>
   </section>
 
+  <section id="sec-goals" class="sec">
+    <div class="hero"><h1 style="font-size:clamp(1.6rem,4.4vw,2.4rem)">🎯 Goal planner</h1><p>Pick a goal and a timeline. We'll show the monthly SIP it takes — and, because real returns wobble, your actual <b>odds</b> of getting there. All math runs in your browser on illustrative assumptions; not advice.</p></div>
+    <div class="card">
+      <div class="lsech" style="margin-bottom:8px">Your goal</div>
+      <div class="chips" id="goalPreset">
+        <div class="chip on" data-gp="retire">🏖️ Retirement</div>
+        <div class="chip" data-gp="home">🏠 Home</div>
+        <div class="chip" data-gp="edu">🎓 Education</div>
+        <div class="chip" data-gp="car">🚗 Car</div>
+        <div class="chip" data-gp="custom">✏️ Custom</div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="col"><label class="l" for="goalAmt">Goal cost <span style="font-weight:400;color:var(--ink-soft)">(in today's ₹)</span></label><input type="number" id="goalAmt" value="20000000" min="10000" max="1000000000" step="50000" aria-label="Goal cost in today's rupees" oninput="renderGoals()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="goalAmt"></div></div>
+        <div class="col"><label class="l" for="goalYears">Years to goal</label><input type="number" id="goalYears" value="25" min="1" max="40" step="1" aria-label="Years to goal" oninput="renderGoals()" onblur="clampNum(this)"></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="col"><label class="l" for="goalHave">Already saved for it (₹)</label><input type="number" id="goalHave" value="0" min="0" max="1000000000" step="50000" aria-label="Amount already saved" oninput="renderGoals()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="goalHave"></div></div>
+        <div class="col"><label class="l" for="goalStep">Yearly SIP increase (%)</label><input type="number" id="goalStep" value="5" min="0" max="25" step="1" aria-label="Yearly SIP step-up percent" oninput="renderGoals()" onblur="clampNum(this)"></div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <div class="col"><label class="l" for="goalRet">Expected return <span class="val"><span id="goalRetV">11</span>%/yr</span></label><input type="range" id="goalRet" min="4" max="15" step="0.5" value="11" aria-label="Expected annual return percent" oninput="renderGoals()"><div id="goalVol" style="font-size:.78rem;color:var(--ink-soft);margin-top:6px"></div></div>
+        <div class="col"><label class="l" for="goalInfl">Inflation <span class="val"><span id="goalInflV">6.0</span>%/yr</span></label><input type="range" id="goalInfl" min="2" max="10" step="0.5" value="6" aria-label="Inflation percent" oninput="renderGoals()"></div>
+      </div>
+      <div class="liveres" style="position:static;margin-top:18px">
+        <div class="lr-row"><span class="lr-cap">Goal cost in <span id="goalYrsCap">25</span> yrs (after inflation)</span><span class="lr-val" id="goalFuture" style="font-size:1.15rem">₹0</span></div>
+        <div class="lr-row"><span class="lr-cap">Monthly SIP to reach it (on average)</span><span class="lr-val green" id="goalSip">₹0</span></div>
+        <div class="lr-row"><span class="lr-cap">For ~90% confidence, save</span><span class="lr-val" id="goalSip90" style="font-size:1.15rem">₹0</span></div>
+        <div class="lr-verdict" id="goalVerdict"></div>
+      </div>
+      <div class="lsech" style="margin:18px 0 6px">Your odds, once returns wobble</div>
+      <div class="marg" id="goalProbBox" style="border-color:#cdbcf5;background:#f3eeff"></div>
+      <canvas id="goalChart" height="200" style="margin-top:14px"></canvas>
+      <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span>Projected path (avg return)</span><span><span class="sw" style="background:#c98a1f"></span>Goal target</span></div>
+      <div class="taxdisc" style="margin-top:14px">⚠️ Educational only — returns are illustrative and volatile; probabilities come from a simple simulation on fixed assumptions, not a guarantee or advice.</div>
+    </div>
+  </section>
+
   <section id="sec-tryit" class="sec">
     <div class="hero"><h1 data-i="tryH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="tryP"></p></div>
     <div style="font-family:var(--display);font-weight:600;font-size:1.15rem;margin:24px 0 12px" data-i="tryKick"></div>
@@ -882,6 +919,7 @@ const STR={
    {key:'tax',ic:'🧾',t:'Tax & take-home',d:'Income tax slabs, deductions like 80C, and how each investment is taxed — what you actually keep.'},
    {key:'takehome',ic:'💼',t:'Salary calculator',d:'Enter your salary (CTC) and see your real monthly in-hand after tax, PF and more — old vs new regime.'},
    {key:'credit',ic:'💳',t:'Credit & borrowing',d:'How credit cards really work — interest, the minimum-due trap, and your credit score.'},
+   {key:'goals',ic:'🎯',t:'Goal planner',d:'Set a target and a timeline — see the monthly SIP it takes, and your real odds of reaching it once returns wobble.'},
    {key:'tryit',ic:'🧪',t:'Try it (Simulator)',d:'Want to see investing play out? Build a mock portfolio and watch it grow after tax and charges.'}
   ],
   invH:"How each investment works", invP:"Tap any product to learn what it is, how it behaves, and a real example. Browse all 32 — nothing is hidden behind a paywall or jargon.",
@@ -1697,6 +1735,74 @@ function updateBackBar(){
   const bb=document.getElementById('backbar');
   if(bb) bb.style.display=(CURRENT_SEC!=='home' && NAV_STACK.length)?'block':'none';
 }
+/* ===== GOAL PLANNER (all client-side: deterministic SIP + Monte-Carlo odds) ===== */
+const GOAL_PRESETS={retire:[20000000,25],home:[5000000,7],edu:[4000000,15],car:[1500000,4]};
+function volForReturn(r){ if(r<=0.06)return 0.03; if(r<=0.09)return 0.08; if(r<=0.12)return 0.14; return 0.19; }
+function gProjectPath(M,ret,yrs,have,step){ const i=Math.pow(1+ret,1/12)-1; let corpus=have,m=M; const path=[have];
+  for(let y=0;y<yrs;y++){ for(let k=0;k<12;k++) corpus=corpus*(1+i)+m; m*=(1+step); path.push(corpus); } return path; }
+function gFinal(M,ret,yrs,have,step){ const p=gProjectPath(M,ret,yrs,have,step); return p[p.length-1]; }
+function gRequiredSIP(target,ret,yrs,have,step){
+  if(gFinal(0,ret,yrs,have,step)>=target) return 0;
+  let lo=0,hi=Math.max(1000,target/12);
+  for(let it=0;it<60&&gFinal(hi,ret,yrs,have,step)<target;it++) hi*=2;
+  for(let it=0;it<60;it++){const mid=(lo+hi)/2; if(gFinal(mid,ret,yrs,have,step)>=target)hi=mid; else lo=mid;}
+  return hi; }
+function gNorm(mean,sd){ let u=Math.random()||1e-9,v=Math.random()||1e-9; return mean+sd*Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+function gSimFinal(M,ret,vol,yrs,have,step){ let corpus=have,m=M;
+  for(let y=0;y<yrs;y++){ let ar=gNorm(ret,vol); if(ar<-0.9)ar=-0.9; const i=Math.pow(1+ar,1/12)-1; for(let k=0;k<12;k++)corpus=corpus*(1+i)+m; m*=(1+step); } return corpus; }
+function gProb(M,ret,vol,yrs,have,step,target,N){ let s=0; for(let n=0;n<N;n++) if(gSimFinal(M,ret,vol,yrs,have,step)>=target)s++; return s/N; }
+function gSipForConfidence(target,ret,vol,yrs,have,step,want,baseSip){
+  let lo=baseSip, hi=Math.max(baseSip*1.2, baseSip*6+1000);
+  for(let it=0;it<8&&gProb(hi,ret,vol,yrs,have,step,target,400)<want;it++) hi*=1.6;
+  for(let it=0;it<10;it++){const mid=(lo+hi)/2; if(gProb(mid,ret,vol,yrs,have,step,target,400)>=want)hi=mid; else lo=mid;}
+  return hi; }
+function renderGoals(){
+  if(!document.getElementById('goalAmt')) return;
+  updateAmtTexts();
+  const g=id=>+document.getElementById(id).value||0;
+  const ret=g('goalRet')/100, infl=g('goalInfl')/100;
+  const yrs=Math.max(1,Math.min(40,Math.round(g('goalYears'))));
+  const amt=Math.max(0,g('goalAmt')), have=Math.max(0,g('goalHave')), step=Math.max(0,Math.min(25,g('goalStep')))/100;
+  document.getElementById('goalRetV').textContent=(ret*100)%1?(ret*100).toFixed(1):(ret*100).toFixed(0);
+  document.getElementById('goalInflV').textContent=(infl*100).toFixed(1);
+  document.getElementById('goalYrsCap').textContent=yrs;
+  const vol=volForReturn(ret);
+  document.getElementById('goalVol').textContent='Assumed yearly swing ≈ ±'+Math.round(vol*100)+'% — higher return means a bumpier ride.';
+  const future=amt*Math.pow(1+infl,yrs);
+  const reqSip=gRequiredSIP(future,ret,yrs,have,step);
+  animateNum(document.getElementById('goalFuture'),Math.round(future),rupee);
+  animateNum(document.getElementById('goalSip'),Math.round(reqSip),rupee);
+  const prob=gProb(reqSip,ret,vol,yrs,have,step,future,1200), pc=Math.round(prob*100);
+  const sip90=gSipForConfidence(future,ret,vol,yrs,have,step,0.9,reqSip);
+  animateNum(document.getElementById('goalSip90'),Math.round(sip90),rupee);
+  const fins=[]; for(let n=0;n<1200;n++) fins.push(gSimFinal(reqSip,ret,vol,yrs,have,step)); fins.sort((a,b)=>a-b);
+  const pct=q=>fins[Math.max(0,Math.min(fins.length-1,Math.floor(q*fins.length)))];
+  const p10=pct(0.1),p50=pct(0.5),p90=pct(0.9);
+  document.getElementById('goalProbBox').innerHTML=
+    `<b>${pc}% chance</b> of reaching <b>${rupee(Math.round(future))}</b> at <b>${rupee(Math.round(reqSip))}/mo</b>.<br>`
+   +`<span style="color:var(--ink-soft)">Returns vary, so the "required" SIP only gives roughly even odds — reaching about 90% confidence needs <b>${rupee(Math.round(sip90))}/mo</b>.</span>`
+   +`<div style="margin-top:8px;font-size:.85rem">Likely corpus in ${yrs} yrs: <b>${rupee(Math.round(p10))}</b> (unlucky) · <b>${rupee(Math.round(p50))}</b> (middle) · <b>${rupee(Math.round(p90))}</b> (lucky)</div>`;
+  document.getElementById('goalVerdict').innerHTML = pc>=85?'✅ Strong odds at this plan.':pc>=45?'⚖️ Near coin-flip at the average SIP — raise it for confidence.':'⚠️ Long odds — save more, add years, or trim the goal.';
+  drawGoalChart(gProjectPath(reqSip,ret,yrs,have,step),future,yrs);
+}
+function drawGoalChart(path,target,yrs){
+  const cv=document.getElementById('goalChart'); if(!cv)return; const w=cv.clientWidth,h=cv.clientHeight; if(!w)return;
+  const dpr=window.devicePixelRatio||1; cv.width=w*dpr;cv.height=h*dpr; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  const pad=8, maxv=Math.max(target,Math.max.apply(null,path))*1.05||1;
+  const X=y=>pad+(y/yrs)*(w-2*pad), Y=v=>h-pad-(v/maxv)*(h-2*pad);
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='#c98a1f';ctx.lineWidth=2;ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(pad,Y(target));ctx.lineTo(w-pad,Y(target));ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(X(0),Y(path[0])); for(let y=0;y<=yrs;y++)ctx.lineTo(X(y),Y(path[y])); ctx.lineTo(X(yrs),h-pad);ctx.lineTo(X(0),h-pad);ctx.closePath();
+  const grd=ctx.createLinearGradient(0,0,0,h);grd.addColorStop(0,'#7c4dff55');grd.addColorStop(1,'#7c4dff08');ctx.fillStyle=grd;ctx.fill();
+  ctx.beginPath();ctx.moveTo(X(0),Y(path[0])); for(let y=0;y<=yrs;y++)ctx.lineTo(X(y),Y(path[y])); ctx.strokeStyle='#7c4dff';ctx.lineWidth=2.5;ctx.stroke();
+}
+function wireGoals(){
+  document.querySelectorAll('#goalPreset .chip').forEach(c=>c.onclick=()=>{
+    document.querySelectorAll('#goalPreset .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+    const p=GOAL_PRESETS[c.dataset.gp]; if(p){document.getElementById('goalAmt').value=p[0];document.getElementById('goalYears').value=p[1];}
+    renderGoals();
+  });
+}
 function applySec(name){          // pure switch — no history mutation
   document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+name));
   CURRENT_SEC=name; updateBackBar(); updateStepper(name);
@@ -1704,6 +1810,7 @@ function applySec(name){          // pure switch — no history mutation
   if(name==='inflation') renderInflation();
   if(name==='credit') renderCredit();
   if(name==='takehome') renderTakehome();
+  if(name==='goals') renderGoals();
   window.scrollTo({top:0,behavior:'smooth'});
   observeReveals();   // animate in whatever the new section reveals
 }
@@ -1805,6 +1912,7 @@ buildList();
 buildLibrary();
 renderTax();
 renderCredit();
+wireGoals(); renderGoals();
 document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 setMode(MODE);
 applyLang();

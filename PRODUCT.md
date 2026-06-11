@@ -4,7 +4,7 @@ Living spec of **how the app behaves**. Every change request is checked against 
 
 - **App:** single-file generated web app (`gen.py` + `template.html` → `learn-money.html`), India / FY2026-27, English, ages 12–60.
 - **Status:** all figures illustrative — **pending CA sign-off**.
-- **Tests guard this spec:** `test_journeys.js` (66), `test_buckets.js` (11), `test_features.js` (45), `ui_test.js` (23), `qa_break.js` (24 adversarial). Build: `python3 gen.py`.
+- **Tests guard this spec:** `test_journeys.js` (63), `test_buckets.js` (11), `test_features.js` (51), `ui_test.js` (24), `qa_break.js` (24 adversarial). Build: `python3 gen.py`.
 
 ---
 
@@ -19,7 +19,7 @@ Living spec of **how the app behaves**. Every change request is checked against 
 
 > Rule: a behaviour is not "done" until this doc and the tests both reflect it.
 
-_Last updated: **removed the sticky top section-nav pill bar** — navigation now via home pillar cards + brand→Home + Back bar (NAV-1/NAV-2); guided tour re-pointed to the pillar cards. Prior: Choose screen now offers **"Next" (guided) + "Show results" (skip)** — walkthrough optional (SIM-4b/SIM-7); live panel gains an expandable **breakdown** (invested/charges/tax/penalty/net/today's-₹, SIM-4c). Prior: **privacy reassurance** (hero pill + footer note, PRIV-1) + **Cash-App-grade motion** (kinetic hero, scroll-reveal, tap ripple, scroll-depth header — MOTION-2), all reduced-motion-safe. Prior: **visual polish v2** — ambient aurora bg, glass chrome, gradient-clip headings, CTA sheen/glow, refined shadows & micro-interactions (THEME-2). Prior: results flow bar splits **tax and early-exit penalty into separate segments** (SIM-5); Today's-₹ lens now shows a **full inflation breakdown** table (SIM-5c); Results gated behind a **mandatory product-type walkthrough** (SIM-4b/SIM-7). Prior: ALL ad/promo surfaces removed — ad slots, `SLICE_ADS`, the "courtesy of slice" mention, and `sliceStoreUrl`/`sliceOpen` are gone (AD-1). No slice ads/attribution remain. Prior: brand wordmark lowercased to "slice" (BRAND-1), slice-purple theme (THEME-1), 32nd product Endowment + ULIP clarified (INV-4), salary calculator, global horizon + SIP step-up, Reset, guided tour._
+_Last updated: **Goal planner** pillar — target+timeline → required SIP + Monte-Carlo odds + 90%-confidence SIP, all client-side (GOAL-1). Prior: **removed the sticky top section-nav pill bar** — navigation now via home pillar cards + brand→Home + Back bar (NAV-1/NAV-2); guided tour re-pointed to the pillar cards. Prior: Choose screen now offers **"Next" (guided) + "Show results" (skip)** — walkthrough optional (SIM-4b/SIM-7); live panel gains an expandable **breakdown** (invested/charges/tax/penalty/net/today's-₹, SIM-4c). Prior: **privacy reassurance** (hero pill + footer note, PRIV-1) + **Cash-App-grade motion** (kinetic hero, scroll-reveal, tap ripple, scroll-depth header — MOTION-2), all reduced-motion-safe. Prior: **visual polish v2** — ambient aurora bg, glass chrome, gradient-clip headings, CTA sheen/glow, refined shadows & micro-interactions (THEME-2). Prior: results flow bar splits **tax and early-exit penalty into separate segments** (SIM-5); Today's-₹ lens now shows a **full inflation breakdown** table (SIM-5c); Results gated behind a **mandatory product-type walkthrough** (SIM-4b/SIM-7). Prior: ALL ad/promo surfaces removed — ad slots, `SLICE_ADS`, the "courtesy of slice" mention, and `sliceStoreUrl`/`sliceOpen` are gone (AD-1). No slice ads/attribution remain. Prior: brand wordmark lowercased to "slice" (BRAND-1), slice-purple theme (THEME-1), 32nd product Endowment + ULIP clarified (INV-4), salary calculator, global horizon + SIP step-up, Reset, guided tour._
 
 ---
 
@@ -44,7 +44,7 @@ _Last updated: **removed the sticky top section-nav pill bar** — navigation no
 - **I18N-1** English only; Hindi strings parked, language toggle hidden. (New strings need not be translated.)
 
 ## 2. Home + onboarding
-- **HOME-1** Home shows hero + **4 reading pillar cards** (Investing, Tax, Salary, Credit) + a distinct animated **simulator card** (`#simcard .simcta`) with a white **▶ Start the simulator** play button (pulsing badge, breathe).
+- **HOME-1** Home shows hero + **5 reading pillar cards** (Investing, Tax, Salary, Credit, Goal planner) + a distinct animated **simulator card** (`#simcard .simcta`) with a white **▶ Start the simulator** play button (pulsing badge, breathe).
 - **HOME-2** Each pillar card routes to its section; the sim card → Try it.
 - **COACH-1** First visit (no `lm_seen`) shows a welcome overlay with: **🚀 Show me around** (guided tour), **🧒 Start simple** (Kid mode + dismiss), **Skip**.
 - **COACH-2** Guided tour = 4 spotlight steps (sim card → Investing → Salary → Kid mode) with Next/Skip + step counter; ending sets `lm_seen`. Shows once; Reset re-arms it.
@@ -95,6 +95,7 @@ All fields **prefilled + editable**. Output = monthly **in-hand** + per-year + s
 - **SIM-6 (engine)** Per product over the global horizon: lumpsum compounds; SIP accrues monthly with **annual step-up**; SWP draws down (flags "ran dry"). Charges = expense ratio accrued monthly on actual balance. Tax by bucket: slab / LTCG 12.5% with **pooled ₹1.25L** equity exemption / tax-free / mixed / crypto 30%; +cess; surcharge (CG capped 15%). Exit-early adds a penalty + forfeits the tax perk.
 - **SIM-7 (validation)** "Show results" + stepper-Results are **disabled unless ≥1 product AND total = 100%**; allocation ≠100% shows a warning with "X% to go/over". *(Walkthrough is no longer part of the gate — see SIM-4b.)*
 - **SIM-8** Money inputs show a words helper ("₹5,00,000 · 5 lakh"); all number inputs **clamp to min/max on blur**; never produce NaN/Infinity.
+- **GOAL-1 (Goal planner)** 5th home pillar `goals`. Inputs (preset chips Retirement/Home/Education/Car/Custom + goal cost in today's ₹, years, already-saved, yearly SIP step-up, return & inflation sliders). Computes: **future cost** = `amt·(1+infl)^yrs`; **required monthly SIP** (binary-search over a deterministic monthly-compounding projection incl. step-up + existing corpus); **Monte-Carlo odds** (1200 sims, yearly normal-random returns via Box-Muller, volatility derived from the return assumption) → probability at the required SIP (~coin-flip by design) + the **SIP needed for ~90% confidence** + p10/p50/p90 corpus; a projected-path-vs-target chart. **100% client-side, no live data**; clearly disclaimed as educational, not advice. Engine fns (`gRequiredSIP/gFinal/gProb/gSipForConfidence/volForReturn`) are pure + unit-tested.
 
 ## 9. Invariants — must never break
 - **INV-A** No NaN/Infinity/undefined in any visible result, under any input (qa_break).

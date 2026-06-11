@@ -534,6 +534,40 @@ check('SIP step-up raises total invested', ()=>{
   return inv0+'→'+inv10;
 });
 
+check('Goals: future cost = today₹ × (1+infl)^yrs (renders)', ()=>{
+  win.showSec('goals');
+  setInput($('#goalAmt'),'1000000'); setInput($('#goalYears'),'10');
+  $('#goalInfl').value='6'; $('#goalInfl').dispatchEvent(new win.Event('input',{bubbles:true}));
+  const fut=num($('#goalFuture').textContent);
+  const exp=Math.round(1000000*Math.pow(1.06,10));            // ≈ 17,90,847
+  if(Math.abs(fut-exp)>exp*0.01) throw new Error('future cost off: got '+fut+' exp '+exp);
+  return '₹10L→'+fut+' in 10y';
+});
+check('Goals: required SIP grows it to the target (deterministic check)', ()=>{
+  const target=win.gFinal? null:null;
+  const sip=win.gRequiredSIP(5000000,0.11,15,0,0);
+  if(!(sip>0)) throw new Error('required SIP not positive');
+  const end=win.gFinal(sip,0.11,15,0,0);
+  if(Math.abs(end-5000000)>5000000*0.01) throw new Error('SIP does not reach target: '+Math.round(end));
+  // monotonic: bigger target → bigger SIP
+  if(!(win.gRequiredSIP(10000000,0.11,15,0,0) > sip)) throw new Error('SIP not monotonic in target');
+  return 'reqSIP ₹'+Math.round(sip)+'/mo';
+});
+check('Goals: Monte-Carlo prob in [0,100]; 90% SIP ≥ required SIP', ()=>{
+  const ret=0.11,vol=win.volForReturn(0.11),yrs=15,fut=win.gFinal? 5000000:5000000;
+  const req=win.gRequiredSIP(fut,ret,yrs,0,0);
+  const p=win.gProb(req,ret,vol,yrs,0,0,fut,500);
+  if(!(p>=0&&p<=1)) throw new Error('prob out of range: '+p);
+  const sip90=win.gSipForConfidence(fut,ret,vol,yrs,0,0,0.9,req);
+  if(!(sip90>=req)) throw new Error('90% SIP < required SIP');
+  return 'p≈'+Math.round(p*100)+'%, sip90≥req';
+});
+check('Goals: preset chip sets amount + years', ()=>{
+  win.showSec('goals'); click($('#goalPreset [data-gp="home"]'));
+  if(+$('#goalAmt').value!==5000000 || +$('#goalYears').value!==7) throw new Error('home preset not applied');
+  return 'home → ₹50L / 7y';
+});
+
 
 // ---- report ----
 const pass=results.filter(r=>r[0]==='PASS').length, fail=results.length-pass;

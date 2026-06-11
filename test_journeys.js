@@ -47,14 +47,14 @@ const activeSec = () => { const s=$$('.sec').find(x=>x.classList.contains('on'))
 // ===== Shell / IA =====
 check('Initial load (no errors at startup)', () => 'startup clean');
 check('Home is default section', () => { if(activeSec()!=='sec-home') throw new Error('active='+activeSec()); return 'home shown'; });
-check('Home renders 4 reading pillars + a distinct simulator card', () => {
-  const n=$$('#pillargrid .pathcard').length; if(n!==4) throw new Error('reading pillars='+n);
+check('Home renders 5 reading pillars + a distinct simulator card', () => {
+  const n=$$('#pillargrid .pathcard').length; if(n!==5) throw new Error('reading pillars='+n);
   if(!$('#simcard .simcta')) throw new Error('no unique simulator card');
-  return '4 pillars + sim CTA';
+  return '5 pillars + sim CTA';
 });
 
 // each reading pillar routes to its section
-const pillarSec = ['sec-invest','sec-tax','sec-takehome','sec-credit'];
+const pillarSec = ['sec-invest','sec-tax','sec-takehome','sec-credit','sec-goals'];
 $$('#pillargrid .pathcard').forEach((card,i)=>{
   check('Pillar card '+(i+1)+' navigates', ()=>{ click(card); const a=activeSec(); if(a!==pillarSec[i]) throw new Error('went to '+a+', expected '+pillarSec[i]); return '-> '+a; });
 });
@@ -383,7 +383,7 @@ check('Plain mode labels (no jargon-only chips)', ()=>{
 
 // ===== Language: English-only for now (toggle hidden in UI) =====
 check('Language toggle is hidden (English-only build)', ()=>{ const lang=$('.lang'); if(lang.style.display!=='none') throw new Error('lang toggle visible'); return 'hidden'; });
-check('Return to home keeps pillars + sim card', ()=>{ win.showSec('home'); const n=$$('#pillargrid .pathcard').length; if(n!==4||!$('#simcard .simcta')) throw new Error('pillars='+n); return '4 + sim'; });
+check('Return to home keeps pillars + sim card', ()=>{ win.showSec('home'); const n=$$('#pillargrid .pathcard').length; if(n!==5||!$('#simcard .simcta')) throw new Error('pillars='+n); return '5 + sim'; });
 
 // ---- report ----
 const pass=results.filter(r=>r[0]==='PASS').length, fail=results.length-pass;

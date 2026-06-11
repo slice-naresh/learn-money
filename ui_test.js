@@ -94,7 +94,7 @@ function ck(name,ok,note){ results.push([ok?'PASS':'FAIL',name,note||'']); }
   await new Promise(r=>setTimeout(r,300));
   const pillars = await page.evaluate(()=>document.querySelectorAll('#pillargrid .pathcard').length);
   const simCta = await page.evaluate(()=>!!document.querySelector('#simcard .simcta'));
-  ck('Home: 4 reading pillars + distinct simulator CTA', pillars===4 && simCta, pillars+' pillars, simCTA='+simCta);
+  ck('Home: 5 reading pillars + distinct simulator CTA', pillars===5 && simCta, pillars+' pillars, simCTA='+simCta);
   await page.screenshot({path:`${SHOT}/06-home-pillars-desktop.png`,fullPage:true});
   await page.evaluate(()=>{showSec('invest');document.querySelector('[data-lhead="ppf"]').click();});
   await new Promise(r=>setTimeout(r,300));
@@ -135,7 +135,7 @@ function ck(name,ok,note){ results.push([ok?'PASS':'FAIL',name,note||'']); }
   const overflow3 = await page.evaluate(()=>({sw:document.documentElement.scrollWidth, iw:window.innerWidth}));
   ck('No horizontal overflow on mobile (results)', overflow3.sw<=overflow3.iw+1, `scrollW ${overflow3.sw} vs ${overflow3.iw}`);
 
-  for(const s of ['invest','tax','takehome','credit','tryit']){
+  for(const s of ['invest','tax','takehome','credit','goals','tryit']){
     await page.evaluate(x=>showSec(x), s);
     await new Promise(r=>setTimeout(r,200));
     const o = await page.evaluate(()=>({sw:document.documentElement.scrollWidth, iw:window.innerWidth}));
