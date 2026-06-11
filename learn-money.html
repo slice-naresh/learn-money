@@ -23,7 +23,6 @@
   .brand{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
   .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px #7c4dff22}
   .head-sp{flex:1}
-  .sim-badge{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);border:1px solid #e6c98a;background:#fbf3df;padding:5px 11px;border-radius:999px;font-weight:600}
   .lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;font-weight:600;font-size:.85rem}
   .lang button{border:none;background:transparent;padding:6px 13px;cursor:pointer;font-family:var(--body);color:var(--ink-soft)}
   .lang button.on{background:var(--ink);color:var(--paper)}
@@ -118,7 +117,6 @@
   header{background:#f3f4f3e6}
   .brand{font-weight:700;letter-spacing:-.02em}
   .brand .dot{background:var(--green);box-shadow:0 0 0 4px #7c4dff22}
-  .sim-badge{background:#eafced;border-color:#bff0cd;color:var(--green-d)}
   .card{border:none;border-radius:26px;box-shadow:0 2px 14px #0a0f0c0a;padding:24px}
   .card h2{font-weight:700;letter-spacing:-.025em}
   .hero h1{font-weight:700;letter-spacing:-.04em}
@@ -296,7 +294,7 @@
   .kidtgl{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-family:var(--body);font-weight:600;font-size:.8rem;color:var(--ink-soft);cursor:pointer;white-space:nowrap;transition:transform .16s var(--spring),background .15s,color .15s}
   .kidtgl:active{transform:scale(.96)}
   .kidtgl.on{background:var(--green);color:#06120b;border-color:var(--green)}
-  @media(max-width:560px){ .sim-badge{display:none} .head-in{gap:7px;padding:11px 12px} .kidtgl{padding:6px 9px;font-size:.72rem} .brand{font-size:1.1rem} }
+  @media(max-width:560px){ .head-in{gap:7px;padding:11px 12px} .kidtgl{padding:6px 9px;font-size:.72rem} .brand{font-size:1.1rem} }
   .ibrk{font-size:.87rem}
   .ibrk .ih{font-weight:700;font-family:var(--display);margin-bottom:8px;display:flex;align-items:center;gap:6px}
   .ibrk .ir{display:flex;justify-content:space-between;gap:14px;padding:4px 0;border-bottom:1px dashed var(--line)}
@@ -476,8 +474,16 @@
   .lr-break-tog:hover{background:#ffffff24}
   .hl-hero{text-align:center;margin:10px 0 2px}
   .hl-hero .hl-num{font-size:clamp(2rem,6.5vw,3.1rem)}
-  .restog{display:block;width:100%;margin-top:14px;background:#efeaff;border:1px solid #cdbcf5;color:var(--green-d);text-align:left;font-size:.9rem}
-  .restog:hover{background:#e7dffb}
+  .restog{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;background:var(--card);border:1px solid #e6e3f5;border-radius:14px;padding:14px 16px;cursor:pointer;font-family:var(--body);color:var(--ink);text-align:left;box-shadow:0 2px 10px -4px #1a103a14;transition:box-shadow .18s,transform .12s,border-color .15s}
+  .restog:hover{box-shadow:0 10px 24px -10px #7c4dff5c;border-color:#cdbcf5;transform:translateY(-1px)}
+  .restog:active{transform:scale(.99)}
+  .restog .rt-ic{font-size:1.4rem;flex-shrink:0}
+  .restog .rt-tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .restog .rt-tx b{font-family:var(--display);font-weight:700;font-size:.95rem;line-height:1.25}
+  .restog .rt-tx small{font-weight:400;font-size:.78rem;color:var(--ink-soft);line-height:1.35}
+  .restog::after{content:'';flex-shrink:0;margin-left:auto;width:9px;height:9px;border-right:2.5px solid var(--green-d);border-bottom:2.5px solid var(--green-d);transform:rotate(-45deg);transition:transform .22s var(--spring)}
+  .restog.open::after{transform:rotate(45deg)}
+  .restog.open{border-color:#cdbcf5;background:#faf8ff}
   .lr-break-tog:active{transform:scale(.96)}
   .lr-break{overflow:hidden;margin-top:10px;border-top:1px solid #ffffff1f;padding-top:10px}
   .lr-break .br{display:flex;justify-content:space-between;gap:14px;font-size:.86rem;padding:4px 0;color:#cfd6d1}
@@ -877,7 +883,7 @@
       <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
 
       <!-- OPTIONAL: how the user's income bracket changes the tax (the slab vs LTCG lesson) -->
-      <button class="lr-break-tog restog" id="incTog" onclick="toggleResSection('inc')" aria-expanded="false" role="button" tabindex="0">▸ 🧾 How your income &amp; tax regime change what you keep</button>
+      <button class="restog" id="incTog" onclick="toggleResSection('inc')" aria-expanded="false"><span class="rt-ic">🧾</span><span class="rt-tx"><b>How your income &amp; tax regime change what you keep</b><small>See your slab, switch new vs old regime</small></span></button>
       <div id="incPanel" style="display:none">
         <div class="lens" style="margin-top:10px">
           <label class="l" for="inc"><span data-i="incL"></span> <span class="val"><span id="incV"></span></span></label>
@@ -891,7 +897,7 @@
       </div>
 
       <!-- OPTIONAL: inflation horizon + exit-early what-ifs (collapsed) -->
-      <button class="lr-break-tog restog" id="whatifTog" onclick="toggleResSection('whatif')" aria-expanded="false" role="button" tabindex="0">▸ Play with it — inflation horizon &amp; exit early</button>
+      <button class="restog" id="whatifTog" onclick="toggleResSection('whatif')" aria-expanded="false"><span class="rt-ic">🎛️</span><span class="rt-tx"><b>Play with it — inflation &amp; exit early</b><small>Adjust the inflation horizon, or exit a pick early</small></span></button>
       <div id="whatifPanel" style="display:none">
         <div class="lens" style="margin-top:10px">
           <div class="lens-h" data-i="lensH"></div>
@@ -908,7 +914,7 @@
       </div>
 
       <!-- OPTIONAL: full breakdown + per-product (collapsed) -->
-      <button class="lr-break-tog restog" id="bdownTog" onclick="toggleResSection('bdown')" aria-expanded="false" role="button" tabindex="0">▸ See the breakdown — where it goes, product by product</button>
+      <button class="restog" id="bdownTog" onclick="toggleResSection('bdown')" aria-expanded="false"><span class="rt-ic">📊</span><span class="rt-tx"><b>See the breakdown — product by product</b><small>Where every rupee goes, for each pick</small></span></button>
       <div id="bdownPanel" style="display:none">
         <div class="headline" style="margin-top:10px">
           <div class="hl-box"><div class="hl-cap" id="cap2"></div><div class="hl-num red" id="num2">₹0</div></div>
@@ -1032,7 +1038,7 @@ function setPlanYears(){ const e=document.getElementById('planYears'); PLAN_YEAR
 /* ===== I18N ===== */
 const STR={
  en:{
-  brand:"Learn Money", sim:"Simulation",
+  brand:"Learn Money",
   heroH:["Learn how money ","actually"," works"],
   heroP:"Investing, tax and credit — explained simply. Understand what each product really earns you after tax, charges and inflation, then try it yourself.",
   privacy:"🔒 Fully private — everything runs right here in your browser. No login, no tracking, and nothing is ever sent to a server. Hit ↺ Reset any time to wipe it all.",
@@ -1114,7 +1120,7 @@ const STR={
   disc:"Educational simulation only — not investment or tax advice, and not a guarantee. Returns are illustrative defaults you can edit; real returns vary and carry risk. Tax buckets, SIP/SWP, the ₹1.25L equity exemption, 4% cess and 80C are applied in a simplified way (e.g. NPS gains shown tax-deferred; SWP taxes total growth). Tax reflects FY2026-27. Consult a qualified CA for real decisions."
  },
  hi:{
-  brand:"Learn Money", sim:"सिम्युलेशन",
+  brand:"Learn Money",
   heroH:["देखिए आपका पैसा ","असल में"," कहाँ जाता है"],
   heroP:"खेल-खेल में निवेश सीखिए — चुनिए किसमें लगाना है, साल तय कीजिए, और पैसा बढ़ते देखिए — उस tax और charges के बाद जो tools छिपाते हैं।",
   privacy:"🔒 पूरी तरह निजी — सब कुछ आपके browser में ही चलता है। न login, न tracking, और कुछ भी server पर नहीं जाता। कभी भी ↺ Reset दबाकर सब मिटाएँ।",
@@ -1340,8 +1346,6 @@ function render(){
         +r(`Becomes after ${maxY} year${maxY>1?'s':''}`+(isSwp?' (income + pot left)':' (before tax)'), rupee(Math.round(becomesVal)))
         +r(`− Tax &amp; charges over ${maxY}y`, '−'+rupee(Math.round(costs)), 'red')
         +r('= You keep', rupee(Math.round(tNet)), 'green', true)
-        +r("What it can buy in today's money", rupee(Math.round(realKeep)), 'soft')
-        +`<div class="note" style="margin-top:6px">Prices rise over time, so that future amount buys less. In today's purchasing power it's like having <b>${rupee(Math.round(realKeep))}</b> now.</div>`
         +'</div>';
     } else rt.innerHTML='<div class="ibrk" style="color:var(--ink-soft)">Pick at least one product (totalling 100%) to see the result.</div>'; } }
   // income → tax bracket lesson (slab-taxed picks vs flat-LTCG)
@@ -2063,8 +2067,8 @@ function toggleResSection(which){
   const p=document.getElementById(P[which]), t=document.getElementById(T[which]); if(!p||!t)return;
   const open=p.style.display!=='none'; p.style.display=open?'none':'block';
   if(!open){ p.classList.add('in'); p.querySelectorAll('.reveal').forEach(e=>e.classList.add('in')); }  // scroll-reveal can't fire inside a hidden panel
+  t.classList.toggle('open',!open);
   t.setAttribute('aria-expanded',String(!open));
-  t.textContent=(open?'▸ ':'▾ ')+t.textContent.replace(/^[▸▾]\s*/,'');   // emoji-safe arrow swap
 }
 function toggleOddsHelp(){ const b=document.getElementById('oddsHelp'), t=document.getElementById('oddsHelpTog'); if(!b||!t)return;
   const open=b.style.display!=='none'; b.style.display=open?'none':'block'; t.setAttribute('aria-expanded',String(!open));
