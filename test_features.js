@@ -397,14 +397,13 @@ check('State saves to localStorage; reset wipes it', ()=>{
   if(o2.ps.fd && o2.ps.fd.active) throw new Error('reset did not clear saved portfolio');
   return 'saved, then reset-wiped';
 });
-check('loadState restores saved settings (kid + regime)', ()=>{
+check('loadState restores saved settings (regime); stale kid flag ignored', ()=>{
   win.localStorage.setItem('lm_state', JSON.stringify({ps:{},mode:'lumpsum',regime:'old',kid:true,exit:false,adj:false,adjYrs:0,infH:10}));
   win.loadState();
-  if(!doc.body.classList.contains('kid')) throw new Error('kid not restored');
   if(!$('#regChips [data-r="old"]').classList.contains('on')) throw new Error('regime not restored');
-  win.resetAll();   // cleanup (also turns kid off + clears storage)
-  if(doc.body.classList.contains('kid')) throw new Error('reset did not clear kid mode');
-  return 'restored kid+regime, reset cleaned';
+  if(doc.body.classList.contains('kid')) throw new Error('stale kid flag applied a removed mode');
+  win.resetAll();   // cleanup
+  return 'regime restored; old kid flag harmless';
 });
 
 // ---- 14) First-time coachmark ----

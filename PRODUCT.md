@@ -4,7 +4,7 @@ Living spec of **how the app behaves**. Every change request is checked against 
 
 - **App:** single-file generated web app (`gen.py` + `template.html` → `learn-money.html`), India / FY2026-27, English, ages 12–60.
 - **Status:** all figures illustrative — **pending CA sign-off**.
-- **Tests guard this spec:** `test_journeys.js` (63), `test_buckets.js` (11), `test_features.js` (51), `ui_test.js` (24), `qa_break.js` (24 adversarial). Build: `python3 gen.py`.
+- **Tests guard this spec:** `test_journeys.js` (62), `test_buckets.js` (11), `test_features.js` (53), `ui_test.js` (24), `qa_break.js` (19 adversarial). Build: `python3 gen.py`.
 
 ---
 
@@ -19,7 +19,7 @@ Living spec of **how the app behaves**. Every change request is checked against 
 
 > Rule: a behaviour is not "done" until this doc and the tests both reflect it.
 
-_Last updated: **Goal planner** pillar — target+timeline → required SIP + Monte-Carlo odds + 90%-confidence SIP, all client-side (GOAL-1). Prior: **removed the sticky top section-nav pill bar** — navigation now via home pillar cards + brand→Home + Back bar (NAV-1/NAV-2); guided tour re-pointed to the pillar cards. Prior: Choose screen now offers **"Next" (guided) + "Show results" (skip)** — walkthrough optional (SIM-4b/SIM-7); live panel gains an expandable **breakdown** (invested/charges/tax/penalty/net/today's-₹, SIM-4c). Prior: **privacy reassurance** (hero pill + footer note, PRIV-1) + **Cash-App-grade motion** (kinetic hero, scroll-reveal, tap ripple, scroll-depth header — MOTION-2), all reduced-motion-safe. Prior: **visual polish v2** — ambient aurora bg, glass chrome, gradient-clip headings, CTA sheen/glow, refined shadows & micro-interactions (THEME-2). Prior: results flow bar splits **tax and early-exit penalty into separate segments** (SIM-5); Today's-₹ lens now shows a **full inflation breakdown** table (SIM-5c); Results gated behind a **mandatory product-type walkthrough** (SIM-4b/SIM-7). Prior: ALL ad/promo surfaces removed — ad slots, `SLICE_ADS`, the "courtesy of slice" mention, and `sliceStoreUrl`/`sliceOpen` are gone (AD-1). No slice ads/attribution remain. Prior: brand wordmark lowercased to "slice" (BRAND-1), slice-purple theme (THEME-1), 32nd product Endowment + ULIP clarified (INV-4), salary calculator, global horizon + SIP step-up, Reset, guided tour._
+_Last updated: **Kid mode removed** (KID-0) — toggle, kid CSS/content, save flag and tour step deleted; coach + tour now point at the Goal planner; all lesson content always visible. Prior: **Goal planner** pillar — target+timeline → required SIP + Monte-Carlo odds + 90%-confidence SIP, all client-side (GOAL-1). Prior: **removed the sticky top section-nav pill bar** — navigation now via home pillar cards + brand→Home + Back bar (NAV-1/NAV-2); guided tour re-pointed to the pillar cards. Prior: Choose screen now offers **"Next" (guided) + "Show results" (skip)** — walkthrough optional (SIM-4b/SIM-7); live panel gains an expandable **breakdown** (invested/charges/tax/penalty/net/today's-₹, SIM-4c). Prior: **privacy reassurance** (hero pill + footer note, PRIV-1) + **Cash-App-grade motion** (kinetic hero, scroll-reveal, tap ripple, scroll-depth header — MOTION-2), all reduced-motion-safe. Prior: **visual polish v2** — ambient aurora bg, glass chrome, gradient-clip headings, CTA sheen/glow, refined shadows & micro-interactions (THEME-2). Prior: results flow bar splits **tax and early-exit penalty into separate segments** (SIM-5); Today's-₹ lens now shows a **full inflation breakdown** table (SIM-5c); Results gated behind a **mandatory product-type walkthrough** (SIM-4b/SIM-7). Prior: ALL ad/promo surfaces removed — ad slots, `SLICE_ADS`, the "courtesy of slice" mention, and `sliceStoreUrl`/`sliceOpen` are gone (AD-1). No slice ads/attribution remain. Prior: brand wordmark lowercased to "slice" (BRAND-1), slice-purple theme (THEME-1), 32nd product Endowment + ULIP clarified (INV-4), salary calculator, global horizon + SIP step-up, Reset, guided tour._
 
 ---
 
@@ -27,7 +27,7 @@ _Last updated: **Goal planner** pillar — target+timeline → required SIP + Mo
 - **NAV-1** **No top section-nav bar** (removed by design). Section navigation is via the **Home pillar cards** (Investing / Tax / Salary / Credit), the **Try-it simulator card**, the clickable **brand/logo → Home** (NAV-5), and the per-section **← Back** bar (NAV-3).
 - **NAV-2** `showSec(name)` switches sections (pushState/history-aware). Sim steps (`inflation/how/choose/results`) drive the **simsteps stepper** highlight.
 - **NAV-3** **History-aware back:** every non-home section shows a "← Back" bar that returns to the *previous* section (LIFO stack); browser/device Back also works (pushState/popstate). Back bar hidden on Home.
-- **NAV-4** Header has global **↺ Reset** and **🧒 Kid mode** toggles, visible from every flow. (Mobile <560px hides the "Simulation" badge to avoid overflow.)
+- **NAV-4** Header has a global **↺ Reset** toggle, visible from every flow. (Mobile <560px hides the "Simulation" badge to avoid overflow.)
 - **NAV-5** Clicking the **brand/logo** (top-left) returns to Home.
 - **GEN-1** No horizontal overflow at 390px on any section.
 - **AD-1 (no ads/attribution)** The app carries **no ads and no slice attribution**. Ad slots (bottom banner + side rails), `SLICE_ADS`, the "courtesy of slice" header mention, and `sliceStoreUrl`/`sliceOpen` have all been removed. No fixed bars / `body` bottom-padding remain.
@@ -39,15 +39,15 @@ _Last updated: **Goal planner** pillar — target+timeline → required SIP + Mo
 - **MOTION-1** All animations respect `prefers-reduced-motion` (charts, count-up, sim CTA, tour, etc. still to final frame).
 - **MOTION-2 (Cash-App-grade kinetics)** Kinetic hero (word rise-in on load + forever-shimmering gradient wordmark); **scroll-reveal** stagger via `IntersectionObserver` on `#simcard`, pillar cards, lesson rows, product cards, lenses, live readout (`.reveal`→`.in`, per-item `--rd` delay); **tap ripple** on all playful controls; sticky header gains depth on scroll (`header.scrolled`); pillar gradient-sweep + lift on hover. Fallbacks: no `IntersectionObserver` / reduced-motion → content shown immediately (never stuck hidden); a 1.5s safety pass reveals near-viewport leftovers. `observeReveals()` re-runs on every section switch.
 - **PRIV-1 (privacy)** App is a **single static file with no backend** — nothing is ever sent to a server, no login, no tracking. Stated to the user in two places: a **hero privacy pill** (`privacyShort`) and a **footer note** (`privacy`), both lowercase-brand-safe. The only persistence is **device-local autosave** (STATE-1); ↺ Reset wipes it. *(We deliberately do NOT claim "erased after session" — localStorage survives tab close; the copy says "runs in your browser / nothing sent to a server / Reset to wipe", which is accurate.)*
-- **STATE-1 (persistence)** Portfolio, mode, income/regime, amounts, lenses, plan-years, SIP step-up, and Kid mode **autosave to localStorage** (device-local only — see PRIV-1); restored on reload. Graceful if storage blocked (try/catch).
-- **STATE-2 (reset)** Global Reset → wipes saved state **and** `lm_seen`, clears Kid mode, returns to **Home**, re-shows the welcome.
+- **STATE-1 (persistence)** Portfolio, mode, income/regime, amounts, lenses, plan-years and SIP step-up **autosave to localStorage** (device-local only — see PRIV-1); restored on reload. Graceful if storage blocked (try/catch).
+- **STATE-2 (reset)** Global Reset → wipes saved state **and** `lm_seen`, returns to **Home**, re-shows the welcome.
 - **I18N-1** English only; Hindi strings parked, language toggle hidden. (New strings need not be translated.)
 
 ## 2. Home + onboarding
 - **HOME-1** Home shows hero + a **2-up "tools" grid** (`.toolgrid`) of the two **interactive tools side by side** — the **Simulator** (`#simcard .simcta`, ▶ Start the simulator) and the **Goal planner** (`#goalcard .simcta.simcta-alt`, ✦ Plan a goal) — then **4 reading pillar cards** (Investing, Tax, Salary, Credit). Tools stack on mobile (<760px). Goal is promoted up here (was buried as the last pillar) so people don't miss it.
 - **HOME-2** Each pillar card routes to its section; the sim card → Try it.
-- **COACH-1** First visit (no `lm_seen`) shows a welcome overlay with: **🚀 Show me around** (guided tour), **🧒 Start simple** (Kid mode + dismiss), **Skip**.
-- **COACH-2** Guided tour = 4 spotlight steps (sim card → Investing → Salary → Kid mode) with Next/Skip + step counter; ending sets `lm_seen`. Shows once; Reset re-arms it.
+- **COACH-1** First visit (no `lm_seen`) shows a welcome overlay with: **🚀 Show me around** (guided tour) and **Skip**; bullets mention topics, the simulator and the goal planner.
+- **COACH-2** Guided tour = 4 spotlight steps (sim card → Investing → Salary → Goal planner) with Next/Skip + step counter; ending sets `lm_seen`. Shows once; Reset re-arms it.
 
 ## 3. Investing library
 - **INV-1** Lists **all 32 products** as read-only lessons, grouped under 6 category headers; tab bar = **All + 6 filters**.
@@ -56,11 +56,8 @@ _Last updated: **Goal planner** pillar — target+timeline → required SIP + Mo
 - **GLOSS-1** Jargon terms (NAV, LTCG, EPF, 80C, APR, …) are auto-marked across lessons + Tax + Credit; tapping shows a plain inline definition; tapping again hides it.
 - **INV-4 (insurance products)** Catalog includes both insurance-as-investment types in Advanced: **ULIP** (market-linked, fund-choice, 5-yr lock, high charges) and **Endowment/money-back (LIC-style)** (traditional, guaranteed ~4–6%, long lock, 80C + 10(10D) tax-free). Both lessons make the "insurance + investing usually underperforms term + index" point. **Term insurance** is explained as pure protection (not a portfolio product).
 
-## 4. Kid mode
-- **KID-1** Header toggle adds `body.kid`; persists across navigation and reloads (STATE-1).
-- **KID-2** In Kid mode, lessons show only food analogy + behaviour + example (`.kidhide` sections hidden: tax/costs/liquidity/pros-cons/tax-link).
-- **KID-3** Tax & Credit pillars hide their detail cards and show one simple `.kidonly` card; Setup hides income/regime and shows a note. (Calculators stay.)
-- **KID-4** Reset turns Kid mode off (STATE-2).
+## 4. Kid mode — REMOVED
+- **KID-0** Kid mode was removed entirely (toggle, `body.kid` CSS, `.kidhide`/`.kidonly`/`.kidcard` content, save/load flag, tour step). Rationale: plain language + food analogies are already baked into every lesson for the 12–60 audience, so a separate mode was redundant surface. All content is now always visible. A stale `kid:true` in an old localStorage blob is ignored harmlessly.
 
 ## 5. Tax pillar
 - **TAX-1** Shows slab tables for **new vs old regime, rendered from the engine's own `REGIME_NEW`/`REGIME_OLD`** (so taught numbers match the simulator). 7 new bands, 4 old.
@@ -104,7 +101,6 @@ All fields **prefilled + editable**. Output = monthly **in-hand** + per-year + s
 - **INV-C** Results unreachable while invalid (SIM-7) via button, stepper, or programmatic gate.
 - **INV-D** Salary in-hand monotonic & bounded (SAL-6).
 - **INV-E** No mobile horizontal overflow (GEN-1).
-- **INV-F** Kid mode persists across flows and toggles cleanly (KID-1/4).
 - **INV-G** Reset = clean slate from anywhere (STATE-2).
 
 ---
@@ -116,7 +112,7 @@ All fields **prefilled + editable**. Output = monthly **in-hand** + per-year + s
 | Tax buckets / income-sensitivity | `test_buckets.js` |
 | Warnings, 80C, SWP-dry, reset, presets, equal-split, gating, lenses, persistence, coachmark, **salary**, horizon, step-up | `test_features.js` |
 | Real-Chrome render, fonts/colour, charts, mobile overflow (all sections), screenshots | `ui_test.js` |
-| Adversarial: hostile inputs, nav churn, kid mid-flow, **salary** bounds/monotonicity | `qa_break.js` |
+| Adversarial: hostile inputs, nav churn, **salary** bounds/monotonicity | `qa_break.js` |
 
 ## Change-request template
 ```

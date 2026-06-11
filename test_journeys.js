@@ -117,24 +117,16 @@ check('Equity lessons are deep (multi-section + pros/cons)', ()=>{
   return row.querySelectorAll('.lsec').length+' sections + pros/cons';
 });
 
-check('Kid mode: toggles, keeps food + example, marks grown-up sections hidden', ()=>{
+check('Kid mode fully removed (no toggle, no kid classes)', ()=>{
+  if($('#kidBtn')) throw new Error('kidBtn still in header');
+  if(typeof win.toggleKid==='function') throw new Error('toggleKid still defined');
+  if($('.kidonly')||$('.kidcard')) throw new Error('kid-only content still present');
+  if(doc.querySelector('.kidhide')) throw new Error('kidhide classes still in markup');
+  // all lesson content always visible
   win.showSec('invest'); click($('[data-lhead="index"]')); const row=$('[data-lrow="index"]');
-  win.toggleKid();
-  if(!doc.body.classList.contains('kid')) throw new Error('kid class not set');
-  if(!row.querySelector('.foodie')) throw new Error('food analogy gone in kid mode');
-  if(!row.querySelector('.lsec:not(.kidhide)')) throw new Error('example (kept section) missing');
-  if(!row.querySelector('.kidhide')) throw new Error('no grown-up sections to hide');
-  if($('#kidBtn').textContent.indexOf('ON')<0) throw new Error('toggle label not updated');
-  win.toggleKid(); if(doc.body.classList.contains('kid')) throw new Error('kid not toggled off');
-  return 'kid mode on/off';
-});
-check('Kid mode extends to Tax, Credit and Setup', ()=>{
-  win.toggleKid();
-  win.showSec('tax'); if(!$('#sec-tax .kidonly')) throw new Error('no kid Tax card'); if(!$('#sec-tax .card.kidhide')) throw new Error('Tax detail not hidden in kid mode');
-  win.showSec('credit'); if(!$('#sec-credit .kidonly')) throw new Error('no kid Credit card'); if(!$('#sec-credit .card.kidhide')) throw new Error('Credit detail not hidden');
-  win.showSec('how'); if(!$('#sec-how .kidonly')) throw new Error('no kid Setup note'); if(!$('#regBox').classList.contains('kidhide')) throw new Error('regime not hidden in kid mode');
-  win.toggleKid();
-  return 'kid mode spans tax/credit/setup';
+  if(!row.querySelector('.foodie')) throw new Error('food analogy missing');
+  if(row.querySelectorAll('.lsec').length<2) throw new Error('lesson sections missing');
+  return 'no kid mode; full content always shown';
 });
 check('Each lesson opens with a food analogy', ()=>{
   win.showSec('invest'); const row=$('[data-lrow="fd"]'); click($('[data-lhead="fd"]'));

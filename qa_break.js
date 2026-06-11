@@ -118,21 +118,15 @@ win.resetAll();
 ok($$('#plist .tgl.on').length===0,'reset left products active');
 ok(parseInt($('#totalPct')&&$('#totalPct').textContent||'0')===0,'reset total not 0');
 
-// 15b) KID MODE toggled mid-flow — must persist + behave across every section, no NaN/errors
-win.resetAll(); win.toggleKid();
-ok(doc.body.classList.contains('kid'),'kid mode did not turn on');
+// 15b) Navigation churn through every section — no NaN/errors, content intact
+win.resetAll();
 ['home','invest','tax','credit','tryit','inflation','how','choose','results','home'].forEach(s=>win.showSec(s));
-ok(doc.body.classList.contains('kid'),'kid mode lost during navigation churn');
 win.showSec('invest'); click($('[data-lhead="fd"]'));
 const krow=$('[data-lrow="fd"]');
-ok(krow&&krow.querySelector('.foodie'),'kid: food analogy missing in lesson');
-ok(krow&&krow.querySelector('.kidhide'),'kid: grown-up (kidhide) sections missing');
-ok(/ON/.test($('#kidBtn').textContent),'kid: toggle label not ON');
-// build a portfolio + view results WHILE kid mode on
-activate('index',100); win.showSec('results'); scanDOM('kid mode results');
-click($('#exitChips [data-exit="1"]')); scanDOM('kid mode + exit-early'); click($('#exitChips [data-exit="0"]'));
-win.toggleKid(); ok(!doc.body.classList.contains('kid'),'kid mode did not turn off');
-ok(!/ON/.test($('#kidBtn').textContent),'kid: label still ON after off');
+ok(krow&&krow.querySelector('.foodie'),'food analogy missing in lesson');
+ok(krow&&krow.querySelectorAll('.lsec').length>=2,'lesson sections missing after churn');
+activate('index',100); win.showSec('results'); scanDOM('post-churn results');
+click($('#exitChips [data-exit="1"]')); scanDOM('churn + exit-early'); click($('#exitChips [data-exit="0"]'));
 
 // 15c) Combo edge cases not hit elsewhere
 // SWP + exit-early

@@ -301,12 +301,6 @@
   .ibrk .ir.last{border-bottom:0}
   .ibrk .rv.red{color:var(--red)} .ibrk .rv.green{color:var(--green-d)} .ibrk .rv.soft{font-weight:400;color:var(--ink-soft)}
   .ibrk .note{margin-top:9px;color:var(--ink-soft);line-height:1.5}
-  body.kid .kidhide{display:none}
-  body.kid .foodie{font-size:1.05rem}
-  .kidonly{display:none}
-  body.kid .kidonly{display:block}
-  .kidcard{background:#eafced;border:1px solid #bff0cd;border-radius:18px;padding:18px 20px;margin:14px 0;font-size:1rem;line-height:1.6;color:#0a3a1c}
-  .kidcard h3{font-family:var(--display);font-weight:700;font-size:1.1rem;margin-bottom:6px}
   .coach{position:fixed;inset:0;background:#0a0f0cb0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;animation:fade .25s ease}
   .coach-card{background:var(--card);border-radius:22px;padding:24px;max-width:430px;box-shadow:0 24px 64px #0007;animation:secin .35s var(--spring)}
   .coach-card h3{font-family:var(--display);font-weight:700;font-size:1.3rem;margin-bottom:10px}
@@ -500,7 +494,6 @@
     <div class="brand" onclick="showSec('home')" style="cursor:pointer"><span class="dot"></span><span data-i="brand">Learn Money</span></div>
     <div class="head-sp"></div>
     <button id="resetBtn" class="kidtgl" onclick="confirmReset()" title="Clear everything and start fresh">↺ Reset</button>
-    <button id="kidBtn" class="kidtgl" onclick="toggleKid()" title="Show the simple, kid-friendly version of each lesson">🧒 Kid mode</button>
     <span class="sim-badge" data-i="sim">Simulation</span>
     <div class="lang" style="display:none"><button id="enBtn" class="on" onclick="setLang('en')">EN</button><button id="hiBtn" onclick="setLang('hi')">हिं</button></div>
   </div>
@@ -530,14 +523,9 @@
 
   <section id="sec-tax" class="sec">
     <div class="hero"><h1 data-i="taxH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="taxP"></p></div>
-    <div class="taxdisc kidhide">⚠️ Educational and simplified. Figures reflect <b>FY2026-27</b> and are <b>pending CA review</b> — not tax advice. Consult a qualified CA for real decisions.</div>
+    <div class="taxdisc">⚠️ Educational and simplified. Figures reflect <b>FY2026-27</b> and are <b>pending CA review</b> — not tax advice. Consult a qualified CA for real decisions.</div>
 
-    <div class="kidcard kidonly">
-      <h3>🧒 Tax, simply</h3>
-      When you earn a lot — or your money grows a lot — the government takes a small <b>bite</b> called tax. Some piggy-bank types like <b>PPF</b> have <b>no bite at all</b>. Shares have a small bite. <b>Crypto</b> has a big bite. Tax is why "what you keep" is less than "what it grew to."
-    </div>
-
-    <div class="card kidhide">
+    <div class="card">
       <h2>Income tax slabs</h2>
       <div class="hint">A "slab" means different parts of your income are taxed at different rates — only the income inside each band pays that band's rate. You pick one of two regimes each year.</div>
       <div class="slabwrap">
@@ -552,7 +540,7 @@
       </div>
     </div>
 
-    <div class="card kidhide">
+    <div class="card">
       <h2>Surcharge &amp; cess</h2>
       <div class="hint">On top of the slab tax, very high incomes pay an extra <b>surcharge</b>, and everyone pays a <b>4% health &amp; education cess</b> on the tax amount.</div>
       <ul class="dedlist">
@@ -564,7 +552,7 @@
       </ul>
     </div>
 
-    <div class="card kidhide">
+    <div class="card">
       <h2>Deductions <span style="font-weight:400;color:var(--ink-soft);font-size:.9rem">(old regime only)</span></h2>
       <div class="hint">Deductions lower the income you're taxed on. The old regime trades higher rates for these:</div>
       <ul class="dedlist">
@@ -576,7 +564,7 @@
       </ul>
     </div>
 
-    <div class="card kidhide">
+    <div class="card">
       <h2>How your investments are taxed</h2>
       <div class="hint">Every product in Investing falls into one of five tax "buckets". This is why two products with the same return can leave you very different amounts.</div>
       <div class="taxbucket"><span class="bucket b-slab">Slab</span><div class="br"><div class="taxrule"><b>Taxed at your income slab rate.</b> FDs, RDs, most bonds, debt funds.</div><div class="taxeg">A 30%-slab person loses ~30% of FD interest to tax.</div></div></div>
@@ -589,14 +577,9 @@
 
   <section id="sec-credit" class="sec">
     <div class="hero"><h1 data-i="credH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="credP"></p></div>
-    <div class="taxdisc kidhide">⚠️ Educational and simplified — illustrative card terms (Indian cards typically charge 36–48% a year on unpaid balances). Not financial advice.</div>
+    <div class="taxdisc">⚠️ Educational and simplified — illustrative card terms (Indian cards typically charge 36–48% a year on unpaid balances). Not financial advice.</div>
 
-    <div class="kidcard kidonly">
-      <h3>🧒 Credit cards, simply</h3>
-      A credit card lets you spend the bank's money for a few weeks <b>free</b>. If you pay it <b>all back on time</b> → it stays free. If you pay <b>late</b> or only the tiny "minimum", the bank charges a <b>LOT</b> extra every month (interest) and the debt grows. Rule: only spend what you can pay back fully. Try the calculator below to see the trap.
-    </div>
-
-    <div class="card kidhide">
+    <div class="card">
       <h2>1. How the billing cycle works</h2>
       <div class="hint">A credit card is a short-term loan you take every time you swipe. The bank groups it into a monthly cycle:</div>
       <ul class="dedlist">
@@ -607,7 +590,7 @@
       </ul>
     </div>
 
-    <div class="card kidhide">
+    <div class="card">
       <h2>2. Paying on time vs. late — this is everything</h2>
       <div class="slabwrap">
         <div class="slabcol">
@@ -633,7 +616,7 @@
       <div class="taxdisc" style="margin-top:14px">The golden rule: <b>always pay the full statement amount by the due date.</b> If you ever can't, pay as much above the minimum as possible — the minimum is a debt trap, not a target.</div>
     </div>
 
-    <div class="card kidhide">
+    <div class="card">
       <h2>3. How interest is actually charged</h2>
       <div class="hint">Once you miss a full payment and start "revolving" a balance:</div>
       <ul class="dedlist">
@@ -644,7 +627,7 @@
       <div class="taxeg" style="margin-top:6px">Example: ₹50,000 unpaid at 42%/yr is about <b>₹1,750 of interest in the very first month</b> — before you buy anything new.</div>
     </div>
 
-    <div class="card kidhide">
+    <div class="card">
       <h2>4. Other costly traps</h2>
       <div class="taxbucket"><span style="font-size:1.2rem">🏧</span><div class="br"><div class="taxrule"><b>Cash withdrawal.</b> Taking cash on a card charges interest from <b>day one</b> (no grace) plus a 2.5–3% fee. Avoid unless an emergency.</div></div></div>
       <div class="taxbucket"><span style="font-size:1.2rem">📉</span><div class="br"><div class="taxrule"><b>Over-limit fee.</b> Spending past your limit triggers a fee and a score hit.</div></div></div>
@@ -652,7 +635,7 @@
       <div class="taxbucket"><span style="font-size:1.2rem">🌐</span><div class="br"><div class="taxrule"><b>Forex markup.</b> Overseas/foreign-currency spends add a ~1.5–3.5% markup.</div></div></div>
     </div>
 
-    <div class="card kidhide">
+    <div class="card">
       <h2>5. Rewards vs. real cost</h2>
       <div class="hint">Cashback, points and miles are genuinely valuable — but only on one condition.</div>
       <ul class="dedlist">
@@ -662,7 +645,7 @@
       </ul>
     </div>
 
-    <div class="card kidhide">
+    <div class="card">
       <h2>6. Your credit score (CIBIL)</h2>
       <div class="hint">A 300–900 score lenders use to decide your loans and rates. A card is the easiest way to build it — or wreck it.</div>
       <ul class="dedlist">
@@ -812,16 +795,15 @@
         <div class="col amtgrp" id="grpSip"><label class="l" for="sipAmt" data-i="sipL"></label><input type="number" id="sipAmt" value="10000" min="500" max="10000000" step="500" aria-label="Monthly investment in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="sipAmt"></div></div>
         <div class="col amtgrp" id="grpSwpC"><label class="l" for="swpCorpus" data-i="swpCL"></label><input type="number" id="swpCorpus" value="2000000" min="10000" max="10000000000" step="50000" aria-label="Starting corpus in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpCorpus"></div></div>
         <div class="col amtgrp" id="grpSwpW"><label class="l" for="swpWd" data-i="swpWL"></label><input type="number" id="swpWd" value="15000" min="500" max="100000000" step="500" aria-label="Monthly withdrawal in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpWd"></div></div>
-        <div class="col kidhide"><label class="l" for="inc"><span data-i="incL"></span> <span class="val"><span id="incV"></span></span></label><input type="range" id="inc" min="0" max="1000" step="1" value="0" aria-label="Your annual income" oninput="render()"></div>
+        <div class="col"><label class="l" for="inc"><span data-i="incL"></span> <span class="val"><span id="incV"></span></span></label><input type="range" id="inc" min="0" max="1000" step="1" value="0" aria-label="Your annual income" oninput="render()"></div>
       </div>
       <div class="row" style="margin-top:14px">
         <div class="col"><label class="l" for="planYears">Invest for (years)</label><input type="number" id="planYears" value="10" min="1" max="40" step="1" aria-label="Years to invest" oninput="setPlanYears()" onblur="clampNum(this)"></div>
         <div class="col amtgrp" id="grpStepup"><label class="l" for="sipStepup">Yearly SIP increase (%)</label><input type="number" id="sipStepup" value="10" min="0" max="50" step="1" aria-label="Yearly SIP step-up percent" oninput="render()" onblur="clampNum(this)"></div>
       </div>
-      <div class="kidhide" style="margin-top:16px"><label class="l" data-i="regL"></label><div class="chips" id="regChips"><div class="chip on" data-r="new" data-i="regNew"></div><div class="chip" data-r="old" data-i="regOld"></div></div></div>
-      <div class="marg kidhide" id="regBox" style="margin-top:10px"></div>
-      <div class="marg kidhide" id="margBox"></div>
-      <div class="kidcard kidonly">🧒 Income and tax are set to a sensible default. A grown-up can switch off Kid mode to change them — for now, just pick how you'll invest and how much.</div>
+      <div class="" style="margin-top:16px"><label class="l" data-i="regL"></label><div class="chips" id="regChips"><div class="chip on" data-r="new" data-i="regNew"></div><div class="chip" data-r="old" data-i="regOld"></div></div></div>
+      <div class="marg" id="regBox" style="margin-top:10px"></div>
+      <div class="marg" id="margBox"></div>
       <button class="nextbtn" style="margin-top:18px" onclick="showSec('choose')" data-i="next"></button>
     </div>
   </section>
@@ -890,11 +872,10 @@
     <ul>
       <li>📈 <b>Tap a topic</b> to learn how each money product really works.</li>
       <li>🧪 <b>Start the simulator</b> to build a pretend portfolio and see what you keep after tax, charges &amp; inflation.</li>
-      <li>🧒 New to money? Turn on <b>Kid mode</b> (top-right) for simple, food-style explanations.</li>
+      <li>🎯 <b>Plan a goal</b> — see the monthly SIP a target needs, and your real odds of getting there.</li>
     </ul>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
       <button class="nextbtn" onclick="startTour()">🚀 Show me around</button>
-      <button class="resetbtn" onclick="toggleKid();dismissCoach()">🧒 Start simple</button>
     </div>
     <button class="tskip" style="margin-top:10px;border:none;background:none;color:var(--ink-soft);cursor:pointer;font-size:.85rem" onclick="dismissCoach()">Skip — I'll explore on my own</button>
   </div>
@@ -1447,7 +1428,6 @@ function applyPreset(key){
 }
 function resetAll(){
   try{localStorage.removeItem(LM_KEY);localStorage.removeItem('lm_seen');}catch(e){}   // clean reset — wipe saved state + re-arm the coachmark
-  document.body.classList.remove('kid'); { const kb=document.getElementById('kidBtn'); if(kb){kb.classList.remove('on');kb.textContent='🧒 Kid mode';} }
   const d=PS_DEFAULTS;
   for(const id in PS){PS[id].active=d[id].active;PS[id].pct=d[id].pct;PS[id].years=d[id].years;PS[id].ret=d[id].ret;PS[id].broke=d[id].broke;}
   REGIME='new';INF_H=10;PLAN_YEARS=10;
@@ -1492,19 +1472,18 @@ function renderPillars(){
 let LIB_CAT='all';
 function behavBlock(p){return `<div class="behav"><span class="bi" data-lbi="${p.anim}"></span><span><span class="bcap" data-lbehavcap></span><span data-lbehav="${p.anim}"></span></span></div>`;}
 function foodBlock(p){return `<div class="foodie">🍱 <b>Like…</b> ${S().food[p.id]}</div>`;}
-function taxLine(p){return `<div class="ltax kidhide">💰 Tax: <span data-ltaxb="${p.bucket}"></span> · <span class="taxlink" data-taxlink>How tax works →</span></div>`;}
+function taxLine(p){return `<div class="ltax">💰 Tax: <span data-ltaxb="${p.bucket}"></span> · <span class="taxlink" data-taxlink>How tax works →</span></div>`;}
 function shallowLessonHTML(p){
   return foodBlock(p)+behavBlock(p)+`<div class="etext" data-leli="${p.id}"></div><div class="ex" data-lex="${p.id}"></div><div class="ltip" data-ltip="${p.id}"></div>`+taxLine(p);
 }
 function deepLessonHTML(p,L){
-  // keep=true → still shown in Kid mode; otherwise hidden behind the "grown-up details" toggle
-  const sec=(label,val,keep)=> val?`<div class="lsec${keep?'':' kidhide'}"><div class="lsech">${label}</div><div class="lsecb">${val}</div></div>`:'';
+  const sec=(label,val)=> val?`<div class="lsec"><div class="lsech">${label}</div><div class="lsecb">${val}</div></div>`:'';
   const list=(arr)=> (arr&&arr.length)?('<ul class="proscons">'+arr.map(x=>`<li>${x}</li>`).join('')+'</ul>'):'';
   return foodBlock(p)+behavBlock(p)
    + sec('What it is',L.what)+sec('How it works',L.works)+sec('Returns &amp; what drives them',L.returns)
    + sec('Example',S().examples[p.id],true)
    + sec('Risks',L.risk)+sec('Liquidity / lock-in',L.liquidity)+sec('Taxation',L.tax)+sec('Costs',L.costs)+sec("Who it's for",L.forwhom)
-   + `<div class="pcwrap2 kidhide"><div class="pccol"><div class="lsech" style="color:var(--green-d)">👍 Pros</div>${list(L.pros)}</div><div class="pccol"><div class="lsech" style="color:var(--red)">👎 Cons</div>${list(L.cons)}</div></div>`
+   + `<div class="pcwrap2"><div class="pccol"><div class="lsech" style="color:var(--green-d)">👍 Pros</div>${list(L.pros)}</div><div class="pccol"><div class="lsech" style="color:var(--red)">👎 Cons</div>${list(L.cons)}</div></div>`
    + taxLine(p);
 }
 function buildLibrary(){
@@ -1676,7 +1655,6 @@ function clampNum(el){
   if(out!==el.value){el.value=out; el.dispatchEvent(new Event('input',{bubbles:true}));}
 }
 function confirmReset(){ if(typeof confirm!=='function'||confirm('Reset everything back to the starting example?')) resetAll(); }
-function toggleKid(){ const on=document.body.classList.toggle('kid'); const b=document.getElementById('kidBtn'); if(b){b.classList.toggle('on',on); b.textContent=on?'🧒 Kid mode: ON':'🧒 Kid mode';} saveState(); }
 
 /* ===== FIRST-TIME COACHMARK ===== */
 function showCoachIfFirst(){ let seen=true; try{seen=!!localStorage.getItem('lm_seen');}catch(e){seen=true;} if(!seen){const c=document.getElementById('coach'); if(c)c.style.display='flex';} }
@@ -1685,7 +1663,7 @@ const TOUR=[
  {sel:'#simcard .simcta',t:'Build & see',b:'Tap here to build a pretend portfolio and watch what you actually keep after tax, charges & inflation.'},
  {sel:'#pillargrid [data-key="invest"]',t:'Learn any product',b:'Browse all 32 — each explained with a 🍱 food analogy, in plain words.'},
  {sel:'#pillargrid [data-key="takehome"]',t:'Your take-home pay',b:'Curious about your real monthly in-hand? It’s here, pre-filled — just tweak.'},
- {sel:'#kidBtn',t:'New to money?',b:'Turn on Kid mode anytime for the simple, food-style version of everything.'}
+ {sel:'#goalcard .simcta',t:'Plan a goal',b:'Pick a target and a timeline — see the monthly SIP it takes, and your real odds of reaching it.'}
 ];
 let tourI=0;
 function startTour(){ const c=document.getElementById('coach'); if(c)c.style.display='none'; showSec('home'); tourI=0; tourStep(); }
@@ -1712,7 +1690,6 @@ function saveState(){ try{
   const g=id=>{const e=document.getElementById(id);return e?mnum(e.value):null;};   // store clean numbers (strip commas)
   localStorage.setItem(LM_KEY, JSON.stringify({
     ps, mode:MODE, regime:REGIME, exit:EXIT_EARLY, adj:INFL_ADJ, adjYrs:INFL_YRS, infH:INF_H,
-    kid:document.body.classList.contains('kid'),
     lump:g('lumpAmt'),sip:g('sipAmt'),swpC:g('swpCorpus'),swpW:g('swpWd'),
     infAmt:g('infAmt'),infRate:g('infRate'),incSlider:g('inc'),
     planYears:PLAN_YEARS, sipStepup:g('sipStepup')
@@ -1732,7 +1709,6 @@ function loadState(){ let s; try{s=JSON.parse(localStorage.getItem(LM_KEY));}cat
     document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.toggle('on',(x.dataset.adj==='1')===INFL_ADJ));
     document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.iy===INFL_YRS));
     document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.h===INF_H));
-    if(s.kid){document.body.classList.add('kid'); const b=document.getElementById('kidBtn'); if(b){b.classList.add('on');b.textContent='🧒 Kid mode: ON';}}
     formatMoneyFields();
     return true;
   }catch(e){return false;}
