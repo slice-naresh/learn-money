@@ -190,8 +190,12 @@
   .resetbtn{border:none;background:var(--paper-2);color:var(--ink);border-radius:999px;padding:15px 22px;font-weight:700;font-size:1rem;cursor:pointer;font-family:var(--body)}
   .resetbtn:hover{filter:brightness(.97)}
   .resetbtn:active{transform:scale(.97)}
-  .presetrow{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px}
-  .preset{border:none;background:var(--card);box-shadow:0 2px 12px #0a0f0c0a;border-radius:999px;padding:11px 17px;cursor:pointer;font-weight:600;font-family:var(--body);font-size:.92rem;display:flex;gap:8px;align-items:center;color:var(--ink)}
+  .presetrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:6px 0 8px}
+  .preset .pr-ic{font-size:1.5rem;flex-shrink:0}
+  .preset .pr-body{display:flex;flex-direction:column;gap:3px;text-align:left;min-width:0}
+  .preset .pr-body b{font-family:var(--display);font-size:.95rem}
+  .preset .pr-body small{font-weight:400;font-size:.78rem;color:var(--ink-soft);line-height:1.45;white-space:normal}
+  .preset{border:none;background:var(--card);box-shadow:0 2px 12px #0a0f0c0a;border-radius:16px;padding:13px 15px;cursor:pointer;font-weight:600;font-family:var(--body);font-size:.92rem;display:flex;gap:11px;align-items:flex-start;color:var(--ink)}
   .preset:hover{box-shadow:0 6px 18px #0a0f0c14;transform:translateY(-1px)}
   .preset:active{transform:scale(.96)}
   .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
@@ -982,11 +986,11 @@ const STR={
   ded80c:(s)=>`💡 Old-regime bonus: your 80C investments (PPF, ELSS, SSY, SCSS, ULIP) save about <b>₹${fmtIN(s)}</b> in tax upfront (within the ₹1.5L cap) — on top of the figures below.`,
   s2h:"Choose your investments", s2hint:"Switch tabs to browse all 32 products. Toggle the ones you want, then set each one's share and return. Tap 'what is this?' to learn it. Your picks stay as you move around.",
   totalL:"Total allocated", resetBtn:"Reset to defaults",
-  presetKick:"Or start from a ready-made mix:",
+  presetKick:"Not sure where to start? Pick a ready-made mix — it selects the products and the split for you. You can change anything after.",
   presets:[
-   {key:'safe',ic:'🛡️',t:'Safe & steady'},
-   {key:'aggressive',ic:'🚀',t:'Young & aggressive'},
-   {key:'balanced',ic:'⚖️',t:'Balanced'}
+   {key:'safe',ic:'🛡️',t:'Safe & steady',d:'Mostly FDs, PPF & govt bonds, a little index fund. Grows slowly, barely wobbles.'},
+   {key:'aggressive',ic:'🚀',t:'Young & aggressive',d:'Mostly stocks & equity funds (plus a pinch of crypto). Can grow fast — and swing hard.'},
+   {key:'balanced',ic:'⚖️',t:'Balanced',d:'Half growth (index, equity), half safety (PPF, FD, gold). The middle road.'}
   ],
   allocWarn:(t)=>`⚠️ Your allocations add up to <b>${t}%</b>, not 100% — <b>${t>100?(t-100)+'% over':(100-t)+'% to go'}</b>. Results assume you actually invest these shares; drag the sliders so they total 100%.`,
   swpDry:(n)=>`⚠️ In this scenario, <b>${n}</b> of your picks run out of money before the end — the monthly withdrawal outpaces growth. Lower the withdrawal, raise the corpus, or shorten the horizon.`,
@@ -1430,7 +1434,8 @@ function goPath(sec,mode){
 function renderPresets(){
   const r=document.getElementById('presetrow');if(!r)return;r.innerHTML='';
   S().presets.forEach(p=>{const b=document.createElement('button');b.className='preset';b.dataset.preset=p.key;
-    b.innerHTML=`<span>${p.ic}</span><span>${p.t}</span>`;b.onclick=()=>applyPreset(p.key);r.appendChild(b);});
+    b.innerHTML=`<span class="pr-ic">${p.ic}</span><span class="pr-body"><b>${p.t}</b>${p.d?`<small>${p.d}</small>`:''}</span>`;
+    b.onclick=()=>applyPreset(p.key);r.appendChild(b);});
 }
 function applyPreset(key){
   const ps=PRESETS[key];if(!ps)return;
