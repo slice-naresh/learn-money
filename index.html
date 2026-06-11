@@ -852,6 +852,7 @@
   <section id="sec-results" class="sec">
     <div class="card">
       <h2 data-i="s3h"></h2><div class="hint" id="resSummary"></div>
+      <div class="marg" id="swpStory" style="display:none;margin-bottom:14px;border-color:#cdbcf5;background:#f3eeff"></div>
       <div class="lens">
         <div class="lens-h" data-i="lensH"></div>
         <label class="l" data-i="exitL"></label>
@@ -1261,7 +1262,7 @@ function render(){
   const inflEl2=document.getElementById('infRate'), inflR2=(inflEl2?(+inflEl2.value||0):5)/100;
   const iyrs=INFL_YRS||maxY;   // inflation horizon: chosen years, or the portfolio's own horizon
   const realKeep=(MODE==='swp'?Math.max(tEnd,0):Math.max(tNet,0))/Math.pow(1+inflR2,iyrs);
-  animateNum(document.getElementById('num1'),Math.round(INFL_ADJ?realKeep:tNet),rupee); document.getElementById('cap1').textContent=INFL_ADJ?S().caps.keepReal:S().caps.keep;
+  animateNum(document.getElementById('num1'),Math.round(INFL_ADJ?realKeep:tNet),rupee); document.getElementById('cap1').textContent=INFL_ADJ?S().caps.keepReal:(MODE==='swp'?'You keep (income taken + pot left)':S().caps.keep);
   { const ab=document.getElementById('adjBox'); if(ab){
       if(rows.length){
         const nominalKeep=Math.round(MODE==='swp'?Math.max(tEnd,0):Math.max(tNet,0));
@@ -1276,6 +1277,19 @@ function render(){
   else if(MODE==='sip'){animateNum(document.getElementById('num3'),Math.round(tInv),rupee); document.getElementById('cap3').textContent=S().caps.invested;}
   else{animateNum(document.getElementById('num3'),Math.round(tEnd),rupee); document.getElementById('cap3').textContent=S().caps.corpus;}
   document.getElementById('resSummary').textContent=S().resSummary[MODE]((tInv||A.swpC),(MODE==='swp'?tEnd:grossTotal),tWd);
+  // SWP story — narrate the four steps so "You keep" isn't three stories in one number
+  { const sb=document.getElementById('swpStory');
+    if(sb){ if(MODE==='swp' && rows.length){
+      const mw=A.swpW, yrsTot=maxY;
+      sb.style.display='block';
+      sb.innerHTML=`<b>How your money paid you, step by step:</b>
+        <div style="margin-top:8px;line-height:1.7">
+        1️⃣ You started with a pot of <b>${rupee(Math.round(tInv))}</b>.<br>
+        2️⃣ Each month the pot <b>grew a little</b>, and you took out <b>${rupee(Math.round(mw))}</b> as income — over ${yrsTot} years that's <b>${rupee(Math.round(tWd))}</b> taken out in total.<br>
+        3️⃣ ${dryN>0?`⚠️ <b>${dryN} of your picks ran dry</b> — withdrawals outpaced growth and that part of the pot hit zero early.`:`The pot still holds <b>${rupee(Math.round(tEnd))}</b> at the end — growth ${tEnd>=tInv?'kept up with':'didn’t fully cover'} your withdrawals.`}<br>
+        4️⃣ Tax applies only to the <b>growth part</b> (not your own money coming back): tax + charges took <b>${rupee(Math.round(tChg+tTax+tPen))}</b>.<br>
+        <b>So "You keep" = income taken (${fmtShort(tWd)}) + pot left (${fmtShort(Math.max(tEnd,0))}) − costs = ${rupee(Math.round(tNet))}.</b></div>`;
+    } else sb.style.display='none'; } }
   const base=Math.max(grossTotal,1);
   const nW=Math.max(0,tNet)/base*100,cW=tChg/base*100,tW=tTax/base*100,pW=tPen/base*100;
   const sN=document.getElementById('segNet'),sC=document.getElementById('segChg'),sT=document.getElementById('segTax'),sP=document.getElementById('segPen');
