@@ -1340,7 +1340,8 @@ function render(){
         +r(`Becomes after ${maxY} year${maxY>1?'s':''}`+(isSwp?' (income + pot left)':' (before tax)'), rupee(Math.round(becomesVal)))
         +r(`− Tax &amp; charges over ${maxY}y`, '−'+rupee(Math.round(costs)), 'red')
         +r('= You keep', rupee(Math.round(tNet)), 'green', true)
-        +r("Worth in today's ₹ (after inflation)", rupee(Math.round(realKeep)), 'soft')
+        +r("What it can buy in today's money", rupee(Math.round(realKeep)), 'soft')
+        +`<div class="note" style="margin-top:6px">Prices rise over time, so that future amount buys less. In today's purchasing power it's like having <b>${rupee(Math.round(realKeep))}</b> now.</div>`
         +'</div>';
     } else rt.innerHTML='<div class="ibrk" style="color:var(--ink-soft)">Pick at least one product (totalling 100%) to see the result.</div>'; } }
   // income → tax bracket lesson (slab-taxed picks vs flat-LTCG)
@@ -1572,11 +1573,15 @@ function renderPaths(){
     d.onclick=()=>goPath(p.sec,p.mode||null,p.ctx||null);g.appendChild(d);});
 }
 function goPath(sec,mode,ctx){
-  if(mode){document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===mode));setMode(mode);}
-  // all three investing journeys share ONE simulator — the banner says which journey
-  // you arrived from and that only the pre-selected mode below differs
+  if(mode){
+    // a journey starter = a fresh what-if: clear any carried-over picks so Choose is YOUR blank slate
+    for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}
+    buildList();
+    document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===mode));setMode(mode);
+  }
+  // the 3 investing journeys share ONE simulator — the banner says which journey you came from
   const hc=document.getElementById('howCtx');
-  if(hc){ if(ctx){ hc.style.display='block'; hc.innerHTML=ctx+'<br><span style="font-weight:400;color:var(--ink-soft)">All three journeys use this same simulator — we\'ve pre-selected the right mode below. You can switch any time.</span>'; } else hc.style.display='none'; }
+  if(hc){ if(ctx){ hc.style.display='block'; hc.innerHTML=ctx+'<br><span style="font-weight:400;color:var(--ink-soft)">All three journeys use this same simulator — we\'ve set the right mode below and started you with a blank slate. Pick your own products next.</span>'; } else hc.style.display='none'; }
   showSec(sec);
 }
 function renderPresets(){
