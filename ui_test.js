@@ -94,7 +94,8 @@ function ck(name,ok,note){ results.push([ok?'PASS':'FAIL',name,note||'']); }
   await new Promise(r=>setTimeout(r,300));
   const pillars = await page.evaluate(()=>document.querySelectorAll('#pillargrid .pathcard').length);
   const simCta = await page.evaluate(()=>!!document.querySelector('#simcard .simcta'));
-  ck('Home: 5 reading pillars + distinct simulator CTA', pillars===5 && simCta, pillars+' pillars, simCTA='+simCta);
+  const goalCta = await page.evaluate(()=>!!document.querySelector('#goalcard .simcta'));
+  ck('Home: 4 reading pillars + simulator & goal tool cards', pillars===4 && simCta && goalCta, pillars+' pillars, simCTA='+simCta+', goalCTA='+goalCta);
   await page.screenshot({path:`${SHOT}/06-home-pillars-desktop.png`,fullPage:true});
   await page.evaluate(()=>{showSec('invest');document.querySelector('[data-lhead="ppf"]').click();});
   await new Promise(r=>setTimeout(r,300));

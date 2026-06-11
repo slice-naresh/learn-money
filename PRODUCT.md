@@ -44,7 +44,7 @@ _Last updated: **Goal planner** pillar — target+timeline → required SIP + Mo
 - **I18N-1** English only; Hindi strings parked, language toggle hidden. (New strings need not be translated.)
 
 ## 2. Home + onboarding
-- **HOME-1** Home shows hero + **5 reading pillar cards** (Investing, Tax, Salary, Credit, Goal planner) + a distinct animated **simulator card** (`#simcard .simcta`) with a white **▶ Start the simulator** play button (pulsing badge, breathe).
+- **HOME-1** Home shows hero + a **2-up "tools" grid** (`.toolgrid`) of the two **interactive tools side by side** — the **Simulator** (`#simcard .simcta`, ▶ Start the simulator) and the **Goal planner** (`#goalcard .simcta.simcta-alt`, ✦ Plan a goal) — then **4 reading pillar cards** (Investing, Tax, Salary, Credit). Tools stack on mobile (<760px). Goal is promoted up here (was buried as the last pillar) so people don't miss it.
 - **HOME-2** Each pillar card routes to its section; the sim card → Try it.
 - **COACH-1** First visit (no `lm_seen`) shows a welcome overlay with: **🚀 Show me around** (guided tour), **🧒 Start simple** (Kid mode + dismiss), **Skip**.
 - **COACH-2** Guided tour = 4 spotlight steps (sim card → Investing → Salary → Kid mode) with Next/Skip + step counter; ending sets `lm_seen`. Shows once; Reset re-arms it.

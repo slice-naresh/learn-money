@@ -148,6 +148,12 @@
   .pathcard .arr{background:none;color:var(--ink-soft);width:auto;height:auto;align-self:center;font-size:1.5rem;font-weight:500;transition:transform .18s var(--spring),color .15s}
   .pathcard:hover .arr{color:var(--green-d);transform:translateX(4px)}
   .pcard{border-radius:18px;border:none;background:var(--paper)}
+  /* ===== Two interactive tools, side by side (simulator + goal planner) ===== */
+  .toolgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  .toolgrid>div{display:flex;min-width:0}
+  .toolgrid .simcta{margin-top:0;flex:1}
+  .simcta-alt{background:linear-gradient(135deg,#ab8cff,#6f43e0)!important}
+  @media(max-width:760px){.toolgrid{grid-template-columns:1fr;gap:14px}}
   /* ===== Unique "Try it" simulator CTA (interactive, vs the reading pillars) ===== */
   .simcta{margin-top:16px;background:linear-gradient(135deg,#9b6bff,var(--green-d));border-radius:26px;padding:26px;color:#06120b;cursor:pointer;display:flex;align-items:center;gap:18px;box-shadow:0 12px 34px #7c4dff3a;position:relative;overflow:hidden;transition:transform .18s var(--spring),box-shadow .18s}
   .simcta:before{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:#ffffff22}
@@ -511,7 +517,7 @@
   <section id="sec-home" class="sec on">
     <div class="hero"><h1 data-i="heroH"></h1><p data-i="heroP"></p>
       <div class="privacy-pill" data-i="privacyShort"></div></div>
-    <div id="simcard"></div>
+    <div class="toolgrid"><div id="simcard"></div><div id="goalcard"></div></div>
     <div style="font-family:var(--display);font-weight:600;font-size:1.15rem;margin:24px 0 12px" data-i="homeKick"></div>
     <div class="pathgrid" id="pillargrid"></div>
   </section>
@@ -1438,19 +1444,18 @@ function resetAll(){
 
 /* ===== HOME PILLARS ===== */
 function renderPillars(){
-  const g=document.getElementById('pillargrid'), sc=document.getElementById('simcard');
+  const g=document.getElementById('pillargrid');
   if(g){ g.innerHTML='';
-    S().pillars.filter(p=>p.key!=='tryit').forEach(p=>{const d=document.createElement('div');d.className='pathcard'+(p.key==='goals'?' pillar-goal':'');
+    S().pillars.filter(p=>p.key!=='tryit'&&p.key!=='goals').forEach(p=>{const d=document.createElement('div');d.className='pathcard';
       d.dataset.key=p.key;
-      const badge=p.key==='goals'?'<span class="pill-tag">Interactive ✦</span>':'';
-      d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}${badge}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
+      d.innerHTML=`<div class="pic">${p.ic}</div><div><h3>${p.t}</h3><p>${p.d}</p></div><div class="arr">→</div>`;
       d.onclick=()=>showSec(p.key);g.appendChild(d);});
   }
-  if(sc){ sc.innerHTML=''; const t=S().pillars.find(p=>p.key==='tryit');
-    if(t){const d=document.createElement('div');d.className='simcta';
-      d.innerHTML=`<span class="sim-sheen"></span><span class="sim-badge2">Interactive</span><div class="sim-ic">${t.ic}</div><div class="sim-body"><h3>${t.t}</h3><p>${t.d}</p><span class="sim-cta-btn"><span class="pbadge">▶</span>Start the simulator</span></div><div class="sim-arr">→</div>`;
-      d.onclick=()=>showSec('tryit'); sc.appendChild(d);}
-  }
+  // two interactive tools, side by side
+  const toolHTML=(p,cta,icn)=>`<span class="sim-sheen"></span><span class="sim-badge2">Interactive</span><div class="sim-ic">${p.ic}</div><div class="sim-body"><h3>${p.t}</h3><p>${p.d}</p><span class="sim-cta-btn"><span class="pbadge">${icn}</span>${cta}</span></div><div class="sim-arr">→</div>`;
+  const tool=(wrapId,key,cta,icn)=>{const sc=document.getElementById(wrapId); if(!sc)return; sc.innerHTML=''; const t=S().pillars.find(p=>p.key===key); if(t){const d=document.createElement('div');d.className='simcta'+(key==='goals'?' simcta-alt':''); d.innerHTML=toolHTML(t,cta,icn); d.onclick=()=>showSec(key); sc.appendChild(d);}};
+  tool('simcard','tryit','Start the simulator','▶');
+  tool('goalcard','goals','Plan a goal','✦');
 }
 
 /* ===== INVESTING LIBRARY (read-only lessons) ===== */
