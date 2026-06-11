@@ -190,6 +190,16 @@ const expectSec = ['sec-how','sec-how','sec-how','sec-inflation']; // lump, sip,
 $$('#pathgrid .pathcard').forEach((card,i)=>{
   check('Journey card '+(i+1)+' navigates', ()=>{ win.showSec('tryit'); click($$('#pathgrid .pathcard')[i]); const a=activeSec(); if(a!==expectSec[i]) throw new Error('went to '+a+', expected '+expectSec[i]); return '-> '+a; });
 });
+check('Journey starter → Choose: product rows keep their names & bucket tags (no blank rows)', ()=>{
+  win.showSec('tryit'); click($$('#pathgrid .pathcard')[0]);   // Invest a lump sum (goPath rebuilds the list)
+  win.showSec('choose');
+  const names=$$('#plist [data-nm]'), bks=$$('#plist [data-bn]');
+  if(!names.length) throw new Error('no product rows');
+  const blankN=names.filter(e=>!e.textContent.trim()).length, blankB=bks.filter(e=>!e.textContent.trim()).length;
+  if(blankN) throw new Error(blankN+' product rows have a blank name');
+  if(blankB) throw new Error(blankB+' product rows have a blank bucket tag');
+  return names.length+' rows, all named';
+});
 
 check('Journey stepper: shows in sim, hidden off, marks active + done, clickable', ()=>{
   win.showSec('tryit'); if($('#simsteps').style.display!=='none') throw new Error('stepper shown off-journey');

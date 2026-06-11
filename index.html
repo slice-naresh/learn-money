@@ -1580,7 +1580,7 @@ function goPath(sec,mode,ctx){
   if(mode){
     // a journey starter = a fresh what-if: clear any carried-over picks so Choose is YOUR blank slate
     for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}
-    buildList();
+    buildList(); applyLang();   // applyLang fills product names / bucket tags / toggle labels into the rebuilt rows
     document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===mode));setMode(mode);
   }
   // the 3 investing journeys share ONE simulator — the banner says which journey you came from
