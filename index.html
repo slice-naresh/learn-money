@@ -484,9 +484,11 @@
   .restog .rt-tx{display:flex;flex-direction:column;gap:2px;min-width:0}
   .restog .rt-tx b{font-family:var(--display);font-weight:700;font-size:.95rem;line-height:1.25}
   .restog .rt-tx small{font-weight:400;font-size:.78rem;color:var(--ink-soft);line-height:1.35}
-  .restog::after{content:'';flex-shrink:0;margin-left:auto;width:9px;height:9px;border-right:2.5px solid var(--green-d);border-bottom:2.5px solid var(--green-d);transform:rotate(-45deg);transition:transform .22s var(--spring)}
-  .restog.open::after{transform:rotate(45deg)}
-  .restog.open{border-color:#cdbcf5;background:#faf8ff}
+  .restog{border-left:4px solid #cdbcf5}
+  .restog::after{content:'';flex-shrink:0;margin-left:auto;width:30px;height:30px;border-radius:50%;background:#efeaff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5' fill='none' stroke='%235b2ee6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/15px no-repeat;transform:rotate(-90deg);transition:transform .22s var(--spring),background-color .15s}
+  .restog:hover::after{background-color:#e2d8fb}
+  .restog.open::after{transform:rotate(0deg)}
+  .restog.open{border-left-color:var(--green);background:#faf8ff}
   .lr-break-tog:active{transform:scale(.96)}
   .lr-break{overflow:hidden;margin-top:10px;border-top:1px solid #ffffff1f;padding-top:10px}
   .lr-break .br{display:flex;justify-content:space-between;gap:14px;font-size:.86rem;padding:4px 0;color:#cfd6d1}
