@@ -754,6 +754,13 @@
       <div class="marg" id="goalProbBox" style="border-color:#cdbcf5;background:#f3eeff"></div>
       <canvas id="goalChart" height="200" style="margin-top:14px"></canvas>
       <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span>Projected path (avg return)</span><span><span class="sw" style="background:#c98a1f"></span>Goal target</span></div>
+      <div style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5"><b>Reading the chart:</b> the horizontal axis is <b>time</b> (Now → year by year to your goal); the vertical axis is your <b>projected corpus in ₹</b>. The purple curve is your money compounding at the average return; the gold dashed line is the goal amount you need by then.</div>
+      <button class="lr-break-tog" id="oddsHelpTog" onclick="toggleOddsHelp()" aria-expanded="false" role="button" tabindex="0" style="margin-top:12px;background:#efeaff;border-color:#cdbcf5;color:var(--green-d)">▸ How are these odds calculated?</button>
+      <div class="marg" id="oddsHelp" style="display:none;margin-top:8px">
+        We run <b>1,200 imaginary versions</b> of your future. In each, every year's return is picked at random around your expected return (give or take the assumed swing) — some good years, some bad, like real markets. Then we count how many of the 1,200 actually reach your goal: that share is your <b>chance</b>.<br><br>
+        That's why the <b>"required SIP" lands near 50%</b> — at the average return, good and bad years roughly cancel out. Reaching <b>~90% confidence</b> needs a bigger SIP, as a cushion against a run of bad luck.<br><br>
+        <span style="color:var(--ink-soft)">Assumptions are fixed &amp; simplified — bell-curve returns, no market crashes or fat tails, and this view ignores tax/charges. Treat the odds as a <b>teaching guide, not a forecast or advice</b>.</span>
+      </div>
       <div class="taxdisc" style="margin-top:14px">⚠️ Educational only — returns are illustrative and volatile; probabilities come from a simple simulation on fixed assumptions, not a guarantee or advice.</div>
     </div>
   </section>
@@ -1788,14 +1795,34 @@ function renderGoals(){
 function drawGoalChart(path,target,yrs){
   const cv=document.getElementById('goalChart'); if(!cv)return; const w=cv.clientWidth,h=cv.clientHeight; if(!w)return;
   const dpr=window.devicePixelRatio||1; cv.width=w*dpr;cv.height=h*dpr; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
-  const pad=8, maxv=Math.max(target,Math.max.apply(null,path))*1.05||1;
-  const X=y=>pad+(y/yrs)*(w-2*pad), Y=v=>h-pad-(v/maxv)*(h-2*pad);
   ctx.clearRect(0,0,w,h);
-  ctx.strokeStyle='#c98a1f';ctx.lineWidth=2;ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(pad,Y(target));ctx.lineTo(w-pad,Y(target));ctx.stroke();ctx.setLineDash([]);
-  ctx.beginPath();ctx.moveTo(X(0),Y(path[0])); for(let y=0;y<=yrs;y++)ctx.lineTo(X(y),Y(path[y])); ctx.lineTo(X(yrs),h-pad);ctx.lineTo(X(0),h-pad);ctx.closePath();
+  const mL=46, mR=12, mT=16, mB=22;                // margins: left=₹ labels, bottom=year labels, top=goal label
+  const pw=w-mL-mR, ph=h-mT-mB;
+  const maxv=Math.max(target,Math.max.apply(null,path))*1.08||1;
+  const X=y=>mL+(y/yrs)*pw, Y=v=>mT+ph-(v/maxv)*ph;
+  ctx.font='10px Outfit, sans-serif';
+  // Y-axis ₹ gridlines (0, mid, max)
+  ctx.fillStyle='#9aa39d'; ctx.textAlign='right'; ctx.textBaseline='middle';
+  [0,maxv/2,maxv].forEach(v=>{ const yy=Y(v); ctx.strokeStyle='#eceaf6';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(mL,yy);ctx.lineTo(w-mR,yy);ctx.stroke(); ctx.fillText(fmtShort(v),mL-5,yy); });
+  // goal target dashed line + label
+  ctx.strokeStyle='#c98a1f';ctx.lineWidth=2;ctx.setLineDash([6,5]);ctx.beginPath();ctx.moveTo(mL,Y(target));ctx.lineTo(w-mR,Y(target));ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#9a6a17';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.fillText('Goal '+fmtShort(target),mL+3,Math.max(mT+9,Y(target)-5));
+  // area + path
+  ctx.beginPath();ctx.moveTo(X(0),Y(path[0])); for(let y=0;y<=yrs;y++)ctx.lineTo(X(y),Y(path[y])); ctx.lineTo(X(yrs),mT+ph);ctx.lineTo(X(0),mT+ph);ctx.closePath();
   const grd=ctx.createLinearGradient(0,0,0,h);grd.addColorStop(0,'#7c4dff55');grd.addColorStop(1,'#7c4dff08');ctx.fillStyle=grd;ctx.fill();
   ctx.beginPath();ctx.moveTo(X(0),Y(path[0])); for(let y=0;y<=yrs;y++)ctx.lineTo(X(y),Y(path[y])); ctx.strokeStyle='#7c4dff';ctx.lineWidth=2.5;ctx.stroke();
+  // end dot + final value
+  const fx=X(yrs),fy=Y(path[yrs]); ctx.fillStyle='#7c4dff';ctx.beginPath();ctx.arc(fx,fy,3.5,0,7);ctx.fill();
+  ctx.fillStyle='#5b2ee6';ctx.textAlign='right';ctx.fillText(fmtShort(path[yrs]),fx-3,fy-7);
+  // X-axis year labels
+  ctx.fillStyle='#6b746e';ctx.textBaseline='alphabetic';
+  ctx.textAlign='left';ctx.fillText('Now',mL,h-6);
+  ctx.textAlign='center';ctx.fillText('Yr '+Math.round(yrs/2),mL+pw/2,h-6);
+  ctx.textAlign='right';ctx.fillText('Yr '+yrs,w-mR,h-6);
 }
+function toggleOddsHelp(){ const b=document.getElementById('oddsHelp'), t=document.getElementById('oddsHelpTog'); if(!b||!t)return;
+  const open=b.style.display!=='none'; b.style.display=open?'none':'block'; t.setAttribute('aria-expanded',String(!open));
+  t.textContent=(open?'▸':'▾')+' How are these odds calculated?'; }
 function wireGoals(){
   document.querySelectorAll('#goalPreset .chip').forEach(c=>c.onclick=()=>{
     document.querySelectorAll('#goalPreset .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');

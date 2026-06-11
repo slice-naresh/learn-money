@@ -567,6 +567,13 @@ check('Goals: preset chip sets amount + years', ()=>{
   if(+$('#goalAmt').value!==5000000 || +$('#goalYears').value!==7) throw new Error('home preset not applied');
   return 'home → ₹50L / 7y';
 });
+check('Goals: odds-help expander toggles', ()=>{
+  win.showSec('goals'); const box=$('#oddsHelp'); if(!box) throw new Error('no odds-help box');
+  if(box.style.display!=='none') throw new Error('expander not collapsed by default');
+  win.toggleOddsHelp(); if(box.style.display==='none') throw new Error('did not open');
+  if(!/1,200|imaginary|chance/i.test(box.textContent)) throw new Error('explanation missing');
+  return 'odds expander works';
+});
 
 
 // ---- report ----
