@@ -576,6 +576,43 @@ check('Money fields show live thousand-commas + reads stay numeric', ()=>{
   win.showSec('results'); if(/NaN/.test($('#num1').textContent)) throw new Error('comma broke the math');
   return 'lumpAmt → 25,00,000; math intact';
 });
+check('Goals: product mixes drive blended return + slider lock', ()=>{
+  win.showSec('goals');
+  click($('#goalMixChips [data-gm="safe"]'));
+  if(!$('#goalRet').disabled) throw new Error('slider not locked under a mix');
+  const safeRet=+$('#goalRet').value;
+  click($('#goalMixChips [data-gm="growth"]'));
+  const growthRet=+$('#goalRet').value;
+  if(!(growthRet>safeRet)) throw new Error('growth blend not higher than safe: '+safeRet+' vs '+growthRet);
+  click($('#goalMixChips [data-gm="custom"]'));
+  if($('#goalRet').disabled) throw new Error('custom did not unlock slider');
+  click($('#goalMixChips [data-gm="balanced"]'));
+  return `safe ${safeRet}% < growth ${growthRet}%; custom unlocks`;
+});
+check('Goals: what\'s-inside expander lists products w/ lesson links', ()=>{
+  win.showSec('goals'); click($('#goalMixChips [data-gm="balanced"]'));
+  win.toggleGoalMix(); const box=$('#goalMixBox');
+  if(box.style.display==='none') throw new Error('mix box did not open');
+  ['Index','PPF'].forEach(t=>{ if(!new RegExp(t,'i').test(box.textContent)) throw new Error('mix missing product: '+t); });
+  win.openLesson('ppf');
+  if(activeSec()!=='sec-invest') throw new Error('lesson link did not navigate');
+  win.toggleGoalMix();
+  return 'mix lists products; links open lessons';
+});
+check('Goals: stress-test bridges plan into the simulator', ()=>{
+  win.resetAll(); win.showSec('goals'); win.renderGoals();
+  const sip=num($('#goalSip').textContent);
+  win.stressTestGoal();
+  if(activeSec()!=='sec-results') throw new Error('did not land on results: '+activeSec());
+  const modeOn=$('#modeChips .chip.on'); if(!modeOn||modeOn.dataset.m!=='sip') throw new Error('mode not sip: '+(modeOn&&modeOn.dataset.m));
+  const sa=num($('#sipAmt').value);
+  if(Math.abs(sa-sip)>1) throw new Error('sipAmt '+sa+' != goal SIP '+sip);
+  const active=$$('[data-tgl].on').length;
+  if(active<3) throw new Error('mix products not applied: '+active);
+  if(/NaN/.test($('#num1').textContent)) throw new Error('NaN in stress-test results');
+  win.resetAll();
+  return 'sip '+sa+'/mo across '+active+' products';
+});
 check('Goals: odds-help expander toggles', ()=>{
   win.showSec('goals'); const box=$('#oddsHelp'); if(!box) throw new Error('no odds-help box');
   if(box.style.display!=='none') throw new Error('expander not collapsed by default');

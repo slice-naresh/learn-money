@@ -735,8 +735,18 @@
         <div class="col"><label class="l" for="goalHave">Already saved for it (₹)</label><input type="number" id="goalHave" value="0" min="0" max="1000000000" step="50000" aria-label="Amount already saved" oninput="renderGoals()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="goalHave"></div></div>
         <div class="col"><label class="l" for="goalStep">Yearly SIP increase (%)</label><input type="number" id="goalStep" value="5" min="0" max="25" step="1" aria-label="Yearly SIP step-up percent" oninput="renderGoals()" onblur="clampNum(this)"></div>
       </div>
+      <label class="l" style="margin-top:14px">How would you invest it?</label>
+      <div class="chips" id="goalMixChips">
+        <div class="chip" data-gm="safe">🛡️ Safe &amp; steady</div>
+        <div class="chip on" data-gm="balanced">⚖️ Balanced</div>
+        <div class="chip" data-gm="growth">📈 Growth</div>
+        <div class="chip" data-gm="custom">🎚️ Custom %</div>
+      </div>
+      <div id="goalMixInfo" style="font-size:.85rem;color:var(--ink-soft);margin-top:8px;line-height:1.5"></div>
+      <button class="lr-break-tog" id="goalMixTog" onclick="toggleGoalMix()" aria-expanded="false" role="button" tabindex="0" style="margin-top:8px;background:#efeaff;border-color:#cdbcf5;color:var(--green-d)">▸ What's inside this mix?</button>
+      <div class="marg" id="goalMixBox" style="display:none;margin-top:8px"></div>
       <div class="row" style="margin-top:12px">
-        <div class="col"><label class="l" for="goalRet">Expected return <span class="val"><span id="goalRetV">11</span>%/yr</span></label><input type="range" id="goalRet" min="4" max="15" step="0.5" value="11" aria-label="Expected annual return percent" oninput="renderGoals()"><div id="goalVol" style="font-size:.78rem;color:var(--ink-soft);margin-top:6px"></div></div>
+        <div class="col" id="goalRetCol"><label class="l" for="goalRet">Expected return <span class="val"><span id="goalRetV">11</span>%/yr</span></label><input type="range" id="goalRet" min="4" max="15" step="0.5" value="11" aria-label="Expected annual return percent" oninput="renderGoals()"><div id="goalVol" style="font-size:.78rem;color:var(--ink-soft);margin-top:6px"></div></div>
         <div class="col"><label class="l" for="goalInfl">Inflation <span class="val"><span id="goalInflV">6.0</span>%/yr</span></label><input type="range" id="goalInfl" min="2" max="10" step="0.5" value="6" aria-label="Inflation percent" oninput="renderGoals()"></div>
       </div>
       <div class="liveres" style="position:static;margin-top:18px">
@@ -747,6 +757,10 @@
       </div>
       <div class="lsech" style="margin:18px 0 6px">Your odds, once returns wobble</div>
       <div class="marg" id="goalProbBox" style="border-color:#cdbcf5;background:#f3eeff"></div>
+      <div class="marg" id="goalTaxNote" style="margin-top:10px;border-color:#f0c98a;background:#fdf6e8;color:#9a6a17">⚠️ These numbers are <b>before tax &amp; charges</b> — what you actually keep is lower. Press <b>Stress-test</b> to run this exact plan through the simulator with tax and charges included.</div>
+      <div class="btnrow">
+        <button class="nextbtn" id="goalStress" onclick="stressTestGoal()">🧪 Stress-test this plan →</button>
+      </div>
       <canvas id="goalChart" height="200" style="margin-top:14px"></canvas>
       <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span>Projected path (avg return)</span><span><span class="sw" style="background:#c98a1f"></span>Goal target</span></div>
       <div style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5"><b>Reading the chart:</b> the horizontal axis is <b>time</b> (Now → year by year to your goal); the vertical axis is your <b>projected corpus in ₹</b>. The purple curve is your money compounding at the average return; the gold dashed line is the goal amount you need by then.</div>
@@ -1859,20 +1873,56 @@ function gSipForConfidence(target,ret,vol,yrs,have,step,want,baseSip){
   for(let it=0;it<8&&gProb(hi,ret,vol,yrs,have,step,target,400)<want;it++) hi*=1.6;
   for(let it=0;it<10;it++){const mid=(lo+hi)/2; if(gProb(mid,ret,vol,yrs,have,step,target,400)>=want)hi=mid; else lo=mid;}
   return hi; }
+/* — product mixes: blended return + volatility derived from the products we teach — */
+let GOAL_MIX='balanced', GOAL_LAST=null;
+const GOAL_MIXES={
+ safe:{l:'Safe & steady',alloc:{fd:30,ppf:30,gsec:20,index:20}},
+ balanced:{l:'Balanced',alloc:{index:35,ppf:20,fd:15,gold_etf:15,equity_mf:15}},
+ growth:{l:'Growth',alloc:{index:40,equity_mf:25,elss:15,gold_etf:10,ppf:10}}
+};
+const ANIM_VOL={locked:0.02,steady:0.04,floaty:0.13,bumpy:0.16,wild:0.35};   // yearly swing by behaviour type
+function goalMixStats(key){
+  const m=GOAL_MIXES[key]; if(!m) return null;
+  let ret=0,vol=0;
+  for(const id in m.alloc){ const w=m.alloc[id]/100, p=PRODUCTS.find(x=>x.id===id);
+    ret+=w*((PS_DEFAULTS[id]?PS_DEFAULTS[id].ret:8)/100); vol+=w*(ANIM_VOL[(p&&p.anim)||'steady']||0.08); }
+  return {ret,vol,alloc:m.alloc,l:m.l};
+}
+function toggleGoalMix(){ const b=document.getElementById('goalMixBox'), t=document.getElementById('goalMixTog'); if(!b||!t)return;
+  const open=b.style.display!=='none'; b.style.display=open?'none':'block'; t.setAttribute('aria-expanded',String(!open));
+  t.textContent=(open?'▸':'▾')+" What's inside this mix?"; }
+function openLesson(id){ showSec('invest'); const h=document.querySelector(`[data-lhead="${id}"]`); if(h){ h.click(); if(h.scrollIntoView) h.scrollIntoView({block:'center'}); } }
 function renderGoals(){
   if(!document.getElementById('goalAmt')) return;
   updateAmtTexts();
   const g=id=>mnum(document.getElementById(id).value);   // strips commas (harmless for slider/int fields)
-  const ret=g('goalRet')/100, infl=g('goalInfl')/100;
+  const infl=g('goalInfl')/100;
   const yrs=Math.max(1,Math.min(40,Math.round(g('goalYears'))));
   const amt=Math.max(0,g('goalAmt')), have=Math.max(0,g('goalHave')), step=Math.max(0,Math.min(25,g('goalStep')))/100;
+  // return + volatility: from the chosen product mix, or the custom slider
+  const mix=GOAL_MIX!=='custom'?goalMixStats(GOAL_MIX):null;
+  let ret,vol;
+  if(mix){ ret=mix.ret; vol=mix.vol;
+    const sl=document.getElementById('goalRet'); if(sl){sl.value=Math.round(ret*200)/2; sl.disabled=true;}
+    document.getElementById('goalMixInfo').innerHTML=`<b>${mix.l}</b> mix earns about <b>${(ret*100).toFixed(1)}%/yr</b> with a yearly swing of about <b>±${Math.round(vol*100)}%</b> — both come from the products inside it.`;
+    const box=document.getElementById('goalMixBox');
+    if(box) box.innerHTML='<div class="ibrk">'+Object.entries(mix.alloc).map(([id,w])=>{const p=PRODUCTS.find(x=>x.id===id)||{icon:'•'};
+      return `<div class="ir"><span style="cursor:pointer" role="button" tabindex="0" onclick="openLesson('${id}')" onkeydown="if(event.key==='Enter')openLesson('${id}')">${p.icon} <u>${S().names[id]||id}</u></span><span class="rv">${w}% <span class="rv soft">· ~${PS_DEFAULTS[id]?PS_DEFAULTS[id].ret:8}%/yr</span></span></div>`;
+    }).join('')+'<div class="note">Tap a product to read how it works. Mix percentages are illustrative starting points, not advice.</div></div>';
+  } else {
+    ret=g('goalRet')/100; vol=volForReturn(ret);
+    const sl=document.getElementById('goalRet'); if(sl) sl.disabled=false;
+    document.getElementById('goalMixInfo').innerHTML='Custom: pick any return — the swing assumption follows it.';
+  }
+  { const tg=document.getElementById('goalMixTog'), bx=document.getElementById('goalMixBox');
+    if(tg) tg.style.display=mix?'':'none'; if(bx&&!mix) bx.style.display='none'; }
   document.getElementById('goalRetV').textContent=(ret*100)%1?(ret*100).toFixed(1):(ret*100).toFixed(0);
   document.getElementById('goalInflV').textContent=(infl*100).toFixed(1);
   document.getElementById('goalYrsCap').textContent=yrs;
-  const vol=volForReturn(ret);
   document.getElementById('goalVol').textContent='Assumed yearly swing ≈ ±'+Math.round(vol*100)+'% — higher return means a bumpier ride.';
   const future=amt*Math.pow(1+infl,yrs);
   const reqSip=gRequiredSIP(future,ret,yrs,have,step);
+  GOAL_LAST={reqSip,yrs,stepPct:Math.round(step*100)};   // for the stress-test bridge
   animateNum(document.getElementById('goalFuture'),Math.round(future),rupee);
   animateNum(document.getElementById('goalSip'),Math.round(reqSip),rupee);
   const prob=gProb(reqSip,ret,vol,yrs,have,step,future,1200), pc=Math.round(prob*100);
@@ -1925,6 +1975,25 @@ function wireGoals(){
     const p=GOAL_PRESETS[c.dataset.gp]; if(p){document.getElementById('goalAmt').value=mfmt(p[0]);document.getElementById('goalYears').value=p[1];}
     renderGoals();
   });
+  document.querySelectorAll('#goalMixChips .chip').forEach(c=>c.onclick=()=>{
+    document.querySelectorAll('#goalMixChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+    GOAL_MIX=c.dataset.gm; renderGoals();
+  });
+}
+function stressTestGoal(){
+  if(!GOAL_LAST) renderGoals(); if(!GOAL_LAST) return;
+  const mixKey=GOAL_MIX!=='custom'?GOAL_MIX:'balanced';   // custom return still needs products to simulate
+  const alloc=GOAL_MIXES[mixKey].alloc;
+  for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}
+  for(const id in alloc){ if(PS[id]){PS[id].active=true;PS[id].pct=alloc[id];} }
+  // monthly SIP plan over the goal horizon, with the goal's step-up
+  PLAN_YEARS=Math.max(1,Math.min(40,GOAL_LAST.yrs));
+  const py=document.getElementById('planYears'); if(py)py.value=PLAN_YEARS;
+  const su=document.getElementById('sipStepup'); if(su)su.value=GOAL_LAST.stepPct;
+  const sa=document.getElementById('sipAmt'); if(sa)sa.value=mfmt(Math.max(500,Math.round(GOAL_LAST.reqSip)));
+  document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m==='sip'));
+  buildList(); applyLang(); setMode('sip');
+  showSec('results');
 }
 function applySec(name){          // pure switch — no history mutation
   document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+name));
