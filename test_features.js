@@ -564,8 +564,18 @@ check('Goals: Monte-Carlo prob in [0,100]; 90% SIP ≥ required SIP', ()=>{
 });
 check('Goals: preset chip sets amount + years', ()=>{
   win.showSec('goals'); click($('#goalPreset [data-gp="home"]'));
-  if(+$('#goalAmt').value!==5000000 || +$('#goalYears').value!==7) throw new Error('home preset not applied');
+  if(num($('#goalAmt').value)!==5000000 || +$('#goalYears').value!==7) throw new Error('home preset not applied');
   return 'home → ₹50L / 7y';
+});
+check('Money fields show live thousand-commas + reads stay numeric', ()=>{
+  win.resetAll(); win.showSec('how'); click($('#modeChips [data-m="lumpsum"]'));
+  const el=$('#lumpAmt'); if(!el.classList.contains('money')) throw new Error('lumpAmt not a money field');
+  setInput(el,'2500000');                         // dispatch input → live formatter
+  if(el.value!=='25,00,000') throw new Error('no Indian commas: '+el.value);
+  // and the computed engine still reads it as a number (no NaN)
+  win.showSec('choose'); const idx=$('[data-tgl="index"]'); if(!idx.classList.contains('on'))click(idx); setInput($('[data-pct="index"]'),'100');
+  win.showSec('results'); if(/NaN/.test($('#num1').textContent)) throw new Error('comma broke the math');
+  return 'lumpAmt → 25,00,000; math intact';
 });
 check('Goals: odds-help expander toggles', ()=>{
   win.showSec('goals'); const box=$('#oddsHelp'); if(!box) throw new Error('no odds-help box');

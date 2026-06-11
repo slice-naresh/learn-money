@@ -783,6 +783,7 @@
       <div style="margin-top:14px"><label class="l" data-i="infHorizonL"></label><div class="chips" id="infChips"><div class="chip" data-h="5">5</div><div class="chip on" data-h="10">10</div><div class="chip" data-h="20">20</div><div class="chip" data-h="30">30</div></div></div>
       <canvas id="infChart" height="190"></canvas>
       <div class="flow-key"><span><span class="sw" style="background:#efe7d6;border:1px dashed #b9ad95"></span><span data-i="infKeyHave"></span></span><span><span class="sw" style="background:var(--red)"></span><span data-i="infKeyWorth"></span></span></div>
+      <div style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5"><b>Reading it:</b> left→right is <b>years from now</b>; the height is what your cash is <b>worth in today's money</b> — the dashed line is the rupees you keep, the red curve is their shrinking buying power.</div>
       <div class="marg" id="infResult" style="margin-top:14px"></div>
       <button class="nextbtn" onclick="showSec('how')" data-i="next"></button>
     </div>
@@ -862,6 +863,7 @@
       </div>
       <canvas id="growth" height="200"></canvas>
       <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
+      <div id="growthCap" style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5;display:none"><b>Reading it:</b> left→right is <b>years</b> (0 → your horizon); height is <b>total value (₹)</b>. Purple is your portfolio growing; the gold dashed line is where you'd be if money only kept pace with inflation.</div>
       <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
       <div class="pcards" id="pcards"></div>
     </div>
@@ -1131,14 +1133,20 @@ function animateNum(el,target,fmt){
 function fmtIN(n){n=Math.round(+n);return n.toLocaleString('en-IN');}
 function amountWords(n){n=Math.abs(Math.round(+n||0)); const t=v=>(Number.isInteger(v)?v:v.toFixed(2)).toString();
   if(n>=1e7) return t(n/1e7)+' crore'; if(n>=1e5) return t(n/1e5)+' lakh'; if(n>=1e3) return t(n/1e3)+' thousand'; return String(n);}
+/* ===== money inputs: live thousand-commas (Indian grouping) ===== */
+function mnum(v){ return +String(v==null?'':v).replace(/[^0-9.]/g,'')||0; }   // parse a comma'd money string → number
+function mfmt(v){ const s=String(v).replace(/[^0-9.]/g,''); if(s==='')return ''; const a=s.split('.'); return (+a[0]).toLocaleString('en-IN')+(a[1]!=null?'.'+a[1]:''); }
+const MONEY_IDS=['lumpAmt','sipAmt','swpCorpus','swpWd','infAmt','ccBal','ccPay','thCtc','thRent','thC','thD','thNps','thHome','thPt','goalAmt','goalHave'];
+function setupMoneyInputs(){ MONEY_IDS.forEach(id=>{ const e=document.getElementById(id); if(e){ e.type='text'; e.setAttribute('inputmode','numeric'); e.classList.add('money'); if(e.value!=='') e.value=mfmt(e.value); } }); }
+function formatMoneyFields(){ document.querySelectorAll('input.money').forEach(e=>{ if(e.value!=='') e.value=mfmt(e.value); }); }
 function updateAmtTexts(){ document.querySelectorAll('[data-amt-for]').forEach(el=>{
   const inp=document.getElementById(el.dataset.amtFor); if(!inp) return;
-  const v=+inp.value; el.textContent=(inp.value===''||isNaN(v)||v<=0)?'' : '₹'+fmtIN(v)+' · '+amountWords(v); });}
+  const v=mnum(inp.value); el.textContent=(inp.value===''||v<=0)?'' : '₹'+fmtIN(v)+' · '+amountWords(v); });}
 function fmtShort(n){n=+n;const neg=n<0;n=Math.abs(n);let o;if(n>=1e7)o=(n/1e7).toFixed(2)+' Cr';else if(n>=1e5)o=(n/1e5).toFixed(2)+' L';else if(n>=1e3)o=(n/1e3).toFixed(0)+'k';else o=Math.round(n);return (neg?'-₹':'₹')+o;}
 function rupee(n){return (n<0?'-₹':'₹')+fmtIN(Math.abs(n));}
 function marginalRate(income){const sl=REGIME==='old'?REGIME_OLD:REGIME_NEW;for(const[a,b,r]of sl){if(income>a&&income<=b)return r;}return 0.30;}
 function scenReturn(p,exp){return exp;} // market-scenario feature removed; use the expected return
-function amts(){return{lump:+document.getElementById('lumpAmt').value||0,sipM:+document.getElementById('sipAmt').value||0,swpC:+document.getElementById('swpCorpus').value||0,swpW:+document.getElementById('swpWd').value||0};}
+function amts(){return{lump:mnum(document.getElementById('lumpAmt').value),sipM:mnum(document.getElementById('sipAmt').value),swpC:mnum(document.getElementById('swpCorpus').value),swpW:mnum(document.getElementById('swpWd').value)};}
 
 function pValueAt(p,st,A,y){
   const r=scenReturn(p,st.ret/100), yy=Math.min(y,PLAN_YEARS), i=r/12;
@@ -1270,7 +1278,7 @@ function render(){
     pc.insertAdjacentHTML('beforeend',`<div class="pcard${broke?' broke':''}"><div class="top">${p.icon} ${S().names[p.id]}<span class="bucket ${BCLS[p.bucket]}" style="margin-left:auto">${S().bnames[p.bucket]}</span></div><div class="g"><div class="k">${S().pcInv}</div><div class="v">${rupee(Math.round(o.invested))}</div><div class="k">${S().pcChg}</div><div class="v amber">${rupee(Math.round(o.charges))}</div>${penRow}<div class="k">${S().pcTax}</div><div class="v red">${rupee(Math.round(o.tax))}</div><div class="k">${S().pcNet}</div><div class="v green">${rupee(Math.round(o.net))}</div></div><div style="margin-top:10px">${exitTgl}</div></div>`);
   }
   pc.querySelectorAll('[data-rbrk]').forEach(el=>el.onclick=()=>{const id=el.dataset.rbrk;PS[id].broke=!PS[id].broke;render();});
-  document.getElementById('growthKey').style.display=(MODE!=='swp'&&rows.length)?'flex':'none';
+  { const gShow=(MODE!=='swp'&&rows.length); document.getElementById('growthKey').style.display=gShow?'flex':'none'; const gc=document.getElementById('growthCap'); if(gc)gc.style.display=gShow?'block':'none'; }
   const iv=document.getElementById('inflVerdict');
   if(MODE!=='swp' && rows.length && tInv>0){
     const inflEl=document.getElementById('infRate'), inflR=(inflEl?(+inflEl.value||0):5)/100;
@@ -1347,7 +1355,7 @@ function interp(a,x){const i=Math.floor(x);if(i>=a.length-1)return a[a.length-1]
 let INF_H=10, infAnim=null;
 function renderInflation(){
   updateAmtTexts();
-  const amt=+document.getElementById('infAmt').value||0, i=(+document.getElementById('infRate').value||0)/100;
+  const amt=mnum(document.getElementById('infAmt').value), i=(+document.getElementById('infRate').value||0)/100;
   document.getElementById('infRateV').textContent=(i*100).toFixed(1);
   const real=amt/Math.pow(1+i,INF_H), loss=amt-real, pct=amt>0?(loss/amt*100):0, fut=100*Math.pow(1+i,INF_H);
   document.getElementById('infResult').innerHTML=S().infResult(fmtIN(amt),fmtIN(Math.round(real)),fmtIN(Math.round(loss)),pct.toFixed(0),INF_H)+S().infSamosa(Math.round(fut));
@@ -1483,7 +1491,7 @@ function resetAll(){
   document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.h==='10'));
   document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m==='lumpsum'));
   setMode('lumpsum');
-  buildList();applyLang();
+  buildList();applyLang();formatMoneyFields();
   showSec('home'); NAV_STACK=[];        // back to a clean home
   showCoachIfFirst();                   // storage cleared → welcome shows again
 }
@@ -1572,7 +1580,7 @@ function incomeTaxOn(taxable, regime, age){       // slabs + 87A + marginal reli
   return Math.max(0, withSur*(1+CESS));
 }
 function salaryCalc(regime){
-  const gv=id=>{const e=document.getElementById(id);return e?(+e.value||0):0;};
+  const gv=id=>{const e=document.getElementById(id);return e?mnum(e.value):0;};   // mnum strips commas (harmless for % fields)
   const ctc=Math.max(0,gv('thCtc')), basic=ctc*(gv('thBasic')||40)/100;
   const epfRate=Math.max(0,gv('thEpfRate'))/100;                 // editable EPF % of basic
   const employerPF=basic*epfRate, employeePF=basic*epfRate;
@@ -1682,11 +1690,14 @@ document.addEventListener('keydown',e=>{
 });
 /* ===== Input hardening: clamp to min/max on blur ===== */
 function clampNum(el){
-  const min=el.min!==''?+el.min:-Infinity, max=el.max!==''?+el.max:Infinity;
-  let v=+el.value;
+  const money=el.classList&&el.classList.contains('money');
+  const minA=el.getAttribute('min'), maxA=el.getAttribute('max');   // text money inputs ignore .min/.max props → read attrs
+  const min=(minA!=null&&minA!=='')?+minA:-Infinity, max=(maxA!=null&&maxA!=='')?+maxA:Infinity;
+  let v=money?mnum(el.value):+el.value;
   if(el.value===''||isNaN(v)) v=(min>-Infinity)?min:0;
   v=Math.max(min,Math.min(max,v));
-  if(String(v)!==el.value){el.value=v; el.dispatchEvent(new Event('input',{bubbles:true}));}
+  const out=money?mfmt(v):String(v);
+  if(out!==el.value){el.value=out; el.dispatchEvent(new Event('input',{bubbles:true}));}
 }
 function confirmReset(){ if(typeof confirm!=='function'||confirm('Reset everything back to the starting example?')) resetAll(); }
 function toggleKid(){ const on=document.body.classList.toggle('kid'); const b=document.getElementById('kidBtn'); if(b){b.classList.toggle('on',on); b.textContent=on?'🧒 Kid mode: ON':'🧒 Kid mode';} saveState(); }
@@ -1722,7 +1733,7 @@ function endTour(){ document.querySelectorAll('.tour-spot').forEach(e=>e.classLi
 const LM_KEY='lm_state';
 function saveState(){ try{
   const ps={}; for(const id in PS){const s=PS[id]; ps[id]={active:s.active,pct:s.pct,years:s.years,ret:s.ret,broke:s.broke};}
-  const g=id=>{const e=document.getElementById(id);return e?e.value:null;};
+  const g=id=>{const e=document.getElementById(id);return e?mnum(e.value):null;};   // store clean numbers (strip commas)
   localStorage.setItem(LM_KEY, JSON.stringify({
     ps, mode:MODE, regime:REGIME, exit:EXIT_EARLY, adj:INFL_ADJ, adjYrs:INFL_YRS, infH:INF_H,
     kid:document.body.classList.contains('kid'),
@@ -1746,6 +1757,7 @@ function loadState(){ let s; try{s=JSON.parse(localStorage.getItem(LM_KEY));}cat
     document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.iy===INFL_YRS));
     document.querySelectorAll('#infChips .chip').forEach(x=>x.classList.toggle('on',+x.dataset.h===INF_H));
     if(s.kid){document.body.classList.add('kid'); const b=document.getElementById('kidBtn'); if(b){b.classList.add('on');b.textContent='🧒 Kid mode: ON';}}
+    formatMoneyFields();
     return true;
   }catch(e){return false;}
 }
@@ -1766,8 +1778,8 @@ let CC_MODE='min';
 function renderCredit(){
   updateAmtTexts();
   const balEl=document.getElementById('ccBal'); if(!balEl) return;
-  const bal=Math.max(0,+balEl.value||0), apr=+document.getElementById('ccApr').value||0, i=apr/100/12;
-  const fixedPay=Math.max(0,+document.getElementById('ccPay').value||0);
+  const bal=Math.max(0,mnum(balEl.value)), apr=+document.getElementById('ccApr').value||0, i=apr/100/12;
+  const fixedPay=Math.max(0,mnum(document.getElementById('ccPay').value));
   document.getElementById('ccAprV').textContent=apr;
   let B=bal, months=0, totalInt=0, totalPaid=0, never=false; const cap=1200;
   if(bal>0){
@@ -1832,7 +1844,7 @@ function gSipForConfidence(target,ret,vol,yrs,have,step,want,baseSip){
 function renderGoals(){
   if(!document.getElementById('goalAmt')) return;
   updateAmtTexts();
-  const g=id=>+document.getElementById(id).value||0;
+  const g=id=>mnum(document.getElementById(id).value);   // strips commas (harmless for slider/int fields)
   const ret=g('goalRet')/100, infl=g('goalInfl')/100;
   const yrs=Math.max(1,Math.min(40,Math.round(g('goalYears'))));
   const amt=Math.max(0,g('goalAmt')), have=Math.max(0,g('goalHave')), step=Math.max(0,Math.min(25,g('goalStep')))/100;
@@ -1892,7 +1904,7 @@ function toggleOddsHelp(){ const b=document.getElementById('oddsHelp'), t=docume
 function wireGoals(){
   document.querySelectorAll('#goalPreset .chip').forEach(c=>c.onclick=()=>{
     document.querySelectorAll('#goalPreset .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
-    const p=GOAL_PRESETS[c.dataset.gp]; if(p){document.getElementById('goalAmt').value=p[0];document.getElementById('goalYears').value=p[1];}
+    const p=GOAL_PRESETS[c.dataset.gp]; if(p){document.getElementById('goalAmt').value=mfmt(p[0]);document.getElementById('goalYears').value=p[1];}
     renderGoals();
   });
 }
@@ -1931,6 +1943,8 @@ function initMotion(){
       t.appendChild(s); setTimeout(()=>s.remove(),650);
     },{passive:true});
   }
+  // live thousand-commas as the user types in any .money field (capture phase → before render reads)
+  document.addEventListener('input',e=>{ const el=e.target; if(el&&el.classList&&el.classList.contains('money')){ el.value=mfmt(el.value); } },true);
   // header depth on scroll
   const hd=document.querySelector('header');
   const onScroll=()=>{ if(hd) hd.classList.toggle('scrolled',(window.scrollY||0)>8); };
@@ -2005,6 +2019,7 @@ buildList();
 buildLibrary();
 renderTax();
 renderCredit();
+setupMoneyInputs();          // convert money fields to comma-formatted text inputs
 wireGoals(); renderGoals();
 document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m===MODE));
 setMode(MODE);

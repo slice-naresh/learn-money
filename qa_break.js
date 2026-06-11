@@ -102,8 +102,9 @@ click($('#ccModeChips [data-cm="min"]'));
 
 // 12) Clamp-on-blur actually clamps
 win.resetAll(); win.showSec('how'); const la=$('#lumpAmt');
-setI(la,'-999'); blur(la); ok(+la.value>=1000,'lumpAmt negative not clamped: '+la.value);
-setI(la,'1e15'); blur(la); ok(+la.value<=1000000000,'lumpAmt huge not clamped: '+la.value);
+const mv=el=>+String(el.value).replace(/,/g,'');   // money fields render with commas
+setI(la,'-999'); blur(la); ok(mv(la)>=1000,'lumpAmt negative not clamped: '+la.value);
+setI(la,'1e15'); blur(la); ok(mv(la)<=1000000000,'lumpAmt huge not clamped: '+la.value);
 
 // 13) Toggle all on then all off (stress) — no NaN, total 0
 win.resetAll(); win.showSec('choose');
