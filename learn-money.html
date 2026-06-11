@@ -836,9 +836,6 @@
         <div class="col"><label class="l" for="planYears">Invest for (years)</label><input type="number" id="planYears" value="10" min="1" max="40" step="1" aria-label="Years to invest" oninput="setPlanYears()" onblur="clampNum(this)"></div>
         <div class="col amtgrp" id="grpStepup"><label class="l" for="sipStepup">Yearly SIP increase (%)</label><input type="number" id="sipStepup" value="10" min="0" max="50" step="1" aria-label="Yearly SIP step-up percent" oninput="render()" onblur="clampNum(this)"></div>
       </div>
-      <div class="" style="margin-top:16px"><label class="l" data-i="regL"></label><div class="chips" id="regChips"><div class="chip on" data-r="new" data-i="regNew"></div><div class="chip" data-r="old" data-i="regOld"></div></div></div>
-      <div class="marg" id="regBox" style="margin-top:10px"></div>
-      <div class="marg" id="margBox"></div>
       <button class="nextbtn" style="margin-top:18px" onclick="showSec('choose')" data-i="next"></button>
     </div>
   </section>
@@ -880,12 +877,16 @@
       <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
 
       <!-- OPTIONAL: how the user's income bracket changes the tax (the slab vs LTCG lesson) -->
-      <button class="lr-break-tog restog" id="incTog" onclick="toggleResSection('inc')" aria-expanded="false" role="button" tabindex="0">▸ 🧾 How your income changes the tax</button>
+      <button class="lr-break-tog restog" id="incTog" onclick="toggleResSection('inc')" aria-expanded="false" role="button" tabindex="0">▸ 🧾 How your income &amp; tax regime change what you keep</button>
       <div id="incPanel" style="display:none">
         <div class="lens" style="margin-top:10px">
           <label class="l" for="inc"><span data-i="incL"></span> <span class="val"><span id="incV"></span></span></label>
           <input type="range" id="inc" min="0" max="1000" step="1" value="0" aria-label="Your annual income" oninput="render()">
+          <label class="l" data-i="regL" style="margin-top:14px"></label>
+          <div class="chips" id="regChips"><div class="chip on" data-r="new" data-i="regNew"></div><div class="chip" data-r="old" data-i="regOld"></div></div>
           <div class="marg" id="incTaxNote" style="margin-top:10px;border-color:#cdbcf5;background:#f3eeff"></div>
+          <div class="marg" id="regBox" style="margin-top:10px"></div>
+          <div class="marg" id="margBox" style="margin-top:10px"></div>
         </div>
       </div>
 
