@@ -4,7 +4,7 @@ Living spec of **how the app behaves**. Every change request is checked against 
 
 - **App:** single-file generated web app (`gen.py` + `template.html` → `learn-money.html`), India / FY2026-27, English, ages 12–60.
 - **Status:** all figures illustrative — **pending CA sign-off**.
-- **Tests guard this spec:** `test_journeys.js` (62), `test_buckets.js` (11), `test_features.js` (56), `ui_test.js` (24), `qa_break.js` (19 adversarial), `design_lint.js` (9: + adds stuck-opacity-panel & aria-expanded checks). Build: `python3 gen.py`.
+- **Tests guard this spec:** `test_journeys.js` (63), `test_buckets.js` (11), `test_features.js` (59), `ui_test.js` (24), `qa_break.js` (19 adversarial), `design_lint.js` (9: + adds stuck-opacity-panel & aria-expanded checks). Build: `python3 gen.py`.
 
 ---
 
