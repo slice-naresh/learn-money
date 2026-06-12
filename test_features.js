@@ -633,6 +633,27 @@ check('Results: income & regime toggle reveals controls + live slab note', ()=>{
   if(!/slab/i.test(note)||!/12\.5%/.test(note)) throw new Error('slab/LTCG note missing: '+note.slice(0,60));
   return 'income+regime on results, slab note live';
 });
+check('SWP: results never negative + identity (total = income + money-left − costs)', ()=>{
+  const cases=[[2000000,15000,10],[2000000,50000,10],[1000000,25000,5],[10000,100000,1],[5000000,30000,20]];
+  for(const [corpus,wd,yrs] of cases){
+    win.resetAll(); win.setMode('swp');
+    setInput($('#swpCorpus'),String(corpus)); setInput($('#swpWd'),String(wd)); setInput($('#planYears'),String(yrs)); win.setPlanYears&&win.setPlanYears();
+    win.showSec('choose'); const idx=$('[data-tgl="index"]'); if(!idx.classList.contains('on'))click(idx); setInput($('[data-pct="index"]'),'100');
+    win.showSec('results'); win.render();
+    const rows=[...$$('#resTable .ir')].map(r=>r.textContent);
+    const txt=$('#resTable').textContent;
+    if(/-₹|₹-/.test(txt.replace(/− Tax/,''))) throw new Error('negative shown ('+corpus+'/'+wd+'/'+yrs+'): '+txt);
+    const keep=num($('#num1').textContent);
+    if(keep<0) throw new Error('Total you got negative: '+keep);
+    // parse income + money-left + costs from table, check identity
+    const vals=txt.match(/₹[\d,]+/g).map(s=>num(s));
+    // vals: [start, income, moneyLeft, costs, total]
+    const [,income,left,costs,total]=vals;
+    if(Math.abs((income+left-costs)-total)>2) throw new Error('identity off: '+income+'+'+left+'-'+costs+'≠'+total);
+  }
+  win.resetAll();
+  return 'SWP non-negative + identity holds across 5 cases';
+});
 check('Goals: odds-help expander toggles', ()=>{
   win.showSec('goals'); const box=$('#oddsHelp'); if(!box) throw new Error('no odds-help box');
   if(box.style.display!=='none') throw new Error('expander not collapsed by default');

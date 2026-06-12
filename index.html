@@ -814,7 +814,7 @@
       </div>
       <canvas id="goalChart" height="200" style="margin-top:14px"></canvas>
       <div class="flow-key"><span><span class="sw" style="background:var(--green)"></span>Projected path (avg return)</span><span><span class="sw" style="background:#c98a1f"></span>Goal target</span></div>
-      <div style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5"><b>Reading the chart:</b> the horizontal axis is <b>time</b> (Now → year by year to your goal); the vertical axis is your <b>projected corpus in ₹</b>. The purple curve is your money compounding at the average return; the gold dashed line is the goal amount you need by then.</div>
+      <div style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5"><b>Reading the chart:</b> the horizontal axis is <b>time</b> (Now → year by year to your goal); the vertical axis is your <b>projected savings in ₹</b>. The purple curve is your money compounding at the average return; the gold dashed line is the goal amount you need by then.</div>
       <button class="lr-break-tog" id="oddsHelpTog" onclick="toggleOddsHelp()" aria-expanded="false" role="button" tabindex="0" style="margin-top:12px;background:#efeaff;border-color:#cdbcf5;color:var(--green-d)">▸ How are these odds calculated?</button>
       <div class="marg" id="oddsHelp" style="display:none;margin-top:8px">
         We run <b>1,200 imaginary versions</b> of your future. In each, every year's return is picked at random around your expected return (give or take the assumed swing) — some good years, some bad, like real markets. Then we count how many of the 1,200 actually reach your goal: that share is your <b>chance</b>.<br><br>
@@ -859,7 +859,7 @@
       <div class="row" style="margin-top:14px">
         <div class="col amtgrp on" id="grpLump"><label class="l" for="lumpAmt" data-i="lumpL"></label><input type="number" id="lumpAmt" value="500000" min="1000" max="1000000000" step="10000" aria-label="One-time amount in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="lumpAmt"></div></div>
         <div class="col amtgrp" id="grpSip"><label class="l" for="sipAmt" data-i="sipL"></label><input type="number" id="sipAmt" value="10000" min="500" max="10000000" step="500" aria-label="Monthly investment in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="sipAmt"></div></div>
-        <div class="col amtgrp" id="grpSwpC"><label class="l" for="swpCorpus" data-i="swpCL"></label><input type="number" id="swpCorpus" value="2000000" min="10000" max="10000000000" step="50000" aria-label="Starting corpus in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpCorpus"></div></div>
+        <div class="col amtgrp" id="grpSwpC"><label class="l" for="swpCorpus" data-i="swpCL"></label><input type="number" id="swpCorpus" value="2000000" min="10000" max="10000000000" step="50000" aria-label="Money you have saved, in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpCorpus"></div></div>
         <div class="col amtgrp" id="grpSwpW"><label class="l" for="swpWd" data-i="swpWL"></label><input type="number" id="swpWd" value="15000" min="500" max="100000000" step="500" aria-label="Monthly withdrawal in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="swpWd"></div></div>
       </div>
       <div class="row" style="margin-top:14px">
@@ -1101,8 +1101,8 @@ const STR={
   infSamosa:(f)=>` A ₹100 plate of food today would cost about ₹${fmtIN(f)} by then.`,
   s1h:"How you invest", s1hint:"Pick how you'll invest — once, monthly, or drawing an income. Set your income (it drives your tax) and your tax regime. Every number is editable.",
   modeL:"Investing style", mLump:"Invest once", mSip:"Invest monthly", mSwp:"Take money out",
-  modeBox:{lumpsum:"<b>Invest once (lump sum):</b> put the whole amount in once and let it compound.",sip:"<b>Invest monthly (SIP):</b> a fixed amount every month — smaller commitment, automatic discipline, and you buy at many price points.",swp:"<b>Take money out (SWP):</b> start with a pot and withdraw a fixed sum every month — a self-made income. Only the <i>growth</i> part of each withdrawal is taxed, not your principal."},
-  lumpL:"One-time amount (₹)", sipL:"Monthly investment (₹)", swpCL:"Starting pot / corpus (₹)", swpWL:"Monthly withdrawal (₹)",
+  modeBox:{lumpsum:"<b>Invest once (lump sum):</b> put the whole amount in once and let it compound.",sip:"<b>Invest monthly (SIP):</b> a fixed amount every month — smaller commitment, automatic discipline, and you buy at many price points.",swp:"<b>Take money out (SWP):</b> start with money you've already saved and withdraw a fixed sum every month — a self-made income. Only the <i>growth</i> part of each withdrawal is taxed, not the money you put in."},
+  lumpL:"One-time amount (₹)", sipL:"Monthly investment (₹)", swpCL:"Money you've saved up (₹)", swpWL:"Monthly withdrawal (₹)",
   incL:"Your annual income", regL:"Tax regime", regNew:"New regime", regOld:"Old regime",
   lensH:"🎛️ Play with it", exitL:"All your picks", exitHold:"Hold to term", exitEarly:"Exit all early", brkL:"💔 Exit this early?",
   adjL:"Show money as", adjFuture:"Future ₹", adjToday:"Today's ₹ (after inflation)",
@@ -1135,11 +1135,11 @@ const STR={
    {key:'balanced',ic:'⚖️',t:'Balanced',d:'Half growth (index, equity), half safety (PPF, FD, gold). The middle road.'}
   ],
   allocWarn:(t)=>`⚠️ Your allocations add up to <b>${t}%</b>, not 100% — <b>${t>100?(t-100)+'% over':(100-t)+'% to go'}</b>. Results assume you actually invest these shares; drag the sliders so they total 100%.`,
-  swpDry:(n)=>`⚠️ In this scenario, <b>${n}</b> of your picks run out of money before the end — the monthly withdrawal outpaces growth. Lower the withdrawal, raise the corpus, or shorten the horizon.`,
+  swpDry:(n)=>`⚠️ In this scenario, <b>${n}</b> of your picks run out of money before the end — the monthly withdrawal outpaces growth. Lower the monthly withdrawal, start with more, or shorten the horizon.`,
   growthYou:"Your money", growthInf:"If it only kept pace with inflation",
   s3h:"What you'd keep", keyNet:"You keep", keyChg:"Charges", keyTax:"Tax", keyPen:"Early-exit penalty",
-  caps:{keep:"You keep",keepReal:"You keep (today's ₹)",leak:"Lost (tax + charges + penalty)",cagr:"Post-tax return %/yr",invested:"Total you put in",corpus:"Corpus left at end"},
-  resSummary:{lumpsum:(inv,fv)=>`Your mock ${fmtShort(inv)} grows to about ${fmtShort(fv)} before money leaks out.`,sip:(inv,fv)=>`Investing monthly, you put in ${fmtShort(inv)} total, which grows to about ${fmtShort(fv)}.`,swp:(inv,fv,d)=>`From a ${fmtShort(inv)} corpus you draw ${fmtShort(d)} as income, leaving about ${fmtShort(fv)} at the end.`},
+  caps:{keep:"You keep",keepReal:"You keep (today's ₹)",leak:"Lost (tax + charges + penalty)",cagr:"Post-tax return %/yr",invested:"Total you put in",corpus:"Money left at the end"},
+  resSummary:{lumpsum:(inv,fv)=>`Your mock ${fmtShort(inv)} grows to about ${fmtShort(fv)} before money leaks out.`,sip:(inv,fv)=>`Investing monthly, you put in ${fmtShort(inv)} total, which grows to about ${fmtShort(fv)}.`,swp:(inv,fv,d)=>`From ${fmtShort(inv)} of savings you take ${fmtShort(d)} as monthly income, with about ${fmtShort(fv)} still left at the end.`},
   fdPen:"FD broken early — 1% penalty", ppfLock:"PPF locked 15 yrs",
   bnames:{slab:"Taxed at your slab",flat:"Flat 12.5% (LTCG)",exempt:"Tax-free",mixed:"Mixed",crypto:"Flat 30%"},
   yrsL:"Years", retL:"Return %", whatis:"what is this?",
@@ -1336,7 +1336,7 @@ function render(){
   const inflEl2=document.getElementById('infRate'), inflR2=(inflEl2?(+inflEl2.value||0):5)/100;
   const iyrs=INFL_YRS||maxY;   // inflation horizon: chosen years, or the portfolio's own horizon
   const realKeep=(MODE==='swp'?Math.max(tEnd,0):Math.max(tNet,0))/Math.pow(1+inflR2,iyrs);
-  animateNum(document.getElementById('num1'),Math.round(INFL_ADJ?realKeep:tNet),rupee); document.getElementById('cap1').textContent=INFL_ADJ?S().caps.keepReal:(MODE==='swp'?'You keep (income taken + pot left)':S().caps.keep);
+  animateNum(document.getElementById('num1'),Math.round(INFL_ADJ?realKeep:tNet),rupee); document.getElementById('cap1').textContent=INFL_ADJ?S().caps.keepReal:(MODE==='swp'?'Total you got (income + money left)':S().caps.keep);
   { const ab=document.getElementById('adjBox'); if(ab){
       if(rows.length){
         const nominalKeep=Math.round(MODE==='swp'?Math.max(tEnd,0):Math.max(tNet,0));
@@ -1354,28 +1354,43 @@ function render(){
   // SWP story — narrate the four steps so "You keep" isn't three stories in one number
   { const sb=document.getElementById('swpStory');
     if(sb){ if(MODE==='swp' && rows.length){
-      const mw=A.swpW, yrsTot=maxY;
+      const mw=A.swpW, yrsTot=maxY, wanted=mw*yrsTot*12, costs=Math.max(0,tChg+tTax+tPen);
       sb.style.display='block';
+      const step2 = dryN>0
+        ? `2️⃣ You asked for <b>${rupee(Math.round(mw))}/mo</b>, but your money couldn't keep up — it <b>ran out early</b>, so you actually took <b>${rupee(Math.max(0,Math.round(tWd)))}</b> in total before it hit ₹0.`
+        : `2️⃣ You took <b>${rupee(Math.round(mw))}/mo</b> as income — <b>${rupee(Math.max(0,Math.round(tWd)))}</b> over ${yrsTot} years — while the rest kept growing in the background.`;
+      const step3 = dryN>0
+        ? `3️⃣ Nothing's left — you have <b>₹0</b> at the end.`
+        : `3️⃣ You <b>still have ${rupee(Math.max(0,Math.round(tEnd)))}</b> left at the end (growth outpaced what you took out).`;
       sb.innerHTML=`<b>How your money paid you, step by step:</b>
         <div style="margin-top:8px;line-height:1.7">
-        1️⃣ You started with a pot of <b>${rupee(Math.round(tInv))}</b>.<br>
-        2️⃣ Each month the pot <b>grew a little</b>, and you took out <b>${rupee(Math.round(mw))}</b> as income — over ${yrsTot} years that's <b>${rupee(Math.round(tWd))}</b> taken out in total.<br>
-        3️⃣ ${dryN>0?`⚠️ <b>${dryN} of your picks ran dry</b> — withdrawals outpaced growth and that part of the pot hit zero early.`:`The pot still holds <b>${rupee(Math.round(tEnd))}</b> at the end — growth ${tEnd>=tInv?'kept up with':'didn’t fully cover'} your withdrawals.`}<br>
-        4️⃣ Tax applies only to the <b>growth part</b> (not your own money coming back): tax + charges took <b>${rupee(Math.round(tChg+tTax+tPen))}</b>.<br>
-        <b>So "You keep" = income taken (${fmtShort(tWd)}) + pot left (${fmtShort(Math.max(tEnd,0))}) − costs = ${rupee(Math.round(tNet))}.</b></div>`;
+        1️⃣ You started with <b>${rupee(Math.round(A.swpC))}</b> saved up.<br>
+        ${step2}<br>
+        ${step3}<br>
+        4️⃣ Tax + charges on the growth: <b>${rupee(Math.round(costs))}</b>.<br>
+        <b>Total you got = income taken (${fmtShort(Math.max(0,tWd))}) + money left (${fmtShort(Math.max(0,tEnd))}) − costs = ${rupee(Math.max(0,Math.round(tNet)))}.</b></div>`;
     } else sb.style.display='none'; } }
   // clean summary: invested → becomes after tenure → −tax & charges → = keep → after inflation
   { const rt=document.getElementById('resTable');
     if(rt){ if(rows.length){
-      const isSwp=MODE==='swp';
-      const investedVal=isSwp?A.swpC:tInv, becomesVal=isSwp?(tWd+tEnd):grossTotal, costs=tChg+tTax+tPen;
+      const costs=Math.max(0,tChg+tTax+tPen), keep=Math.max(0,Math.round(tNet));
       const r=(c,v,cls,tot)=>`<div class="ir${tot?' tot':''}"><span>${c}</span><span class="rv ${cls||''}">${v}</span></div>`;
-      rt.innerHTML='<div class="ibrk">'
-        +r(isSwp?'Starting pot':'Invested — what you put in', rupee(Math.round(investedVal)))
-        +r(`Becomes after ${maxY} year${maxY>1?'s':''}`+(isSwp?' (income + pot left)':' (before tax)'), rupee(Math.round(becomesVal)))
-        +r(`− Tax &amp; charges over ${maxY}y`, '−'+rupee(Math.round(costs)), 'red')
-        +r('= You keep', rupee(Math.round(tNet)), 'green', true)
-        +'</div>';
+      if(MODE==='swp'){
+        // SWP draws DOWN — show income received and pot left SEPARATELY (don't sum into one scary number)
+        rt.innerHTML='<div class="ibrk">'
+          +r('Money you start with', rupee(Math.round(A.swpC)))
+          +r(`Income you took over ${maxY}y`, rupee(Math.max(0,Math.round(tWd))), 'green')
+          +r('Money left at the end', rupee(Math.max(0,Math.round(tEnd)))+(dryN>0?' <span class="rv soft">(ran out)</span>':''))
+          +r('− Tax &amp; charges', '−'+rupee(Math.round(costs)), 'red')
+          +r('= Total you got (income + money left)', rupee(keep), 'green', true)
+          +'</div>';
+      } else {
+        rt.innerHTML='<div class="ibrk">'
+          +r('Invested — what you put in', rupee(Math.round(tInv)))
+          +r(`Becomes after ${maxY} year${maxY>1?'s':''} (before tax)`, rupee(Math.max(0,Math.round(grossTotal))))
+          +r(`− Tax &amp; charges over ${maxY}y`, '−'+rupee(Math.round(costs)), 'red')
+          +r('= You keep', rupee(keep), 'green', true)+'</div>';
+      }
     } else rt.innerHTML='<div class="ibrk" style="color:var(--ink-soft)">Pick at least one product (totalling 100%) to see the result.</div>'; } }
   // income → tax bracket lesson (slab-taxed picks vs flat-LTCG)
   { const itn=document.getElementById('incTaxNote');
@@ -1432,7 +1447,7 @@ function render(){
     } }
   if(lv){
     if(!rows.length) lv.innerHTML='Turn on a product above to see what you keep.';
-    else if(MODE==='swp') lv.innerHTML='Corpus left at the end: <b>'+rupee(Math.round(tEnd))+'</b>'+(dryN>0?' — ⚠️ some picks run dry':'');
+    else if(MODE==='swp') lv.innerHTML='Money left at the end: <b>'+rupee(Math.max(0,Math.round(tEnd)))+'</b>'+(dryN>0?' — ⚠️ some picks ran out early':'');
     else lv.innerHTML=iv.innerHTML;
   }
   { const ec=document.getElementById('exitCalc');
