@@ -217,7 +217,7 @@ check('Inflation: change amount + rate + horizon', ()=>{
   const t=$('#infResult').innerHTML; if(!t.includes('₹')) throw new Error('no result text'); return 'result populated';
 });
 check('Setup: SIP shows SIP input', ()=>{ win.showSec('how'); click($('#modeChips [data-m="sip"]')); if(!$('#grpSip').classList.contains('on')) throw new Error('sip grp hidden'); return 'ok'; });
-check('Setup: SWP shows corpus+withdrawal', ()=>{ click($('#modeChips [data-m="swp"]')); if(!$('#grpSwpC').classList.contains('on')||!$('#grpSwpW').classList.contains('on')) throw new Error('swp grps hidden'); return 'ok'; });
+check('SWP (drill-down only): setMode shows corpus+withdrawal', ()=>{ win.showSec('how'); win.setMode('swp'); if(!$('#grpSwpC').classList.contains('on')||!$('#grpSwpW').classList.contains('on')) throw new Error('swp grps hidden'); if($('#modeChips [data-m="swp"]')) throw new Error('SWP chip should be gone from Setup'); win.setMode('lumpsum'); return 'swp reachable via setMode, no Setup chip'; });
 check('Setup: back to lump sum', ()=>{ click($('#modeChips [data-m="lumpsum"]')); if(!$('#grpLump').classList.contains('on')) throw 0; return 'ok'; });
 check('Income slider to MAX (~50Cr) + surcharge note', ()=>{ setInput($('#inc'),'1000'); const v=$('#incV').textContent; const mb=$('#margBox').innerHTML; if(!v.includes('Cr')) throw new Error('incV='+v); if(!/surcharge/i.test(mb)) throw new Error('no surcharge note'); return v+' / surcharge shown'; });
 check('Income slider back to ~15L', ()=>{ setInput($('#inc'),'217'); const v=$('#incV').textContent; if(!v.includes('L')) throw new Error('incV='+v); return v; });

@@ -496,6 +496,13 @@
   .locard .lo-h{font-family:var(--display);font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
   .locard .lo-ret{margin-left:auto;font-family:var(--body);font-size:.75rem;font-weight:700;color:var(--ink-soft);background:#0a0f0c0d;border-radius:999px;padding:2px 9px}
   .locard .lo-v{font-size:.9rem;line-height:1.5;color:var(--ink)}
+  .locard.lo-pick{cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s}
+  .locard.lo-pick:hover{transform:translateY(-1px);box-shadow:0 7px 18px -9px #1a103a33}
+  .locard.lo-sel{border:2px solid var(--green);box-shadow:0 0 0 3px #7c4dff22}
+  .locard .lo-pickrow{display:flex;align-items:center;gap:7px;margin-top:10px;font-weight:700;font-size:.8rem;color:var(--ink-soft)}
+  .locard.lo-sel .lo-pickrow{color:var(--green-d)}
+  .locard .lo-radio{width:15px;height:15px;border-radius:50%;border:2px solid #c7b8ef;flex:none}
+  .locard.lo-sel .lo-radio{border-color:var(--green);background:radial-gradient(circle at center,var(--green) 0 4px,transparent 5px)}
   .hl-hero{text-align:center;margin:10px 0 2px}
   .hl-hero .hl-num{font-size:clamp(2rem,6.5vw,3.1rem)}
   /* subtle soft-lavender tool buttons */
@@ -844,10 +851,12 @@
       <label class="l" style="margin-top:14px">What should happen to your savings?</label>
       <div class="chips" id="loModeChips"><div class="chip on" data-lm="draw">💸 OK to spend it down</div><div class="chip" data-lm="keep">🔒 Keep my savings intact (live on returns only)</div></div>
       <label class="l" id="loYrsLabel" style="margin-top:14px">For how long do you need this income?</label>
-      <div class="chips" id="loYrsChips"><div class="chip on" data-y="0">As long as it lasts</div><div class="chip" data-y="20">20 yrs</div><div class="chip" data-y="25">25 yrs</div><div class="chip" data-y="30">30 yrs</div><div class="chip" data-y="40">40 yrs</div></div>
+      <div class="chips" id="loYrsChips"><div class="chip on" data-y="0">As long as it lasts</div><div class="chip" data-y="20">20 yrs</div><div class="chip" data-y="25">25 yrs</div><div class="chip" data-y="30">30 yrs</div><div class="chip" data-y="40">40 yrs</div><div class="chip" data-y="custom">✏️ Exact years</div></div>
+      <div id="loYrsCustomWrap" style="display:none;margin-top:10px;max-width:240px"><label class="l" for="loYrsCustom">Type the exact number of years</label><input type="number" id="loYrsCustom" value="15" min="1" max="60" step="1" aria-label="Exact number of years you need income" oninput="renderLiveoff()" onblur="clampNum(this)"></div>
       <label class="swpstep" id="loStepRow" style="margin-top:14px"><input type="checkbox" id="loStep" onchange="renderLiveoff()"><span>📈 Raise this income with inflation each year <small>(keeps its buying power — a tougher, more realistic test)</small></span></label>
       <div class="marg" id="loVerdict" style="margin-top:16px;font-size:1.05rem"></div>
-      <div class="lsech" style="margin:18px 0 8px">How each option holds up</div>
+      <div class="lsech" style="margin:18px 0 2px">Pick a mix to play out</div>
+      <div class="hint" style="margin-bottom:8px">Each is an example mix of investments. <b>Tap the one you want</b> — we'll run it year by year. You can fine-tune the exact products on the next screen.</div>
       <div id="loCards"></div>
       <div class="btnrow"><button class="nextbtn" id="loSimBtn" onclick="liveoffToSim()">🧪 See it play out, year by year →</button></div>
       <div class="taxdisc" style="margin-top:14px">⚠️ Illustrative — returns are assumed averages, real markets wobble. "Lasts forever" means the income stays under what the savings earn. Not advice; for a real plan see a SEBI-registered adviser.</div>
@@ -883,7 +892,7 @@
       <div class="marg" id="howCtx" style="display:none;margin:0 0 14px;border-color:#cdbcf5;background:#f3eeff;color:var(--green-d)"></div>
       <h2 data-i="s1h"></h2><div class="hint" data-i="s1hint"></div>
       <label class="l" data-i="modeL"></label>
-      <div class="chips" id="modeChips"><div class="chip on" data-m="lumpsum" data-i="mLump"></div><div class="chip" data-m="sip" data-i="mSip"></div><div class="chip" data-m="swp" data-i="mSwp"></div></div>
+      <div class="chips" id="modeChips"><div class="chip on" data-m="lumpsum" data-i="mLump"></div><div class="chip" data-m="sip" data-i="mSip"></div></div>
       <div class="marg" id="modeBox"></div>
       <div class="row" style="margin-top:14px">
         <div class="col amtgrp on" id="grpLump"><label class="l" for="lumpAmt" data-i="lumpL"></label><input type="number" id="lumpAmt" value="500000" min="1000" max="1000000000" step="10000" aria-label="One-time amount in rupees" oninput="render()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="lumpAmt"></div></div>
@@ -924,6 +933,7 @@
   <section id="sec-results" class="sec">
     <div class="card">
       <h2 data-i="s3h"></h2><div class="hint" id="resSummary"></div>
+      <div class="marg" id="liveWhy" style="display:none;margin-bottom:14px;border-color:#9bcfae;background:#eef8f1"></div>
       <div class="marg" id="swpStory" style="display:none;margin-bottom:14px;border-color:#cdbcf5;background:#f3eeff"></div>
       <div class="marg" id="dedBox" style="display:none;border-color:#9bcfae;background:#eef8f1"></div>
       <div class="marg" id="swpDryBox" style="display:none;border-color:#f0c98a;background:#fdf6e8;color:#9a6a17"></div>
@@ -1404,6 +1414,8 @@ function render(){
   else if(MODE==='sip'){animateNum(document.getElementById('num3'),Math.round(tInv),rupee); document.getElementById('cap3').textContent=S().caps.invested;}
   else{animateNum(document.getElementById('num3'),Math.round(tEnd),rupee); document.getElementById('cap3').textContent=S().caps.corpus;}
   document.getElementById('resSummary').textContent=S().resSummary[MODE]((tInv||A.swpC),(MODE==='swp'?tEnd:grossTotal),tWd);
+  // "Why these investments?" — only when arriving from the live-off flow (SWP), so picks aren't a silent assumption
+  { const lw=document.getElementById('liveWhy'); if(lw){ if(MODE==='swp'&&LIVEOFF_NOTE){ lw.style.display='block'; lw.innerHTML=LIVEOFF_NOTE; } else lw.style.display='none'; } }
   // SWP story — narrate the four steps so "You keep" isn't three stories in one number
   { const sb=document.getElementById('swpStory');
     if(sb){ if(MODE==='swp' && rows.length){
@@ -1707,7 +1719,7 @@ function resetAll(){
   try{localStorage.removeItem(LM_KEY);localStorage.removeItem('lm_seen');}catch(e){}   // clean reset — wipe saved state + re-arm the coachmark
   const d=PS_DEFAULTS;
   for(const id in PS){PS[id].active=d[id].active;PS[id].pct=d[id].pct;PS[id].years=d[id].years;PS[id].ret=d[id].ret;PS[id].broke=d[id].broke;}
-  REGIME='new';INF_H=10;PLAN_YEARS=10;
+  REGIME='new';INF_H=10;PLAN_YEARS=10;LIVEOFF_MIX=null;LIVEOFF_SEL='balanced';LIVEOFF_NOTE='';
   { const py=document.getElementById('planYears'); if(py)py.value=10; const su=document.getElementById('sipStepup'); if(su)su.value=10; }
   document.getElementById('lumpAmt').value=500000;
   document.getElementById('sipAmt').value=10000;
@@ -2072,6 +2084,9 @@ function gSipForConfidence(target,ret,vol,yrs,have,step,want,baseSip){
   return hi; }
 /* — product mixes: blended return + volatility derived from the products we teach — */
 let GOAL_MIX='balanced', GOAL_LAST=null;
+let LIVEOFF_MIX=null, LIVEOFF_SEL='balanced', LIVEOFF_NOTE='';   // MIX: null=auto-pick safest that works; SEL=resolved key carried into the sim
+function pickLiveMix(k){ LIVEOFF_MIX=k; renderLiveoff(); }
+const MIX_PLAIN={safe:'mostly FD, PPF and government bonds with a little index fund',balanced:'a spread of index funds, PPF, FD, gold and equity funds',growth:'mostly index and equity funds, with some gold and PPF'};
 const GOAL_MIXES={
  safe:{l:'Safe & steady',alloc:{fd:30,ppf:30,gsec:20,index:20}},
  balanced:{l:'Balanced',alloc:{index:35,ppf:20,fd:15,gold_etf:15,equity_mf:15}},
@@ -2239,28 +2254,36 @@ function renderLiveoff(){
   const keep=loMode==='keep';
   // in keep-intact mode the horizon is irrelevant (it lasts forever) — hide the years question
   { const yc=document.getElementById('loYrsChips'), yl=document.getElementById('loYrsLabel'); if(yc)yc.style.display=keep?'none':'flex'; if(yl)yl.style.display=keep?'none':'block'; }
-  const yrChip=document.querySelector('#loYrsChips .chip.on'); const wantYears=yrChip?+yrChip.dataset.y:0;
+  const yrChip=document.querySelector('#loYrsChips .chip.on'); const yVal=yrChip?yrChip.dataset.y:'0';
+  // custom years: reveal the field and read it; otherwise use the chip number (0 = "as long as it lasts")
+  const isCustom=yVal==='custom';
+  { const cw=document.getElementById('loYrsCustomWrap'); if(cw)cw.style.display=(isCustom&&!keep)?'block':'none'; }
+  const wantYears=isCustom?Math.max(1,Math.min(60,Math.round(mnum(document.getElementById('loYrsCustom').value)||0))):(+yVal||0);
   const H = wantYears>0 ? wantYears : 40;
   const need = wantYears>0 ? wantYears : null;
   const MIXES=[{k:'safe',ic:'🛡️',l:'Safe & steady (mostly FD, PPF, bonds)'},{k:'balanced',ic:'⚖️',l:'Balanced'},{k:'growth',ic:'📈',l:'Growth (more equity)'}];
   const lv=document.getElementById('loVerdict'), mw=fmtIN(want), mh=fmtShort(have);
+  // build a card; mark feasible mixes, auto-select the safest one that works (user can tap to override)
+  const wrap=(m,cls,v,ret,sel)=>`<div class="locard lo-pick lo-${cls}${sel?' lo-sel':''}" role="button" tabindex="0" onclick="pickLiveMix('${m.k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickLiveMix('${m.k}')}"><div class="lo-h">${m.ic} ${m.l} <span class="lo-ret">~${(ret*100).toFixed(1)}%/yr</span></div><div class="lo-v">${v}</div><div class="lo-pickrow"><span class="lo-radio"></span>${sel?'Selected — this plays out':'Tap to play this one out'}</div></div>`;
   if(keep){
     // live on the RETURNS only — principal stays whole (real return if income must rise with inflation)
     let safeEarn=0;
-    const cards=MIXES.map(m=>{ const ret=goalMixStats(m.k).ret, earn=have*Math.max(0,ret-step)/12;
+    const data=MIXES.map(m=>{ const ret=goalMixStats(m.k).ret, earn=have*Math.max(0,ret-step)/12;
       if(m.k==='safe') safeEarn=earn;
-      const ok=want<=earn, cls=ok?'win':'lose';
+      const ok=want<=earn;
       const v=ok? `✅ <b>Yes — savings stay whole.</b> Earns about <b>${rupee(Math.round(earn))}/mo</b>${step?' (and rising with inflation)':''}, which covers your ₹${mw}/mo. You never touch the ${mh}.`
                 : `⚠️ <b>Earns only ${rupee(Math.round(earn))}/mo</b> without dipping in${step?' (after keeping pace with inflation)':''} — ₹${mw}/mo would eat into your savings. Pick "spend it down", draw less, or take more risk.`;
-      return `<div class="locard lo-${cls}"><div class="lo-h">${m.ic} ${m.l} <span class="lo-ret">~${(ret*100).toFixed(1)}%/yr</span></div><div class="lo-v">${v}</div></div>`;
-    }).join('');
-    document.getElementById('loCards').innerHTML=cards;
+      return {m,ok,ret,v};
+    });
+    const auto=(data.find(d=>d.ok)||data[data.length-1]).m.k;
+    const sel=(LIVEOFF_MIX&&data.some(d=>d.m.k===LIVEOFF_MIX))?LIVEOFF_MIX:auto; LIVEOFF_SEL=sel;
+    document.getElementById('loCards').innerHTML=data.map(d=>wrap(d.m,d.ok?'win':'lose',d.v,d.ret,d.m.k===sel)).join('');
     if(want<=safeEarn){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — without touching your savings.</b> Even a safe FD/PPF-type mix earns about ${rupee(Math.round(safeEarn))}/mo on ${mh}, covering your ₹${mw}/mo. The ${mh} stays whole.`; }
     else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>Not without spending some savings.</b> A safe mix earns about ${rupee(Math.round(safeEarn))}/mo on ${mh} — less than ₹${mw}/mo. To keep your savings whole you'd take less; to get ₹${mw}/mo you'd dip into principal (switch to "spend it down") or take more risk.`; }
     return;
   }
   let safe=null;
-  const cards=MIXES.map(m=>{ const ret=goalMixStats(m.k).ret, res=swpLasts(have,want,ret,H,step);
+  const data=MIXES.map(m=>{ const ret=goalMixStats(m.k).ret, res=swpLasts(have,want,ret,H,step);
     const forever=res.lasts&&res.left>=have*0.98;
     if(m.k==='safe') safe={res,forever,ret};
     let v,cls;
@@ -2270,9 +2293,11 @@ function renderLiveoff(){
     } else if(forever){v=`✅ <b>Could last indefinitely</b> — your income stays under what it earns (~${(ret*100).toFixed(1)}%/yr). After 40y you'd still have about <b>${rupee(Math.round(res.left))}</b>.`;cls='win';}
     else if(res.lasts){v=`🟢 <b>Lasts 40+ years</b> — about <b>${rupee(Math.round(res.left))}</b> left after 40y, but slowly drawing down.`;cls='win';}
     else {v=`⚠️ <b>Runs out in ~${Math.max(1,Math.round(res.years))} years</b> — ₹${fmtIN(want)}/mo is more than this can sustain.`;cls='lose';}
-    return `<div class="locard lo-${cls}"><div class="lo-h">${m.ic} ${m.l} <span class="lo-ret">~${(ret*100).toFixed(1)}%/yr</span></div><div class="lo-v">${v}</div></div>`;
-  }).join('');
-  document.getElementById('loCards').innerHTML=cards;
+    return {m,cls,v,ret};
+  });
+  const auto=(data.find(d=>d.cls==='win')||data[data.length-1]).m.k;
+  const sel=(LIVEOFF_MIX&&data.some(d=>d.m.k===LIVEOFF_MIX))?LIVEOFF_MIX:auto; LIVEOFF_SEL=sel;
+  document.getElementById('loCards').innerHTML=data.map(d=>wrap(d.m,d.cls,d.v,d.ret,d.m.k===sel)).join('');
   if(need){
     if(safe.res.lasts){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — even the safest option covers your ${need} years.</b> ₹${mw}/mo from ${mh} lasts the full ${need} years on a safe FD/PPF-type mix, with money to spare.`; }
     else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>The safest option falls short.</b> ₹${mw}/mo from ${mh} runs out in about <b>${Math.max(1,Math.round(safe.res.years))} years</b> — before your ${need}. Draw less, save more, or take more risk (compare below).`; }
@@ -2281,13 +2306,22 @@ function renderLiveoff(){
   else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>Not from the safest option.</b> ₹${mw}/mo is more than a safe FD/PPF mix earns on ${mh}, so it would run out in about <b>${Math.max(1,Math.round(safe.res.years))} years</b>. Draw less, save more, or take more risk (compare below).`; }
 }
 function liveoffToSim(){
+  renderLiveoff();   // make sure LIVEOFF_SEL reflects the current inputs/selection
   const have=Math.max(0,mnum(document.getElementById('loSaved').value));
   const want=Math.max(0,mnum(document.getElementById('loWant').value));
+  const mixKey=GOAL_MIXES[LIVEOFF_SEL]?LIVEOFF_SEL:'balanced';
   for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}
-  const alloc=GOAL_MIXES.balanced.alloc; for(const id in alloc){if(PS[id]){PS[id].active=true;PS[id].pct=alloc[id];}}
+  const alloc=GOAL_MIXES[mixKey].alloc; for(const id in alloc){if(PS[id]){PS[id].active=true;PS[id].pct=alloc[id];}}
   document.getElementById('swpCorpus').value=mfmt(have); document.getElementById('swpWd').value=mfmt(want);
-  PLAN_YEARS=30; const py=document.getElementById('planYears'); if(py)py.value=30;
+  // horizon: honour the years they chose; "as long as it lasts" runs a long 40y window
+  const yrChip=document.querySelector('#loYrsChips .chip.on'); const yv=yrChip?yrChip.dataset.y:'0';
+  const chosenYrs=yv==='custom'?Math.max(1,Math.min(60,Math.round(mnum(document.getElementById('loYrsCustom').value)||0))):(+yv||0);
+  PLAN_YEARS=chosenYrs>0?Math.max(1,Math.min(40,chosenYrs)):40; const py=document.getElementById('planYears'); if(py)py.value=PLAN_YEARS;
   SWP_STEP=document.getElementById('loStep').checked;
+  // plain-words note on results: WHY these investments are pre-filled, and that they can change them
+  const nm=(S().names)||{}; const named=Object.keys(alloc).map(id=>nm[id]||id);
+  const prettyList=named.slice(0,-1).join(', ')+(named.length>1?' and '+named[named.length-1]:named[0]||'');
+  LIVEOFF_NOTE=`<b>Why these investments?</b><div style="margin-top:7px;line-height:1.6">You picked the <b>${GOAL_MIXES[mixKey].l}</b> mix — ${MIX_PLAIN[mixKey]||'a spread of investments'}. We've spread your <b>${fmtShort(have)}</b> across them below (${prettyList}) and drawn your <b>${rupee(Math.round(want))}/mo</b> from it. <b>Nothing is locked</b> — tap any product on the “Choose” step to change it or its share, and the numbers update.</div>`;
   document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m==='swp'));
   buildList();applyLang();setMode('swp'); showSec('results');
 }

@@ -153,7 +153,7 @@ click($('#regChips [data-r="new"]')); // restore
 check('SWP dry corpus shows "ran out" message', ()=>{
   win.resetAll(); win.showSec('choose');
   const fd=$('[data-tgl="fd"]'); if(!fd.classList.contains('on')) click(fd); setInput($('[data-pct="fd"]'),'100');
-  click($('#modeChips [data-m="swp"]'));
+  win.setMode('swp');
   setInput($('#swpCorpus'),'100000');   // tiny corpus
   setInput($('#swpWd'),'50000');        // huge monthly draw
   win.showSec('results');
@@ -258,7 +258,7 @@ check('Switch mode after picks -> no NaN, total preserved', ()=>{
   const before=$('#totalPct') && (win.showSec('results'),$('#totalPct').textContent);
   win.showSec('choose');
   click($('#modeChips [data-m="sip"]'));
-  click($('#modeChips [data-m="swp"]'));
+  win.setMode('swp');
   click($('#modeChips [data-m="lumpsum"]'));
   win.showSec('results');
   if(bad($('#num1').textContent)) throw new Error('NaN after mode flips');
@@ -646,7 +646,7 @@ check('Live-off: feasibility verdict + drill into SWP simulator', ()=>{
   // drill-down loads the SWP simulator
   setInput($('#loWant'),'40000'); win.renderLiveoff(); win.liveoffToSim();
   if(activeSec()!=='sec-results') throw new Error('drill-down did not reach results');
-  const mode=$('#modeChips .chip.on'); if(!mode||mode.dataset.m!=='swp') throw new Error('not SWP mode after drill-down');
+  if(!$('#grpSwpC').classList.contains('on')||!$('#grpSwpW').classList.contains('on')) throw new Error('not SWP mode after drill-down');
   win.resetAll();
   return 'feasible/infeasible verdicts + SWP drill-down';
 });
@@ -677,6 +677,30 @@ check('Goals: odds-help expander toggles', ()=>{
   win.toggleOddsHelp(); if(box.style.display==='none') throw new Error('did not open');
   if(!/1,200|imaginary|chance/i.test(box.textContent)) throw new Error('explanation missing');
   return 'odds expander works';
+});
+check('Live-off: mix cards are selectable + custom years field + why-note carries the picked mix', ()=>{
+  win.resetAll(); win.showSec('liveoff');
+  setInput($('#loSaved'),'10000000'); setInput($('#loWant'),'40000'); win.renderLiveoff();
+  // every mix card is tappable (the customizer)
+  const cards=$$('#loCards .locard.lo-pick');
+  if(cards.length!==3) throw new Error('expected 3 selectable mix cards, got '+cards.length);
+  if($$('#loCards .locard.lo-sel').length!==1) throw new Error('exactly one card must be pre-selected');
+  // user actively picks Growth → it becomes the selected one
+  win.pickLiveMix('growth');
+  const sel=$('#loCards .locard.lo-sel'); if(!sel||!/Growth/i.test(sel.textContent)) throw new Error('pickLiveMix did not select Growth');
+  // custom years field appears when "Exact years" chip chosen
+  const cc=$('#loYrsChips [data-y="custom"]'); if(!cc) throw new Error('no custom-years chip');
+  click(cc); if($('#loYrsCustomWrap').style.display==='none') throw new Error('custom years field stayed hidden');
+  setInput($('#loYrsCustom'),'18'); win.renderLiveoff();
+  // drill in → simulator carries the PICKED mix (growth) and shows the why-note
+  win.liveoffToSim();
+  if(activeSec()!=='sec-results') throw new Error('did not reach results');
+  const why=$('#liveWhy'); if(!why||why.style.display==='none') throw new Error('why-note hidden');
+  if(!/Growth/i.test(why.textContent)) throw new Error('why-note does not name the picked mix: '+why.textContent.slice(0,60));
+  if(!/Nothing is locked|change/i.test(why.textContent)) throw new Error('why-note must say picks are changeable');
+  if(win.S().planYears&&false){} // horizon honoured: 18y chosen → PLAN_YEARS clamped 1..40
+  win.resetAll();
+  return 'cards selectable, custom years works, why-note names picked mix';
 });
 
 

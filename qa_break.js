@@ -30,7 +30,7 @@ console.log('=== ADVERSARIAL QA ===');
 // 1) Hostile numeric inputs across modes
 win.resetAll(); win.showSec('choose'); activate('fd',100);
 [['lumpsum','#lumpAmt'],['sip','#sipAmt'],['swp','#swpCorpus']].forEach(([m,inp])=>{
-  click($(`#modeChips [data-m="${m}"]`));
+  win.setMode(m);
   ['','-99999','0','0.0001','1e21','99999999999999','abc','   ','-0'].forEach(v=>{
     setI($(inp),v); win.showSec('results'); scanDOM(`mode ${m} input ${inp}="${v}"`);
     win.showSec('choose');
@@ -73,7 +73,7 @@ click(btn); ok(sec()==='sec-choose','disabled proceed button navigated anyway â†
 win.resetAll(); win.showSec('results'); click($('#exitChips [data-exit="1"]')); scanDOM('exit-early with 0 products'); click($('#exitChips [data-exit="0"]'));
 
 // 8) SWP nightmare: corpus 0, huge withdrawal, 0 years
-win.resetAll(); activate('fd',100); click($('#modeChips [data-m="swp"]'));
+win.resetAll(); activate('fd',100); win.setMode('swp');
 [['0','999999'],['1000','99999999'],['100000','0']].forEach(([c,w])=>{setI($('#swpCorpus'),c);setI($('#swpWd'),w);win.showSec('results');scanDOM(`SWP corpus=${c} wd=${w}`);win.showSec('choose');});
 setI($('#planYears'),'0'); win.showSec('results'); scanDOM('SWP 0 years');
 
@@ -130,7 +130,7 @@ click($('#exitChips [data-exit="1"]')); scanDOM('churn + exit-early'); click($('
 
 // 15c) Combo edge cases not hit elsewhere
 // SWP + exit-early
-win.resetAll(); activate('ppf',100); click($('#modeChips [data-m="swp"]')); setI($('#swpCorpus'),'2000000'); setI($('#swpWd'),'15000');
+win.resetAll(); activate('ppf',100); win.setMode('swp'); setI($('#swpCorpus'),'2000000'); setI($('#swpWd'),'15000');
 win.showSec('results'); click($('#exitChips [data-exit="1"]')); scanDOM('SWP + exit-early'); click($('#exitChips [data-exit="0"]'));
 // All 31 active + exit-all-early + inflation today's-money 30y
 win.resetAll(); win.showSec('choose'); $$('#plist .tgl').forEach(t=>{if(!t.classList.contains('on'))click(t);});
