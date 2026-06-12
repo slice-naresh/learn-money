@@ -841,6 +841,10 @@
         <div class="col"><label class="l" for="loSaved">Money you've saved (₹)</label><input type="number" id="loSaved" value="10000000" min="10000" max="10000000000" step="100000" aria-label="Money you have saved, in rupees" oninput="renderLiveoff()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="loSaved"></div></div>
         <div class="col"><label class="l" for="loWant">Monthly income you want (₹)</label><input type="number" id="loWant" value="40000" min="500" max="100000000" step="5000" aria-label="Monthly income you want, in rupees" oninput="renderLiveoff()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="loWant"></div></div>
       </div>
+      <label class="l" style="margin-top:14px">What should happen to your savings?</label>
+      <div class="chips" id="loModeChips"><div class="chip on" data-lm="draw">💸 OK to spend it down</div><div class="chip" data-lm="keep">🔒 Keep my savings intact (live on returns only)</div></div>
+      <label class="l" id="loYrsLabel" style="margin-top:14px">For how long do you need this income?</label>
+      <div class="chips" id="loYrsChips"><div class="chip on" data-y="0">As long as it lasts</div><div class="chip" data-y="20">20 yrs</div><div class="chip" data-y="25">25 yrs</div><div class="chip" data-y="30">30 yrs</div><div class="chip" data-y="40">40 yrs</div></div>
       <label class="swpstep" id="loStepRow" style="margin-top:14px"><input type="checkbox" id="loStep" onchange="renderLiveoff()"><span>📈 Raise this income with inflation each year <small>(keeps its buying power — a tougher, more realistic test)</small></span></label>
       <div class="marg" id="loVerdict" style="margin-top:16px;font-size:1.05rem"></div>
       <div class="lsech" style="margin:18px 0 8px">How each option holds up</div>
@@ -2135,6 +2139,9 @@ function wireGoals(){
     document.querySelectorAll('#goalMixChips .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');
     GOAL_MIX=c.dataset.gm; renderGoals();
   });
+  const grp=(sel,fn)=>document.querySelectorAll(sel+' .chip').forEach(c=>c.onclick=()=>{document.querySelectorAll(sel+' .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');fn&&fn();});
+  grp('#loYrsChips', renderLiveoff);
+  grp('#loModeChips', renderLiveoff);
 }
 function stressTestGoal(){
   if(!GOAL_LAST) renderGoals(); if(!GOAL_LAST) return;
@@ -2161,22 +2168,50 @@ function renderLiveoff(){
   if(!document.getElementById('loSaved'))return; updateAmtTexts();
   const have=Math.max(0,mnum(document.getElementById('loSaved').value));
   const want=Math.max(0,mnum(document.getElementById('loWant').value));
-  const step=document.getElementById('loStep').checked?0.06:0, H=40;
+  const step=document.getElementById('loStep').checked?0.06:0;
+  const loMode=(document.querySelector('#loModeChips .chip.on')||{dataset:{lm:'draw'}}).dataset.lm;
+  const keep=loMode==='keep';
+  // in keep-intact mode the horizon is irrelevant (it lasts forever) — hide the years question
+  { const yc=document.getElementById('loYrsChips'), yl=document.getElementById('loYrsLabel'); if(yc)yc.style.display=keep?'none':'flex'; if(yl)yl.style.display=keep?'none':'block'; }
+  const yrChip=document.querySelector('#loYrsChips .chip.on'); const wantYears=yrChip?+yrChip.dataset.y:0;
+  const H = wantYears>0 ? wantYears : 40;
+  const need = wantYears>0 ? wantYears : null;
   const MIXES=[{k:'safe',ic:'🛡️',l:'Safe & steady (mostly FD, PPF, bonds)'},{k:'balanced',ic:'⚖️',l:'Balanced'},{k:'growth',ic:'📈',l:'Growth (more equity)'}];
+  const lv=document.getElementById('loVerdict'), mw=fmtIN(want), mh=fmtShort(have);
+  if(keep){
+    // live on the RETURNS only — principal stays whole (real return if income must rise with inflation)
+    let safeEarn=0;
+    const cards=MIXES.map(m=>{ const ret=goalMixStats(m.k).ret, earn=have*Math.max(0,ret-step)/12;
+      if(m.k==='safe') safeEarn=earn;
+      const ok=want<=earn, cls=ok?'win':'lose';
+      const v=ok? `✅ <b>Yes — savings stay whole.</b> Earns about <b>${rupee(Math.round(earn))}/mo</b>${step?' (and rising with inflation)':''}, which covers your ₹${mw}/mo. You never touch the ${mh}.`
+                : `⚠️ <b>Earns only ${rupee(Math.round(earn))}/mo</b> without dipping in${step?' (after keeping pace with inflation)':''} — ₹${mw}/mo would eat into your savings. Pick "spend it down", draw less, or take more risk.`;
+      return `<div class="locard lo-${cls}"><div class="lo-h">${m.ic} ${m.l} <span class="lo-ret">~${(ret*100).toFixed(1)}%/yr</span></div><div class="lo-v">${v}</div></div>`;
+    }).join('');
+    document.getElementById('loCards').innerHTML=cards;
+    if(want<=safeEarn){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — without touching your savings.</b> Even a safe FD/PPF-type mix earns about ${rupee(Math.round(safeEarn))}/mo on ${mh}, covering your ₹${mw}/mo. The ${mh} stays whole.`; }
+    else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>Not without spending some savings.</b> A safe mix earns about ${rupee(Math.round(safeEarn))}/mo on ${mh} — less than ₹${mw}/mo. To keep your savings whole you'd take less; to get ₹${mw}/mo you'd dip into principal (switch to "spend it down") or take more risk.`; }
+    return;
+  }
   let safe=null;
   const cards=MIXES.map(m=>{ const ret=goalMixStats(m.k).ret, res=swpLasts(have,want,ret,H,step);
     const forever=res.lasts&&res.left>=have*0.98;
     if(m.k==='safe') safe={res,forever,ret};
     let v,cls;
-    if(forever){v=`✅ <b>Could last indefinitely</b> — your income stays under what it earns (~${(ret*100).toFixed(1)}%/yr). After ${H}y you'd still have about <b>${rupee(Math.round(res.left))}</b>.`;cls='win';}
-    else if(res.lasts){v=`🟢 <b>Lasts ${H}+ years</b> — about <b>${rupee(Math.round(res.left))}</b> left after ${H}y, but slowly drawing down.`;cls='win';}
+    if(need){                                                  // user picked a number of years
+      if(res.lasts){v=`✅ <b>Covers all ${need} years</b> — about <b>${rupee(Math.round(res.left))}</b> still left at the end.`;cls='win';}
+      else {v=`⚠️ <b>Runs out in ~${Math.max(1,Math.round(res.years))} years</b> — short of the ${need} you need.`;cls='lose';}
+    } else if(forever){v=`✅ <b>Could last indefinitely</b> — your income stays under what it earns (~${(ret*100).toFixed(1)}%/yr). After 40y you'd still have about <b>${rupee(Math.round(res.left))}</b>.`;cls='win';}
+    else if(res.lasts){v=`🟢 <b>Lasts 40+ years</b> — about <b>${rupee(Math.round(res.left))}</b> left after 40y, but slowly drawing down.`;cls='win';}
     else {v=`⚠️ <b>Runs out in ~${Math.max(1,Math.round(res.years))} years</b> — ₹${fmtIN(want)}/mo is more than this can sustain.`;cls='lose';}
     return `<div class="locard lo-${cls}"><div class="lo-h">${m.ic} ${m.l} <span class="lo-ret">~${(ret*100).toFixed(1)}%/yr</span></div><div class="lo-v">${v}</div></div>`;
   }).join('');
   document.getElementById('loCards').innerHTML=cards;
-  const lv=document.getElementById('loVerdict'), mw=fmtIN(want), mh=fmtShort(have);
-  if(safe.forever){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — even the safest option works.</b> ₹${mw}/mo from ${mh} stays within what a safe FD/PPF-type mix earns, so it can keep paying you indefinitely.`; }
-  else if(safe.res.lasts){ lv.style.color='var(--green-d)'; lv.innerHTML=`🟢 <b>Yes, with care.</b> Even the safest option pays ₹${mw}/mo for ${H}+ years, though the savings slowly shrink. Riskier mixes leave more behind.`; }
+  if(need){
+    if(safe.res.lasts){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — even the safest option covers your ${need} years.</b> ₹${mw}/mo from ${mh} lasts the full ${need} years on a safe FD/PPF-type mix, with money to spare.`; }
+    else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>The safest option falls short.</b> ₹${mw}/mo from ${mh} runs out in about <b>${Math.max(1,Math.round(safe.res.years))} years</b> — before your ${need}. Draw less, save more, or take more risk (compare below).`; }
+  } else if(safe.forever){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — even the safest option works.</b> ₹${mw}/mo from ${mh} stays within what a safe FD/PPF-type mix earns, so it can keep paying you indefinitely.`; }
+  else if(safe.res.lasts){ lv.style.color='var(--green-d)'; lv.innerHTML=`🟢 <b>Yes, with care.</b> Even the safest option pays ₹${mw}/mo for 40+ years, though the savings slowly shrink. Riskier mixes leave more behind.`; }
   else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>Not from the safest option.</b> ₹${mw}/mo is more than a safe FD/PPF mix earns on ${mh}, so it would run out in about <b>${Math.max(1,Math.round(safe.res.years))} years</b>. Draw less, save more, or take more risk (compare below).`; }
 }
 function liveoffToSim(){
