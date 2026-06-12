@@ -2199,6 +2199,8 @@ function renderLiveoff(){
   const lv=document.getElementById('loVerdict'), mw=fmtIN(want), mh=fmtShort(have);
   // build a card; mark feasible mixes, auto-select the safest one that works (user can tap to override)
   const wrap=(m,cls,v,ret,sel)=>`<div class="locard lo-pick lo-${cls}${sel?' lo-sel':''}" role="button" tabindex="0" onclick="pickLiveMix('${m.k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickLiveMix('${m.k}')}"><div class="lo-h">${m.ic} ${m.l} <span class="lo-ret">~${(ret*100).toFixed(1)}%/yr</span></div><div class="lo-v">${v}</div><div class="lo-pickrow"><span class="lo-radio"></span>${sel?'Selected — this plays out':'Tap to play this one out'}</div></div>`;
+  // 4th option: hand-pick your own investments on the next screen (full product list)
+  const customCard=sel=>`<div class="locard lo-pick${sel?' lo-sel':''}" role="button" tabindex="0" onclick="pickLiveMix('custom')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickLiveMix('custom')}"><div class="lo-h">🛠️ Build my own mix</div><div class="lo-v">Don't like the ready mixes? <b>Hand-pick the exact investments and split yourself</b> on the next screen — we'll draw your ₹${mw}/mo from whatever you choose.</div><div class="lo-pickrow"><span class="lo-radio"></span>${sel?'Selected — choose products next':'Tap to build your own'}</div></div>`;
   if(keep){
     // live on the RETURNS only — principal stays whole (real return if income must rise with inflation)
     let safeEarn=0;
@@ -2210,8 +2212,8 @@ function renderLiveoff(){
       return {m,ok,ret,v};
     });
     const auto=(data.find(d=>d.ok)||data[data.length-1]).m.k;
-    const sel=(LIVEOFF_MIX&&data.some(d=>d.m.k===LIVEOFF_MIX))?LIVEOFF_MIX:auto; LIVEOFF_SEL=sel;
-    document.getElementById('loCards').innerHTML=data.map(d=>wrap(d.m,d.ok?'win':'lose',d.v,d.ret,d.m.k===sel)).join('');
+    const sel=(LIVEOFF_MIX==='custom'||(LIVEOFF_MIX&&data.some(d=>d.m.k===LIVEOFF_MIX)))?LIVEOFF_MIX:auto; LIVEOFF_SEL=sel;
+    document.getElementById('loCards').innerHTML=data.map(d=>wrap(d.m,d.ok?'win':'lose',d.v,d.ret,d.m.k===sel)).join('')+customCard(sel==='custom');
     if(want<=safeEarn){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — without touching your savings.</b> Even a safe FD/PPF-type mix earns about ${rupee(Math.round(safeEarn))}/mo on ${mh}, covering your ₹${mw}/mo. The ${mh} stays whole.`; }
     else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>Not without spending some savings.</b> A safe mix earns about ${rupee(Math.round(safeEarn))}/mo on ${mh} — less than ₹${mw}/mo. To keep your savings whole you'd take less; to get ₹${mw}/mo you'd dip into principal (switch to "spend it down") or take more risk.`; }
     return;
@@ -2230,8 +2232,8 @@ function renderLiveoff(){
     return {m,cls,v,ret};
   });
   const auto=(data.find(d=>d.cls==='win')||data[data.length-1]).m.k;
-  const sel=(LIVEOFF_MIX&&data.some(d=>d.m.k===LIVEOFF_MIX))?LIVEOFF_MIX:auto; LIVEOFF_SEL=sel;
-  document.getElementById('loCards').innerHTML=data.map(d=>wrap(d.m,d.cls,d.v,d.ret,d.m.k===sel)).join('');
+  const sel=(LIVEOFF_MIX==='custom'||(LIVEOFF_MIX&&data.some(d=>d.m.k===LIVEOFF_MIX)))?LIVEOFF_MIX:auto; LIVEOFF_SEL=sel;
+  document.getElementById('loCards').innerHTML=data.map(d=>wrap(d.m,d.cls,d.v,d.ret,d.m.k===sel)).join('')+customCard(sel==='custom');
   if(need){
     if(safe.res.lasts){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — even the safest option covers your ${need} years.</b> ₹${mw}/mo from ${mh} lasts the full ${need} years on a safe FD/PPF-type mix, with money to spare.`; }
     else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>The safest option falls short.</b> ₹${mw}/mo from ${mh} runs out in about <b>${Math.max(1,Math.round(safe.res.years))} years</b> — before your ${need}. Draw less, save more, or take more risk (compare below).`; }
@@ -2243,21 +2245,28 @@ function liveoffToSim(){
   renderLiveoff();   // make sure LIVEOFF_SEL reflects the current inputs/selection
   const have=Math.max(0,mnum(document.getElementById('loSaved').value));
   const want=Math.max(0,mnum(document.getElementById('loWant').value));
+  const custom=LIVEOFF_SEL==='custom';
   const mixKey=GOAL_MIXES[LIVEOFF_SEL]?LIVEOFF_SEL:'balanced';
-  for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}
-  const alloc=GOAL_MIXES[mixKey].alloc; for(const id in alloc){if(PS[id]){PS[id].active=true;PS[id].pct=alloc[id];}}
+  for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}   // blank slate
+  // preset mixes pre-fill an allocation; "build my own" leaves it empty so the user picks on Choose
+  if(!custom){ const alloc=GOAL_MIXES[mixKey].alloc; for(const id in alloc){if(PS[id]){PS[id].active=true;PS[id].pct=alloc[id];}} }
   document.getElementById('swpCorpus').value=mfmt(have); document.getElementById('swpWd').value=mfmt(want);
   // horizon: honour the years they chose; "as long as it lasts" runs a long 40y window
   const yrChip=document.querySelector('#loYrsChips .chip.on'); const yv=yrChip?yrChip.dataset.y:'0';
   const chosenYrs=yv==='custom'?Math.max(1,Math.min(60,Math.round(mnum(document.getElementById('loYrsCustom').value)||0))):(+yv||0);
   PLAN_YEARS=chosenYrs>0?Math.max(1,Math.min(40,chosenYrs)):40; const py=document.getElementById('planYears'); if(py)py.value=PLAN_YEARS;
   SWP_STEP=document.getElementById('loStep').checked;
-  // plain-words note on results: WHY these investments are pre-filled, and that they can change them
-  const nm=(S().names)||{}; const named=Object.keys(alloc).map(id=>nm[id]||id);
-  const prettyList=named.slice(0,-1).join(', ')+(named.length>1?' and '+named[named.length-1]:named[0]||'');
-  LIVEOFF_NOTE=`<b>Why these investments?</b><div style="margin-top:7px;line-height:1.6">You picked the <b>${GOAL_MIXES[mixKey].l}</b> mix — ${MIX_PLAIN[mixKey]||'a spread of investments'}. We've spread your <b>${fmtShort(have)}</b> across them below (${prettyList}) and drawn your <b>${rupee(Math.round(want))}/mo</b> from it. <b>Nothing is locked</b> — tap any product on the “Choose” step to change it or its share, and the numbers update.</div>`;
+  // plain-words note shown on Results: either WHY the mix is pre-filled, or (custom) that they're building their own
+  if(custom){
+    LIVEOFF_NOTE=`<b>Your own mix</b><div style="margin-top:7px;line-height:1.6">You chose to build your own. Tap the investments you want and set the split to 100% — we'll draw your <b>${rupee(Math.round(want))}/mo</b> from whatever you pick.</div>`;
+  } else {
+    const nm=(S().names)||{}, alloc=GOAL_MIXES[mixKey].alloc; const named=Object.keys(alloc).map(id=>nm[id]||id);
+    const prettyList=named.slice(0,-1).join(', ')+(named.length>1?' and '+named[named.length-1]:named[0]||'');
+    LIVEOFF_NOTE=`<b>Why these investments?</b><div style="margin-top:7px;line-height:1.6">You picked the <b>${GOAL_MIXES[mixKey].l}</b> mix — ${MIX_PLAIN[mixKey]||'a spread of investments'}. We've spread your <b>${fmtShort(have)}</b> across them below (${prettyList}) and drawn your <b>${rupee(Math.round(want))}/mo</b> from it. <b>Nothing is locked</b> — tap any product on the “Choose” step to change it or its share, and the numbers update.</div>`;
+  }
   document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m==='swp'));
-  buildList();applyLang();setMode('swp'); showSec('results');
+  buildList();applyLang();setMode('swp');
+  showSec(custom?'choose':'results');   // custom → land on Choose to hand-pick; presets → straight to Results
 }
 function applySec(name){          // pure switch — no history mutation
   document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+name));

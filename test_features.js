@@ -636,7 +636,8 @@ check('Results: income & regime toggle reveals controls + live slab note', ()=>{
 check('Live-off: feasibility verdict + drill into SWP simulator', ()=>{
   win.showSec('liveoff');
   setInput($('#loSaved'),'10000000'); setInput($('#loWant'),'40000'); win.renderLiveoff();
-  if($$('#loCards .locard').length!==3) throw new Error('expected 3 risk cards');
+  if($$('#loCards .locard.lo-win, #loCards .locard.lo-lose').length!==3) throw new Error('expected 3 risk cards');
+  if(!$$('#loCards .locard').some(c=>/Build my own/i.test(c.textContent))) throw new Error('expected a "build my own" custom card');
   const head=$('#loVerdict').textContent; if(!/safest/i.test(head)) throw new Error('headline missing safest verdict');
   // ₹40k/mo on ₹1cr ≈ 4.8% draw — under even safe ~6.8% earnings → should be feasible
   if(!/Yes/i.test(head)) throw new Error('₹40k from ₹1cr should be feasible: '+head.slice(0,50));
@@ -681,9 +682,9 @@ check('Goals: odds-help expander toggles', ()=>{
 check('Live-off: mix cards are selectable + custom years field + why-note carries the picked mix', ()=>{
   win.resetAll(); win.showSec('liveoff');
   setInput($('#loSaved'),'10000000'); setInput($('#loWant'),'40000'); win.renderLiveoff();
-  // every mix card is tappable (the customizer)
+  // every card is tappable (3 preset mixes + a "build my own" custom card)
   const cards=$$('#loCards .locard.lo-pick');
-  if(cards.length!==3) throw new Error('expected 3 selectable mix cards, got '+cards.length);
+  if(cards.length!==4) throw new Error('expected 3 mix cards + 1 custom, got '+cards.length);
   if($$('#loCards .locard.lo-sel').length!==1) throw new Error('exactly one card must be pre-selected');
   // user actively picks Growth → it becomes the selected one
   win.pickLiveMix('growth');
@@ -701,6 +702,23 @@ check('Live-off: mix cards are selectable + custom years field + why-note carrie
   if(win.S().planYears&&false){} // horizon honoured: 18y chosen → PLAN_YEARS clamped 1..40
   win.resetAll();
   return 'cards selectable, custom years works, why-note names picked mix';
+});
+check('Live-off: "Build my own mix" routes to Choose with a blank slate (SWP)', ()=>{
+  win.resetAll(); win.showSec('liveoff');
+  setInput($('#loSaved'),'10000000'); setInput($('#loWant'),'40000'); win.renderLiveoff();
+  win.pickLiveMix('custom');
+  const sel=$('#loCards .locard.lo-sel'); if(!sel||!/Build my own/i.test(sel.textContent)) throw new Error('custom card not selected');
+  win.liveoffToSim();
+  if(activeSec()!=='sec-choose') throw new Error('custom should land on Choose, got '+activeSec());
+  if($$('#plist .tgl.on').length!==0) throw new Error('custom should start blank, none pre-selected');
+  if(!$('#grpSwpC').classList.contains('on')) throw new Error('should be SWP mode for the live-off draw');
+  // pick own products → proceed → results shows the "your own mix" note
+  click($('[data-tgl="index"]')); setInput($('[data-pct="index"]'),'100');
+  win.showSec('results'); win.render();
+  const why=$('#liveWhy'); if(!why||why.style.display==='none') throw new Error('why-note hidden on custom results');
+  if(!/your own/i.test(why.textContent)) throw new Error('custom note should say "your own mix"');
+  win.resetAll();
+  return 'custom → Choose, blank slate, own-mix note';
 });
 
 
