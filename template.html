@@ -1080,7 +1080,7 @@ const STR={
   pcInv:"Put in", pcNet:"You keep", pcTax:"Tax", pcChg:"Charges", pcPen:"Early-exit penalty",
   liveKeepL:"You keep", liveLostL:"Lost to tax + charges + penalty",
   names:/*NAMES_EN*/, eli5:/*ELI5_EN*/, examples:/*EX_EN*/, cats:/*CATS_EN*/, behav:/*BEHAV_EN*/, behavCap:"How it behaves", tips:/*TIPS_EN*/, lessons:/*LESSONS_EN*/, food:/*FOOD_EN*/,
-  disc:"Educational simulation only — not investment or tax advice, and not a guarantee. Returns are illustrative defaults you can edit; real returns vary and carry risk. Tax buckets, SIP/SWP, the ₹1.25L equity exemption, 4% cess and 80C are applied in a simplified way (e.g. NPS gains shown tax-deferred; SWP taxes total growth). Tax reflects FY2026-27. Consult a qualified CA for real decisions."
+  disc:"Educational simulation only — not investment or tax advice, and not a guarantee. Returns are illustrative defaults you can edit; real returns vary and carry risk. Tax buckets, SIP/SWP, the ₹1.25L equity exemption, 4% cess and 80C are applied in a simplified way (e.g. NPS gains shown tax-deferred; SWP taxes only the realised gain in each withdrawal, with the annual ₹1.25L equity exemption). Tax reflects FY2026-27. Consult a qualified CA for real decisions."
  },
  hi:{
   brand:"Learn Money",
@@ -1193,23 +1193,42 @@ function feeCharges(p,st,A){
 }
 function outcome(p,st,A,exempt=EQ_EXEMPT,breakOn=(st.broke||EXIT_EARLY)){
   const r=scenReturn(p,st.ret/100), years=PLAN_YEARS, i=r/12, months=years*12;
-  let invested=0,endVal=0,withdrawn=0,gain=0,ranDry=false;
+  let invested=0,endVal=0,withdrawn=0,gain=0,ranDry=false,swpTax=null;
+  const sur=surcharge(INCOME), surCG=Math.min(sur,0.15);
   if(MODE==='lumpsum'){invested=A.lump*st.pct/100; endVal=invested*Math.pow(1+r,years); gain=endVal-invested;}
   else if(MODE==='sip'){ const s=sipStep(); let m=A.sipM*st.pct/100, bal=0, inv=0; for(let k=0;k<months;k++){ bal=bal*(1+i)+m; inv+=m; if((k+1)%12===0) m*=(1+s); } endVal=bal; invested=inv; gain=endVal-invested; }
-  else{let c=A.swpC*st.pct/100; const w=A.swpW*st.pct/100; invested=c; for(let k=0;k<months;k++){c=c*(1+i); const d=Math.min(w,Math.max(c,0)); c-=d; withdrawn+=d; if(c<=0){c=0; if(k<months-1)ranDry=true;}} endVal=c; gain=(withdrawn+endVal)-invested;}
+  else{
+    // SWP: tax only the GAIN PORTION of each withdrawal (proportional), with the annual ₹1.25L
+    // LTCG exemption; money never withdrawn (the leftover) is unrealised → untaxed here.
+    let c=A.swpC*st.pct/100; const w=A.swpW*st.pct/100; invested=c;
+    let basis=c, realized=0, yrGain=0, taxAcc=0;
+    const taxYear=g=>{ if(g<=0||p.bucket==='exempt') return 0;
+      if(p.bucket==='slab') return g*marginalRate(INCOME)*(1+sur);
+      if(p.bucket==='crypto') return g*0.30*(1+sur);
+      return Math.max(0,g-EQ_EXEMPT)*0.125*(1+surCG); };           // flat / mixed → LTCG, annual exemption
+    for(let k=0;k<months;k++){
+      c=c*(1+i); const d=Math.min(w,Math.max(c,0));
+      if(d>0 && c>0){ const gf=Math.max(0,(c-basis)/c); realized+=d*gf; yrGain+=d*gf; basis-=d*(1-gf); if(basis<0)basis=0; }
+      c-=d; withdrawn+=d; if(c<=0){c=0; if(k<months-1)ranDry=true;}
+      if((k+1)%12===0){ taxAcc+=taxYear(yrGain); yrGain=0; }
+    }
+    if(yrGain>0) taxAcc+=taxYear(yrGain);
+    endVal=c; gain=realized; swpTax=taxAcc*(1+CESS);
+  }
   let charges=feeCharges(p,st,A);
-  const taxable=Math.max(0,gain); let tax=0; const sur=surcharge(INCOME), surCG=Math.min(sur,0.15);
+  const taxable=Math.max(0,gain); let tax=0;
   if(p.bucket==='slab') tax=taxable*marginalRate(INCOME)*(1+sur);
   else if(p.bucket==='flat') tax=Math.max(0,taxable-exempt)*0.125*(1+surCG);
   else if(p.bucket==='mixed') tax=(years>=1? taxable*0.125*(1+surCG) : taxable*marginalRate(INCOME)*(1+sur));
   else if(p.bucket==='crypto') tax=taxable*0.30*(1+sur);
   tax*=(1+CESS);
+  if(MODE==='swp' && swpTax!=null) tax=swpTax;                      // SWP uses the proper per-withdrawal tax
   const grossValue=(MODE==='swp')?(withdrawn+endVal):(invested+gain);
   let earlyPenalty=0;
   if(breakOn){                                       // exit before the term (per-product or master toggle)
     const rate=(p.bucket==='exempt'||p.early==='ppfLock')?0.05:0.01;  // illustrative exit cost
     earlyPenalty=Math.max(0,grossValue)*rate;
-    if(p.bucket==='exempt'||p.bucket==='flat'||p.bucket==='mixed')     // breaking forfeits the tax perk
+    if(MODE!=='swp' && (p.bucket==='exempt'||p.bucket==='flat'||p.bucket==='mixed'))   // breaking forfeits the tax perk (n/a for SWP, already realising)
       tax=taxable*marginalRate(INCOME)*(1+sur)*(1+CESS);
   }
   const net=grossValue-charges-tax-earlyPenalty;
@@ -1246,7 +1265,7 @@ function render(){
   const poolEx=Math.min(flatTaxable,EQ_EXEMPT);
   // Pass 2: apply the pooled exemption, then accumulate totals.
   for(const {p,st,o} of rows){
-    if(p.bucket==='flat' && !(st.broke||EXIT_EARLY) && flatTaxable>0){
+    if(MODE!=='swp' && p.bucket==='flat' && !(st.broke||EXIT_EARLY) && flatTaxable>0){   // SWP handles its exemption per-year inside outcome()
       const cut=poolEx*(Math.max(0,o.gain)/flatTaxable)*0.125*(1+surCG)*(1+CESS);
       o.tax=Math.max(0,o.tax-cut); o.net=o.grossValue-o.charges-o.tax-o.earlyPenalty;
     }
