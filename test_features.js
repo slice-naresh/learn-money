@@ -633,6 +633,23 @@ check('Results: income & regime toggle reveals controls + live slab note', ()=>{
   if(!/slab/i.test(note)||!/12\.5%/.test(note)) throw new Error('slab/LTCG note missing: '+note.slice(0,60));
   return 'income+regime on results, slab note live';
 });
+check('Live-off: feasibility verdict + drill into SWP simulator', ()=>{
+  win.showSec('liveoff');
+  setInput($('#loSaved'),'10000000'); setInput($('#loWant'),'40000'); win.renderLiveoff();
+  if($$('#loCards .locard').length!==3) throw new Error('expected 3 risk cards');
+  const head=$('#loVerdict').textContent; if(!/safest/i.test(head)) throw new Error('headline missing safest verdict');
+  // ₹40k/mo on ₹1cr ≈ 4.8% draw — under even safe ~6.8% earnings → should be feasible
+  if(!/Yes/i.test(head)) throw new Error('₹40k from ₹1cr should be feasible: '+head.slice(0,50));
+  // unaffordable case → runs out
+  setInput($('#loWant'),'300000'); win.renderLiveoff();
+  if(!/Not from the safest|run out/i.test($('#loVerdict').textContent)) throw new Error('₹3L/mo should be infeasible');
+  // drill-down loads the SWP simulator
+  setInput($('#loWant'),'40000'); win.renderLiveoff(); win.liveoffToSim();
+  if(activeSec()!=='sec-results') throw new Error('drill-down did not reach results');
+  const mode=$('#modeChips .chip.on'); if(!mode||mode.dataset.m!=='swp') throw new Error('not SWP mode after drill-down');
+  win.resetAll();
+  return 'feasible/infeasible verdicts + SWP drill-down';
+});
 check('SWP: results never negative + identity (total = income + money-left − costs)', ()=>{
   const cases=[[2000000,15000,10],[2000000,50000,10],[1000000,25000,5],[10000,100000,1],[5000000,30000,20]];
   for(const [corpus,wd,yrs] of cases){

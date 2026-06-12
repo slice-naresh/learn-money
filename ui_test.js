@@ -136,7 +136,7 @@ function ck(name,ok,note){ results.push([ok?'PASS':'FAIL',name,note||'']); }
   const overflow3 = await page.evaluate(()=>({sw:document.documentElement.scrollWidth, iw:window.innerWidth}));
   ck('No horizontal overflow on mobile (results)', overflow3.sw<=overflow3.iw+1, `scrollW ${overflow3.sw} vs ${overflow3.iw}`);
 
-  for(const s of ['invest','tax','takehome','credit','goals','tryit']){
+  for(const s of ['invest','tax','takehome','credit','goals','liveoff','tryit']){
     await page.evaluate(x=>showSec(x), s);
     await new Promise(r=>setTimeout(r,200));
     const o = await page.evaluate(()=>({sw:document.documentElement.scrollWidth, iw:window.innerWidth}));

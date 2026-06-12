@@ -186,7 +186,7 @@ check('Library lesson cross-links to Tax section', ()=>{
 
 // ===== Try-it (simulator) — 4 journey starters + sim flow =====
 check('Try-it landing renders 4 journey cards', ()=>{ win.showSec('tryit'); const n=$$('#pathgrid .pathcard').length; if(n!==4) throw new Error('cards='+n); return n+' cards'; });
-const expectSec = ['sec-how','sec-how','sec-how','sec-inflation']; // lump, sip, swp(income), then "what doing nothing costs"
+const expectSec = ['sec-how','sec-how','sec-liveoff','sec-inflation']; // lump, sip, "can you live off it", then "what doing nothing costs"
 $$('#pathgrid .pathcard').forEach((card,i)=>{
   check('Journey card '+(i+1)+' navigates', ()=>{ win.showSec('tryit'); click($$('#pathgrid .pathcard')[i]); const a=activeSec(); if(a!==expectSec[i]) throw new Error('went to '+a+', expected '+expectSec[i]); return '-> '+a; });
 });

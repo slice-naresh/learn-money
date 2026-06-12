@@ -490,6 +490,12 @@
   .swpstep{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 15px;background:#f0f7f2;border:1px solid #cfe9d9;border-radius:12px;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--ink)}
   .swpstep input{width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
   .swpstep small{font-weight:400;color:var(--ink-soft)}
+  .locard{border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid var(--line);border-left:4px solid #cdbcf5;background:var(--card);box-shadow:0 2px 10px -5px #1a103a14}
+  .locard.lo-win{border-left-color:#1f9d5f;background:#f1f9f4}
+  .locard.lo-lose{border-left-color:#e0533b;background:#fdf1ee}
+  .locard .lo-h{font-family:var(--display);font-weight:700;font-size:.95rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+  .locard .lo-ret{margin-left:auto;font-family:var(--body);font-size:.75rem;font-weight:700;color:var(--ink-soft);background:#0a0f0c0d;border-radius:999px;padding:2px 9px}
+  .locard .lo-v{font-size:.9rem;line-height:1.5;color:var(--ink)}
   .hl-hero{text-align:center;margin:10px 0 2px}
   .hl-hero .hl-num{font-size:clamp(2rem,6.5vw,3.1rem)}
   /* subtle soft-lavender tool buttons */
@@ -828,6 +834,22 @@
     </div>
   </section>
 
+  <section id="sec-liveoff" class="sec">
+    <div class="hero"><h1 style="font-size:clamp(1.6rem,4.4vw,2.4rem)">🏖️ Can you live off your savings?</h1><p>Tell us what you've saved and how much you'd like to draw each month. We'll show whether it can last — starting with the <b>safest</b> option, then with a bit more risk. No jargon, no tenure to guess.</p></div>
+    <div class="card">
+      <div class="row">
+        <div class="col"><label class="l" for="loSaved">Money you've saved (₹)</label><input type="number" id="loSaved" value="10000000" min="10000" max="10000000000" step="100000" aria-label="Money you have saved, in rupees" oninput="renderLiveoff()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="loSaved"></div></div>
+        <div class="col"><label class="l" for="loWant">Monthly income you want (₹)</label><input type="number" id="loWant" value="40000" min="500" max="100000000" step="5000" aria-label="Monthly income you want, in rupees" oninput="renderLiveoff()" onblur="clampNum(this)"><div class="amt-txt" data-amt-for="loWant"></div></div>
+      </div>
+      <label class="swpstep" id="loStepRow" style="margin-top:14px"><input type="checkbox" id="loStep" onchange="renderLiveoff()"><span>📈 Raise this income with inflation each year <small>(keeps its buying power — a tougher, more realistic test)</small></span></label>
+      <div class="marg" id="loVerdict" style="margin-top:16px;font-size:1.05rem"></div>
+      <div class="lsech" style="margin:18px 0 8px">How each option holds up</div>
+      <div id="loCards"></div>
+      <div class="btnrow"><button class="nextbtn" id="loSimBtn" onclick="liveoffToSim()">🧪 See it play out, year by year →</button></div>
+      <div class="taxdisc" style="margin-top:14px">⚠️ Illustrative — returns are assumed averages, real markets wobble. "Lasts forever" means the income stays under what the savings earn. Not advice; for a real plan see a SEBI-registered adviser.</div>
+    </div>
+  </section>
+
   <section id="sec-tryit" class="sec">
     <div class="hero"><h1 data-i="tryH" style="font-size:clamp(1.6rem,4.4vw,2.4rem)"></h1><p data-i="tryP"></p></div>
     <div style="font-family:var(--display);font-weight:600;font-size:1.15rem;margin:24px 0 12px" data-i="tryKick"></div>
@@ -1098,7 +1120,7 @@ const STR={
   paths:[
    {ic:'💰',t:'Invest a lump sum',d:'Have a one-time amount (a bonus, a gift)? Watch it compound over the years.',sec:'how',mode:'lumpsum',tone:'grow',tag:'Grow once',ctx:'💰 Journey: <b>Invest a lump sum</b> — a one-time amount that grows.'},
    {ic:'📅',t:'Start a monthly SIP',d:'Invest a small amount every month and let it build up.',sec:'how',mode:'sip',tone:'sip',tag:'Build monthly',ctx:'📅 Journey: <b>Monthly SIP</b> — you put in a fixed amount every month.'},
-   {ic:'🏧',t:'Get a monthly income',d:'Already have savings? Withdraw a fixed amount every month and see how long it lasts (an SWP).',sec:'how',mode:'swp',tone:'income',tag:'Draw income',ctx:'🏧 Journey: <b>Monthly income (SWP)</b> — your savings pay you a fixed amount each month; we check it doesn\'t run dry.'},
+   {ic:'🏖️',t:'Can you live off your savings?',d:'Have a lump saved? See if it can pay you a fixed monthly income — and for how long, safest option first.',sec:'liveoff',tone:'income',tag:'Live off it'},
    {ic:'🌧️',t:'What doing nothing costs',d:'See how inflation quietly shrinks money left lying around as cash.',sec:'inflation',tone:'warn',tag:'Why invest'},
   ],
   infH:"Doing nothing has a cost", infHint:"Cash lying around doesn't grow — but prices keep rising, so every year your money quietly buys less. That's inflation, and it's why 'not investing' is also a choice.",
@@ -1230,7 +1252,7 @@ function amountWords(n){n=Math.abs(Math.round(+n||0)); const t=v=>(Number.isInte
 /* ===== money inputs: live thousand-commas (Indian grouping) ===== */
 function mnum(v){ return +String(v==null?'':v).replace(/[^0-9.]/g,'')||0; }   // parse a comma'd money string → number
 function mfmt(v){ const s=String(v).replace(/[^0-9.]/g,''); if(s==='')return ''; const a=s.split('.'); return (+a[0]).toLocaleString('en-IN')+(a[1]!=null?'.'+a[1]:''); }
-const MONEY_IDS=['lumpAmt','sipAmt','swpCorpus','swpWd','infAmt','ccBal','ccPay','thCtc','thRent','thC','thD','thNps','thHome','thPt','goalAmt','goalHave'];
+const MONEY_IDS=['lumpAmt','sipAmt','swpCorpus','swpWd','infAmt','loSaved','loWant','ccBal','ccPay','thCtc','thRent','thC','thD','thNps','thHome','thPt','goalAmt','goalHave'];
 function setupMoneyInputs(){ MONEY_IDS.forEach(id=>{ const e=document.getElementById(id); if(e){ e.type='text'; e.setAttribute('inputmode','numeric'); e.classList.add('money'); if(e.value!=='') e.value=mfmt(e.value); } }); }
 function formatMoneyFields(){ document.querySelectorAll('input.money').forEach(e=>{ if(e.value!=='') e.value=mfmt(e.value); }); }
 function updateAmtTexts(){ document.querySelectorAll('[data-amt-for]').forEach(el=>{
@@ -2195,6 +2217,45 @@ function stressTestGoal(){
   buildList(); applyLang(); setMode('sip');
   showSec('results');
 }
+/* ===== "Can you live off your savings?" — reverse income feasibility (front door to SWP) ===== */
+function swpLasts(corpus,monthlyWd,annualReturn,maxYears,stepInfl){
+  let c=corpus,w=monthlyWd,i=annualReturn/12;
+  for(let m=0;m<maxYears*12;m++){ c=c*(1+i); c-=Math.min(w,Math.max(c,0)); if(c<=1)return {lasts:false,years:m/12,left:0}; if((m+1)%12===0&&stepInfl)w*=(1+stepInfl); }
+  return {lasts:true,years:maxYears,left:c};
+}
+function renderLiveoff(){
+  if(!document.getElementById('loSaved'))return; updateAmtTexts();
+  const have=Math.max(0,mnum(document.getElementById('loSaved').value));
+  const want=Math.max(0,mnum(document.getElementById('loWant').value));
+  const step=document.getElementById('loStep').checked?0.06:0, H=40;
+  const MIXES=[{k:'safe',ic:'🛡️',l:'Safe & steady (mostly FD, PPF, bonds)'},{k:'balanced',ic:'⚖️',l:'Balanced'},{k:'growth',ic:'📈',l:'Growth (more equity)'}];
+  let safe=null;
+  const cards=MIXES.map(m=>{ const ret=goalMixStats(m.k).ret, res=swpLasts(have,want,ret,H,step);
+    const forever=res.lasts&&res.left>=have*0.98;
+    if(m.k==='safe') safe={res,forever,ret};
+    let v,cls;
+    if(forever){v=`✅ <b>Could last indefinitely</b> — your income stays under what it earns (~${(ret*100).toFixed(1)}%/yr). After ${H}y you'd still have about <b>${rupee(Math.round(res.left))}</b>.`;cls='win';}
+    else if(res.lasts){v=`🟢 <b>Lasts ${H}+ years</b> — about <b>${rupee(Math.round(res.left))}</b> left after ${H}y, but slowly drawing down.`;cls='win';}
+    else {v=`⚠️ <b>Runs out in ~${Math.max(1,Math.round(res.years))} years</b> — ₹${fmtIN(want)}/mo is more than this can sustain.`;cls='lose';}
+    return `<div class="locard lo-${cls}"><div class="lo-h">${m.ic} ${m.l} <span class="lo-ret">~${(ret*100).toFixed(1)}%/yr</span></div><div class="lo-v">${v}</div></div>`;
+  }).join('');
+  document.getElementById('loCards').innerHTML=cards;
+  const lv=document.getElementById('loVerdict'), mw=fmtIN(want), mh=fmtShort(have);
+  if(safe.forever){ lv.style.color='var(--green-d)'; lv.innerHTML=`✅ <b>Yes — even the safest option works.</b> ₹${mw}/mo from ${mh} stays within what a safe FD/PPF-type mix earns, so it can keep paying you indefinitely.`; }
+  else if(safe.res.lasts){ lv.style.color='var(--green-d)'; lv.innerHTML=`🟢 <b>Yes, with care.</b> Even the safest option pays ₹${mw}/mo for ${H}+ years, though the savings slowly shrink. Riskier mixes leave more behind.`; }
+  else { lv.style.color='var(--red)'; lv.innerHTML=`⚠️ <b>Not from the safest option.</b> ₹${mw}/mo is more than a safe FD/PPF mix earns on ${mh}, so it would run out in about <b>${Math.max(1,Math.round(safe.res.years))} years</b>. Draw less, save more, or take more risk (compare below).`; }
+}
+function liveoffToSim(){
+  const have=Math.max(0,mnum(document.getElementById('loSaved').value));
+  const want=Math.max(0,mnum(document.getElementById('loWant').value));
+  for(const id in PS){PS[id].active=false;PS[id].pct=0;PS[id].broke=false;}
+  const alloc=GOAL_MIXES.balanced.alloc; for(const id in alloc){if(PS[id]){PS[id].active=true;PS[id].pct=alloc[id];}}
+  document.getElementById('swpCorpus').value=mfmt(have); document.getElementById('swpWd').value=mfmt(want);
+  PLAN_YEARS=30; const py=document.getElementById('planYears'); if(py)py.value=30;
+  SWP_STEP=document.getElementById('loStep').checked;
+  document.querySelectorAll('#modeChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.m==='swp'));
+  buildList();applyLang();setMode('swp'); showSec('results');
+}
 function applySec(name){          // pure switch — no history mutation
   document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+name));
   CURRENT_SEC=name; updateBackBar(); updateStepper(name);
@@ -2203,6 +2264,7 @@ function applySec(name){          // pure switch — no history mutation
   if(name==='credit') renderCredit();
   if(name==='takehome') renderTakehome();
   if(name==='goals') renderGoals();
+  if(name==='liveoff') renderLiveoff();
   window.scrollTo({top:0,behavior:'smooth'});
   observeReveals();   // animate in whatever the new section reveals
 }
