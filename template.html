@@ -487,6 +487,9 @@
   /* live-panel breakdown (inside the dark terminal card) */
   .lr-break-tog{margin-top:10px;background:#ffffff14;border:1px solid #ffffff24;color:#dfe4e1;font-family:var(--body);font-weight:600;font-size:.8rem;border-radius:999px;padding:6px 13px;cursor:pointer;transition:background .15s,transform .12s}
   .lr-break-tog:hover{background:#ffffff24}
+  .swpstep{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 15px;background:#f0f7f2;border:1px solid #cfe9d9;border-radius:12px;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--ink)}
+  .swpstep input{width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+  .swpstep small{font-weight:400;color:var(--ink-soft)}
   .hl-hero{text-align:center;margin:10px 0 2px}
   .hl-hero .hl-num{font-size:clamp(2rem,6.5vw,3.1rem)}
   /* subtle soft-lavender tool buttons */
@@ -901,10 +904,7 @@
       <!-- the answer: one big number + a plain invested→becomes→tax→keep→inflation table -->
       <div class="hl-box hl-hero"><div class="hl-cap" id="cap1"></div><div class="hl-num green" id="num1">₹0</div></div>
       <div class="marg" id="resTable" style="margin-top:4px"></div>
-      <canvas id="growth" height="200" style="margin-top:16px"></canvas>
-      <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
-      <div id="growthCap" style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5;display:none"><b>Reading it:</b> left→right is <b>years</b> (0 → your horizon); height is <b>total value (₹)</b>. Purple is your portfolio growing; the gold dashed line is where you'd be if money only kept pace with inflation.</div>
-      <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
+      <label class="swpstep" id="swpStepRow" style="display:none"><input type="checkbox" id="swpStep" onchange="SWP_STEP=this.checked;render()"><span>📈 Raise my monthly income with inflation each year <small>(so it keeps its buying power)</small></span></label>
 
       <div class="lsech" style="margin:20px 0 2px;display:flex;align-items:center;gap:8px">🔎 Dig deeper <span style="font-weight:400;font-size:.82rem;color:var(--ink-soft)">— tap any card to expand</span></div>
       <!-- OPTIONAL: how the user's income bracket changes the tax (the slab vs LTCG lesson) -->
@@ -950,6 +950,12 @@
         </div>
         <div class="pcards" id="pcards"></div>
       </div>
+
+      <canvas id="growth" height="200" style="margin-top:18px"></canvas>
+      <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
+      <div id="growthCap" style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5;display:none"><b>Reading it:</b> left→right is <b>years</b> (0 → your horizon); height is <b>total value (₹)</b>. Purple is your portfolio growing; the gold dashed line is where you'd be if money only kept pace with inflation.</div>
+      <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
+
       <div class="btnrow" style="margin-top:18px">
         <button class="altbtn" onclick="showSec('home')">🏠 Back to home</button>
         <button class="altbtn" onclick="showSec('tryit')">🔄 Try another way</button>
@@ -994,6 +1000,7 @@ const BCLS={slab:'b-slab',flat:'b-flat',exempt:'b-exempt',mixed:'b-mixed',crypto
 const BEHAV_IC={steady:'📈',bumpy:'🎢',wild:'⚡',locked:'🔒',floaty:'🥇'};
 const GLOSS=/*GLOSS_EN*/;
 let LANG='en', REGIME='new', MODE='lumpsum', INCOME=1500000, CURRENT_CAT=null, EXIT_EARLY=false, INFL_ADJ=false, INFL_YRS=0, PLAN_YEARS=10;
+let SWP_STEP=false;        // SWP: grow the monthly withdrawal with inflation each year
 let SEEN_CATS=new Set();   // product categories the user has browsed (gate before Results)
 function sipStep(){ const e=document.getElementById('sipStepup'); return e?Math.max(0,+e.value||0)/100:0; } // yearly SIP increase
 function setPlanYears(){ const e=document.getElementById('planYears'); PLAN_YEARS=Math.max(1,Math.min(40,Math.round(+e.value||10))); render(); }
@@ -1200,7 +1207,8 @@ function outcome(p,st,A,exempt=EQ_EXEMPT,breakOn=(st.broke||EXIT_EARLY)){
   else{
     // SWP: tax only the GAIN PORTION of each withdrawal (proportional), with the annual ₹1.25L
     // LTCG exemption; money never withdrawn (the leftover) is unrealised → untaxed here.
-    let c=A.swpC*st.pct/100; const w=A.swpW*st.pct/100; invested=c;
+    let c=A.swpC*st.pct/100; let w=A.swpW*st.pct/100; invested=c;
+    const inflStep=SWP_STEP?((+ (document.getElementById('infRate')||{}).value||0)/100):0;   // grow withdrawal yearly
     let basis=c, realized=0, yrGain=0, taxAcc=0;
     const taxYear=g=>{ if(g<=0||p.bucket==='exempt') return 0;
       if(p.bucket==='slab') return g*marginalRate(INCOME)*(1+sur);
@@ -1210,7 +1218,7 @@ function outcome(p,st,A,exempt=EQ_EXEMPT,breakOn=(st.broke||EXIT_EARLY)){
       c=c*(1+i); const d=Math.min(w,Math.max(c,0));
       if(d>0 && c>0){ const gf=Math.max(0,(c-basis)/c); realized+=d*gf; yrGain+=d*gf; basis-=d*(1-gf); if(basis<0)basis=0; }
       c-=d; withdrawn+=d; if(c<=0){c=0; if(k<months-1)ranDry=true;}
-      if((k+1)%12===0){ taxAcc+=taxYear(yrGain); yrGain=0; }
+      if((k+1)%12===0){ taxAcc+=taxYear(yrGain); yrGain=0; if(inflStep)w*=(1+inflStep); }
     }
     if(yrGain>0) taxAcc+=taxYear(yrGain);
     endVal=c; gain=realized; swpTax=taxAcc*(1+CESS);
@@ -1345,6 +1353,7 @@ function render(){
           +r('= You keep', rupee(keep), 'green', true)+'</div>';
       }
     } else rt.innerHTML='<div class="ibrk" style="color:var(--ink-soft)">Pick at least one product (totalling 100%) to see the result.</div>'; } }
+  { const sr=document.getElementById('swpStepRow'); if(sr){ sr.style.display=(MODE==='swp'&&rows.length)?'flex':'none'; const cb=document.getElementById('swpStep'); if(cb)cb.checked=SWP_STEP; } }
   // income → tax bracket lesson (slab-taxed picks vs flat-LTCG)
   { const itn=document.getElementById('incTaxNote');
     if(itn){ const mr=Math.round(marginalRate(INCOME)*100);
@@ -1615,7 +1624,7 @@ function resetAll(){
   document.getElementById('inc').value=incomeToSlider(1500000);
   document.getElementById('infAmt').value=500000;
   document.getElementById('infRate').value=5;
-  EXIT_EARLY=false; INFL_ADJ=false; INFL_YRS=0; SEEN_CATS=new Set();   // re-arm the mandatory product-type walkthrough
+  EXIT_EARLY=false; INFL_ADJ=false; INFL_YRS=0; SWP_STEP=false; SEEN_CATS=new Set();   // re-arm the mandatory product-type walkthrough
   document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.exit==='0'));
   document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.adj==='0'));
   document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.iy==='0'));

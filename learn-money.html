@@ -487,6 +487,9 @@
   /* live-panel breakdown (inside the dark terminal card) */
   .lr-break-tog{margin-top:10px;background:#ffffff14;border:1px solid #ffffff24;color:#dfe4e1;font-family:var(--body);font-weight:600;font-size:.8rem;border-radius:999px;padding:6px 13px;cursor:pointer;transition:background .15s,transform .12s}
   .lr-break-tog:hover{background:#ffffff24}
+  .swpstep{display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px 15px;background:#f0f7f2;border:1px solid #cfe9d9;border-radius:12px;cursor:pointer;font-size:.9rem;font-weight:600;color:var(--ink)}
+  .swpstep input{width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
+  .swpstep small{font-weight:400;color:var(--ink-soft)}
   .hl-hero{text-align:center;margin:10px 0 2px}
   .hl-hero .hl-num{font-size:clamp(2rem,6.5vw,3.1rem)}
   /* subtle soft-lavender tool buttons */
@@ -901,10 +904,7 @@
       <!-- the answer: one big number + a plain invested→becomes→tax→keep→inflation table -->
       <div class="hl-box hl-hero"><div class="hl-cap" id="cap1"></div><div class="hl-num green" id="num1">₹0</div></div>
       <div class="marg" id="resTable" style="margin-top:4px"></div>
-      <canvas id="growth" height="200" style="margin-top:16px"></canvas>
-      <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
-      <div id="growthCap" style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5;display:none"><b>Reading it:</b> left→right is <b>years</b> (0 → your horizon); height is <b>total value (₹)</b>. Purple is your portfolio growing; the gold dashed line is where you'd be if money only kept pace with inflation.</div>
-      <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
+      <label class="swpstep" id="swpStepRow" style="display:none"><input type="checkbox" id="swpStep" onchange="SWP_STEP=this.checked;render()"><span>📈 Raise my monthly income with inflation each year <small>(so it keeps its buying power)</small></span></label>
 
       <div class="lsech" style="margin:20px 0 2px;display:flex;align-items:center;gap:8px">🔎 Dig deeper <span style="font-weight:400;font-size:.82rem;color:var(--ink-soft)">— tap any card to expand</span></div>
       <!-- OPTIONAL: how the user's income bracket changes the tax (the slab vs LTCG lesson) -->
@@ -950,6 +950,12 @@
         </div>
         <div class="pcards" id="pcards"></div>
       </div>
+
+      <canvas id="growth" height="200" style="margin-top:18px"></canvas>
+      <div class="flow-key" id="growthKey" style="display:none"><span><span class="sw" style="background:var(--green)"></span><span data-i="growthYou"></span></span><span><span class="sw" style="background:#c98a1f"></span><span data-i="growthInf"></span></span></div>
+      <div id="growthCap" style="font-size:.8rem;color:var(--ink-soft);margin-top:8px;line-height:1.5;display:none"><b>Reading it:</b> left→right is <b>years</b> (0 → your horizon); height is <b>total value (₹)</b>. Purple is your portfolio growing; the gold dashed line is where you'd be if money only kept pace with inflation.</div>
+      <div class="marg" id="inflVerdict" style="display:none;margin-top:12px"></div>
+
       <div class="btnrow" style="margin-top:18px">
         <button class="altbtn" onclick="showSec('home')">🏠 Back to home</button>
         <button class="altbtn" onclick="showSec('tryit')">🔄 Try another way</button>
@@ -1060,6 +1066,7 @@ const BCLS={slab:'b-slab',flat:'b-flat',exempt:'b-exempt',mixed:'b-mixed',crypto
 const BEHAV_IC={steady:'📈',bumpy:'🎢',wild:'⚡',locked:'🔒',floaty:'🥇'};
 const GLOSS={"NPS": "National Pension System — a government retirement account you pay into while working and draw from after 60", "EPF": "Employees' Provident Fund — retirement savings cut from your salary each month, matched by your employer", "NAV": "the price of one unit of a mutual fund, updated once a day", "demat account": "an online locker that holds your shares and fund units — like a bank account for investments", "demat": "an online locker that holds your shares and fund units", "expense ratio": "the yearly fee a fund charges, taken as a small % of your money", "LTCG": "long-term capital gains — profit on something you held a long time before selling", "STCG": "short-term capital gains — profit on something you sold soon after buying", "STT": "a small government tax on each stock trade", "dividends": "a share of a company's profit, paid out to people who own its shares", "dividend": "a share of a company's profit, paid out to people who own its shares", "distributions": "money a REIT or fund pays out to investors, like rent or interest", "distribution": "money a REIT or fund pays out to investors, like rent or interest", "yield": "the yearly income from an investment, shown as a % of its price", "rebalances": "adjusts the mix back to target — e.g. sells some stocks to buy bonds", "rebalance": "adjust the mix back to target — e.g. sell some stocks to buy bonds", "corpus": "the total pot of money you've built up", "SIP": "investing a fixed amount every month, automatically", "SWP": "withdrawing a fixed amount every month from your investments", "lump sum": "a single one-time amount, instead of monthly bits", "units": "the 'shares' of a mutual fund that you own", "large-cap": "a very big, well-established company", "small-cap": "a smaller, younger company — riskier but can grow faster", "ETFs": "funds that trade on the stock exchange like a single share", "ETF": "a fund that trades on the stock exchange like a single share", "brokerage": "the fee a broker charges to buy or sell for you", "GST": "a government tax added on fees and services", "forex": "foreign currency — money from another country", "EMI": "equated monthly instalment — paying something off in equal monthly amounts", "APR": "annual percentage rate — the interest rate charged per year", "grace period": "the interest-free days you get to pay your card bill in full", "credit score": "a number (300–900) lenders use to judge how reliably you repay", "utilisation": "how much of your card limit you're currently using", "CIBIL": "India's main credit score, from 300 to 900", "NBFC": "a finance company that lends like a bank but isn't one", "ULIP": "a policy that mixes life insurance with market-linked investing", "endowment": "a traditional life-insurance policy that also pays a guaranteed lump sum if you survive the term", "term insurance": "pure life cover — pays your family if you die, with no investment or return", "money-back": "an insurance plan that returns part of your money at intervals, not just at the end", "10(10D)": "the rule that makes life-insurance maturity tax-free, within premium limits", "TDS": "tax deducted at source — a slice of tax cut before you even get the money", "EEE": "exempt-exempt-exempt — no tax going in, while growing, or coming out", "annuity": "a plan that pays you a fixed amount regularly, usually for life", "coupon": "the fixed interest a bond pays you", "indexation": "adjusting your purchase price for inflation so you're taxed on less gain", "feeder fund": "an Indian fund that simply invests into one bigger overseas fund", "DICGC": "the body that insures bank deposits up to ₹5 lakh", "surcharge": "an extra tax on top of your tax, for very high incomes", "cess": "a small extra charge (4%) added on your tax, for health & education", "standard deduction": "a flat amount cut from your salary before tax, no proof needed", "rebate": "a reduction that can bring your tax down to zero up to a limit (Section 87A)", "80C": "a rule letting you cut up to ₹1.5L from taxable income via certain investments", "80D": "a deduction for health-insurance premiums you pay", "80TTA": "a deduction for interest earned in a savings account", "80CCD(1B)": "an extra ₹50,000 deduction for putting money into NPS", "NSC": "National Savings Certificate — a fixed-term government savings scheme", "KVP": "Kisan Vikas Patra — a government scheme that doubles your money over a set period", "remittance": "sending money abroad — capped yearly under RBI rules"};
 let LANG='en', REGIME='new', MODE='lumpsum', INCOME=1500000, CURRENT_CAT=null, EXIT_EARLY=false, INFL_ADJ=false, INFL_YRS=0, PLAN_YEARS=10;
+let SWP_STEP=false;        // SWP: grow the monthly withdrawal with inflation each year
 let SEEN_CATS=new Set();   // product categories the user has browsed (gate before Results)
 function sipStep(){ const e=document.getElementById('sipStepup'); return e?Math.max(0,+e.value||0)/100:0; } // yearly SIP increase
 function setPlanYears(){ const e=document.getElementById('planYears'); PLAN_YEARS=Math.max(1,Math.min(40,Math.round(+e.value||10))); render(); }
@@ -1266,7 +1273,8 @@ function outcome(p,st,A,exempt=EQ_EXEMPT,breakOn=(st.broke||EXIT_EARLY)){
   else{
     // SWP: tax only the GAIN PORTION of each withdrawal (proportional), with the annual ₹1.25L
     // LTCG exemption; money never withdrawn (the leftover) is unrealised → untaxed here.
-    let c=A.swpC*st.pct/100; const w=A.swpW*st.pct/100; invested=c;
+    let c=A.swpC*st.pct/100; let w=A.swpW*st.pct/100; invested=c;
+    const inflStep=SWP_STEP?((+ (document.getElementById('infRate')||{}).value||0)/100):0;   // grow withdrawal yearly
     let basis=c, realized=0, yrGain=0, taxAcc=0;
     const taxYear=g=>{ if(g<=0||p.bucket==='exempt') return 0;
       if(p.bucket==='slab') return g*marginalRate(INCOME)*(1+sur);
@@ -1276,7 +1284,7 @@ function outcome(p,st,A,exempt=EQ_EXEMPT,breakOn=(st.broke||EXIT_EARLY)){
       c=c*(1+i); const d=Math.min(w,Math.max(c,0));
       if(d>0 && c>0){ const gf=Math.max(0,(c-basis)/c); realized+=d*gf; yrGain+=d*gf; basis-=d*(1-gf); if(basis<0)basis=0; }
       c-=d; withdrawn+=d; if(c<=0){c=0; if(k<months-1)ranDry=true;}
-      if((k+1)%12===0){ taxAcc+=taxYear(yrGain); yrGain=0; }
+      if((k+1)%12===0){ taxAcc+=taxYear(yrGain); yrGain=0; if(inflStep)w*=(1+inflStep); }
     }
     if(yrGain>0) taxAcc+=taxYear(yrGain);
     endVal=c; gain=realized; swpTax=taxAcc*(1+CESS);
@@ -1411,6 +1419,7 @@ function render(){
           +r('= You keep', rupee(keep), 'green', true)+'</div>';
       }
     } else rt.innerHTML='<div class="ibrk" style="color:var(--ink-soft)">Pick at least one product (totalling 100%) to see the result.</div>'; } }
+  { const sr=document.getElementById('swpStepRow'); if(sr){ sr.style.display=(MODE==='swp'&&rows.length)?'flex':'none'; const cb=document.getElementById('swpStep'); if(cb)cb.checked=SWP_STEP; } }
   // income → tax bracket lesson (slab-taxed picks vs flat-LTCG)
   { const itn=document.getElementById('incTaxNote');
     if(itn){ const mr=Math.round(marginalRate(INCOME)*100);
@@ -1681,7 +1690,7 @@ function resetAll(){
   document.getElementById('inc').value=incomeToSlider(1500000);
   document.getElementById('infAmt').value=500000;
   document.getElementById('infRate').value=5;
-  EXIT_EARLY=false; INFL_ADJ=false; INFL_YRS=0; SEEN_CATS=new Set();   // re-arm the mandatory product-type walkthrough
+  EXIT_EARLY=false; INFL_ADJ=false; INFL_YRS=0; SWP_STEP=false; SEEN_CATS=new Set();   // re-arm the mandatory product-type walkthrough
   document.querySelectorAll('#exitChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.exit==='0'));
   document.querySelectorAll('#adjChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.adj==='0'));
   document.querySelectorAll('#adjYrsChips .chip').forEach(x=>x.classList.toggle('on',x.dataset.iy==='0'));
